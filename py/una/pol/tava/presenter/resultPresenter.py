@@ -3,7 +3,6 @@ Created on 28/06/2014
 
 @author: abrahan
 '''
-from py.una.pol.tava.model import abm
 from procesadorResultado import procesarArchivo
 from py.una.pol.tava.model import query
 
@@ -18,12 +17,8 @@ class ResultadoPresenter(object):
         Constructor
         '''
 
-    def guardar(self, listFile, proyecto):
-
-        for path in listFile:
-            resultado = procesarArchivo(path)
-            proyecto.resultados.append(resultado)
-        abm.add(proyecto)
+    def guardar(self, listPathFile, proyecto):
+        procesarArchivo(listPathFile, proyecto)
 
     def getResultadoByProyecto(self, proyecto):
         return query.getResultadosByProyecto(proyecto)
