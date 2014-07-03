@@ -65,23 +65,8 @@ class Resultado(Base):
     fechaAdd = Column(Date())
     proyecto_id = Column(Integer, ForeignKey('proyecto.id'))
 
-    def __init__(self, nombre, iteracion, etiqueta1, etiqueta2, etiqueta3,\
-                 etiqueta4, nombreProblema, numeroObjetivo, numeroVariable,\
-                 poblacionInicial, fechaAdd):
-        '''
-        Constructor
-        '''
-        self.nombre = nombre
-        self.cantidadIteracion = iteracion
-        self.etiqueta1 = etiqueta1
-        self.etiqueta2 = etiqueta2
-        self.etiqueta3 = etiqueta3
-        self.etiqueta4 = etiqueta4
-        self.nombreProblema = nombreProblema
-        self.numeroObjetivo = numeroObjetivo
-        self.numeroVariable = numeroVariable
-        self.poblacionInicial = poblacionInicial
-        self.fechaAdd = fechaAdd
+    def __init__(self):
+        pass
 
     def __repr__(self):
         return "<Resultados(nombre='%s', cantidadIteracion='%s', \
@@ -107,15 +92,8 @@ class Iteracion(Base):
     individuos = relationship('Individuo', order_by='Individuo.id',
                                backref='iteracion')
 
-    def __init__(self, inicioEjecucion, identificador, finEjecucion,\
-                  cantidadIndividuo):
-        '''
-        Constructor
-        '''
-        self.identificador = identificador
-        self.inicioEjecucion = inicioEjecucion
-        self.finEjecucion = finEjecucion
-        self.cantidadIndividuo = cantidadIndividuo
+    def __init__(self):
+        pass
 
     def __repr__(self):
         return "<Iteracion(identificador: '%s', inicioEjecucion:'%s', "\
@@ -136,9 +114,8 @@ class Individuo(Base):
     variables = relationship('Variable', backref='individuo')
     objetivos = relationship('Objetivo', backref='individuo')
 
-    def __init__(self, identificador, varDTLZ):
-        self.identificador = identificador
-        self.varDTLZ = varDTLZ
+    def __init__(self):
+        pass
 
     def __repr__(self):
         return "<Individuo(identificador: '%s', varDTLZ: '%f')>"\
@@ -159,8 +136,8 @@ class Objetivo(Base):
         self.valor = valor
 
     def __repr__(self):
-        return "<Objetivo(orden: '%s', valor: '%f')>"\
-             % (self.orden, self.valor)
+        return "<Objetivo(nombre: '%s',orden: '%s', valor: '%f')>"\
+             % (self.nombre, self.orden, self.valor)
 
 
 class Variable(Base):
@@ -177,8 +154,8 @@ class Variable(Base):
         self.valor = valor
 
     def __repr__(self):
-        return "<Variable(orden: '%s', valor: '%s')>" \
-            % (self.orden, self.valor)
+        return "<Variable(nombre: '%s',orden: '%s', valor: '%s')>" \
+            % (self.nombre, self.orden, self.valor)
 
 
 def createDB():
