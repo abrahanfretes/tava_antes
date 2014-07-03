@@ -20,7 +20,7 @@ class ProyectoPresenter():
         '''
     def guardar(self, nombre):
         proyecto = Proyecto(nombre, 0, date.today())
-        abm.add(proyecto)
+        return abm.add(proyecto)
 
     def getProyectos(self):
         return query.getProyectos()
