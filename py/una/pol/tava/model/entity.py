@@ -109,53 +109,17 @@ class Individuo(Base):
     id = Column(Integer, primary_key=True)
     identificador = Column(Integer)
     varDTLZ = Column(Float)
+    objetivos = Column(String(500))
+    variables = Column(String(500))
     iteracion_id = Column(Integer, ForeignKey('iteracion.id'))
-
-    variables = relationship('Variable', backref='individuo')
-    objetivos = relationship('Objetivo', backref='individuo')
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<Individuo(identificador: '%s', varDTLZ: '%f')>"\
-             % (self.identificador, self.varDTLZ)
-
-
-class Objetivo(Base):
-    ''''''
-
-    __tablename__ = 'objetivo'
-    id = Column(Integer, primary_key=True)
-    orden = Column(Integer)
-    valor = Column(Float)
-    individuo_id = Column(Integer, ForeignKey('individuo.id'))
-
-    def __init__(self, orden, valor):
-        self.orden = orden
-        self.valor = valor
-
-    def __repr__(self):
-        return "<Objetivo(nombre: '%s',orden: '%s', valor: '%f')>"\
-             % (self.nombre, self.orden, self.valor)
-
-
-class Variable(Base):
-    ''''''
-
-    __tablename__ = 'variable'
-    id = Column(Integer, primary_key=True)
-    orden = Column(Integer)
-    valor = Column(Float)
-    individuo_id = Column(Integer, ForeignKey('individuo.id'))
-
-    def __init__(self, orden, valor):
-        self.orden = orden
-        self.valor = valor
-
-    def __repr__(self):
-        return "<Variable(nombre: '%s',orden: '%s', valor: '%s')>" \
-            % (self.nombre, self.orden, self.valor)
+        return "<Individuo(identificador: '%s', objetivos: '%s', variables: \
+        '%s', varDTLZ: '%f')>" % (self.identificador, self.objetivos,
+                                  self.variables, self.varDTLZ)
 
 
 def createDB():
