@@ -4,7 +4,7 @@ Created on 28/06/2014
 @author: abrahan
 '''
 from py.una.pol.tava.model.entity import Resultado, Iteracion
-from py.una.pol.tava.model.entity import Individuo, Objetivo, Variable
+from py.una.pol.tava.model.entity import Individuo
 from py.una.pol.tava.model import abm
 from datetime import date
 import os
@@ -13,6 +13,15 @@ import os
 def __getPrimerValor__(string):
     listaValores = string.split('\n')
     return listaValores[0]
+
+
+def __getObjetiosString(listObjetivos):
+
+    stringObjetivos = []
+    for valor in listObjetivos:
+        stringObjetivos.append(str(float.fromhex(valor)))
+
+    return ",".join(stringObjetivos)
 
 
 def procesarArchivo(listFile, proyecto):
@@ -37,9 +46,12 @@ def procesarArchivo(listFile, proyecto):
         proyecto.resultados.append(resultado)
         abm.add(proyecto)
 
+        print resultado
+
         tiempoInicial = float(__getPrimerValor__(fOpen.readline()))
         iteTotal = resultado.cantidadIteracion
         iteSum = 0
+        #t1 = time.time()
         while(iteSum < iteTotal):
             iteSum += 1
 
@@ -48,7 +60,7 @@ def procesarArchivo(listFile, proyecto):
             iteracion.cantidadIndividuo = int(
                                     __getPrimerValor__(fOpen.readline()))
 
-            unIndividuo = []
+            unIndi = []
             listIndividuos = []
             indiTotal = iteracion.cantidadIndividuo
             indiSum = 0
@@ -57,36 +69,20 @@ def procesarArchivo(listFile, proyecto):
                 individuo = Individuo()
 
                 lineaRead = fOpen.readline()
-                unIndividuo = lineaRead.split("\t")
+                unIndi = lineaRead.split("\t")
 
-                individuo.identificador = int(unIndividuo[1])
-                individuo.varDTLZ = float(unIndividuo[2 +
+                individuo.identificador = int(unIndi[1])
+                individuo.varDTLZ = float(unIndi[2 +
                         resultado.numeroVariable + resultado.numeroObjetivo])
-
-                orden = 0
-                corteVariable = 2 + resultado.numeroVariable
-                listVariables = []
-                for valor in unIndividuo[2:corteVariable]:
-                    variable = Variable(orden, float(valor))
-                    listVariables.append(variable)
-                    orden += 1
-
-                individuo.variables = listVariables
-
-                orden = 0
-                corteObjetivo = corteVariable + resultado.numeroObjetivo
-                listObjetivos = []
-                for valor in unIndividuo[corteVariable:corteObjetivo]:
-                    objetivo = Objetivo(orden, float.fromhex(valor))
-                    listObjetivos.append(objetivo)
-                    orden += 1
-
-                individuo.objetivos = listObjetivos
-                individuo.identificador = unIndividuo[1]
-
+                longV = 2 + resultado.numeroVariable
+                individuo.variables = ",".join(unIndi[2:longV])
+                longO = longV + resultado.numeroObjetivo
+                individuo.objetivos = ",".join(unIndi[longV:longO])
+                individuo.objetivos = __getObjetiosString(unIndi[longV:longO])
+                individuo.identificador = unIndi[1]
                 listIndividuos.append(individuo)
 
-            iteracion.identificador = unIndividuo[0]
+            iteracion.identificador = unIndi[0]
             iteracion.finEjecucion = float(
                                     __getPrimerValor__(fOpen.readline()))
             tiempoInicial = iteracion.finEjecucion
