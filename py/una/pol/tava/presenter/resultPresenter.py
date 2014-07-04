@@ -17,11 +17,11 @@ class ResultadoPresenter(object):
         Constructor
         '''
 
-    def guardar(self, listPathFile, proyecto):
+    def add(self, listPathFile, proyecto):
         procesarArchivo(listPathFile, proyecto)
 
-    def getResultadoByProyecto(self, proyecto):
-        return query.getResultadosByProyecto(proyecto)
+    def getResultsByProject(self, proyecto):
+        return query.getResultsByProject(proyecto)
 
-    def getResultadoById(self, idResultado):
-        return query.getResultadoById(idResultado)
+    def getResultById(self, idResultado):
+        return query.getResultById(idResultado)

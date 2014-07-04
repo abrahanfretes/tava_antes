@@ -18,15 +18,18 @@ class ProyectoPresenter():
         '''
         Constructor
         '''
-    def guardar(self, nombre):
+    def add(self, nombre):
         proyecto = Proyecto(nombre, 0, date.today())
         return abm.add(proyecto)
 
-    def getProyectos(self):
-        return query.getProyectos()
+    def delete(self, proyecto):
+        return abm.delete(proyecto)
 
-    def getProyectoById(self, idProyecto):
-        return query.getProyectoById(idProyecto)
+    def getAll(self):
+        return query.getAllProject()
 
-    def getProyectoByResultado(self, resultado):
-        return query.getProyectoByResultado(resultado)
+    def getProjectById(self, idProyecto):
+        return query.getProjectById(idProyecto)
+
+    def getProjectByResult(self, resultado):
+        return query.getProjectByResult(resultado)
