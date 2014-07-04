@@ -24,12 +24,13 @@ class Proyecto(Base):
     '''
 
     __tablename__ = 'proyecto'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
     nombre = Column(String(100))
     estado = Column(SmallInteger)
     fecha = Column(Date())
 
-    resultados = relationship('Resultado', \
+    resultados = relationship('Resultado',
+                              cascade="save-update, merge, delete",
                               order_by='Resultado.id', backref='proyecto')
 
     def __init__(self, nombre, estado, fecha):
@@ -51,7 +52,7 @@ class Proyecto(Base):
 class Resultado(Base):
 
     __tablename__ = 'resultado'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
     nombre = Column(String(100))
     cantidadIteracion = Column(Integer)
     etiqueta1 = Column(String(100))
@@ -66,6 +67,10 @@ class Resultado(Base):
     poblacionInicial = Column(Integer)
     fechaAdd = Column(Date())
     proyecto_id = Column(Integer, ForeignKey('proyecto.id'))
+
+    iteraciones = relationship('Iteracion',
+                          cascade="save-update, merge, delete",
+                          order_by='Iteracion.id', backref='resultado')
 
     def __init__(self):
         pass
@@ -86,15 +91,16 @@ class Iteracion(Base):
     ''''''
 
     __tablename__ = 'iteracion'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
     identificador = Column(Integer)
     inicioEjecucion = Column(Float)
     finEjecucion = Column(Float)
     cantidadIndividuo = Column(Integer)
     resultado_id = Column(Integer, ForeignKey('resultado.id'))
 
-    individuos = relationship('Individuo', order_by='Individuo.id',
-                               backref='iteracion')
+    individuos = relationship('Individuo',
+                          cascade="save-update, merge, delete",
+                          order_by='Individuo.id', backref='iteracion')
 
     def __init__(self):
         pass
@@ -109,7 +115,7 @@ class Individuo(Base):
     ''''''
 
     __tablename__ = 'individuo'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
     identificador = Column(Integer)
     varDTLZ = Column(Float)
     objetivos = Column(String(500))
