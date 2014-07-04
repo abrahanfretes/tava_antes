@@ -17,3 +17,8 @@ def add(objeto):
 def addAll(listaObjeto):
     session.add_all(listaObjeto)
     session.commit()
+
+
+def delete(objeto):
+    session.delete(objeto)
+    session.commit()
