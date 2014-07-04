@@ -61,6 +61,8 @@ class Resultado(Base):
     nombreProblema = Column(String(100))
     numeroObjetivo = Column(Integer)
     numeroVariable = Column(Integer)
+    nombreVariables = Column(String(100))
+    nombreObjetivos = Column(String(100))
     poblacionInicial = Column(Integer)
     fechaAdd = Column(Date())
     proyecto_id = Column(Integer, ForeignKey('proyecto.id'))
@@ -72,10 +74,12 @@ class Resultado(Base):
         return "<Resultados(nombre='%s', cantidadIteracion='%s', \
         etiqueta1='%s', etiqueta2='%s', etiqueta3='%s', etiqueta4='%s', \
         nombreProblema='%s', numeroObjetivo='%s', numeroVariable='%s', \
-        poblacionInicial='%s', fechaAdd='%s')>" % (self.nombre,
-        self.cantidadIteracion, self.etiqueta1, self.etiqueta2, self.etiqueta3,
-        self.etiqueta4, self.nombreProblema, self.numeroObjetivo,
-        self.numeroVariable, self.poblacionInicial, self.fechaAdd)
+        poblacionInicial='%s', nombreVariables='%s', nombreObjetivos='%s',\
+        fechaAdd='%s')>" % (self.nombre, self.cantidadIteracion,
+        self.etiqueta1, self.etiqueta2, self.etiqueta3, self.etiqueta4,
+        self.nombreProblema, self.numeroObjetivo, self.numeroVariable,
+        self.poblacionInicial, self.nombreVariables, self.nombreObjetivos,
+        self.fechaAdd)
 
 
 class Iteracion(Base):
@@ -96,10 +100,9 @@ class Iteracion(Base):
         pass
 
     def __repr__(self):
-        return "<Iteracion(identificador: '%s', inicioEjecucion:'%s', "\
-            "inicioEjecucion :'%s', finEjecucion:'%s', cantidadindividuo:\
-            '%s')>" % (self.identificador, self.inicioEjecucion,
-                       self.finEjecucion, self.cantidadIndividuo)
+        return "<Iteracion(identificador: '%s', inicioEjecucion :'%s', \
+        finEjecucion:'%s', cantidadindividuo:'%s')>" % (self.identificador,
+        self.inicioEjecucion, self.finEjecucion, self.cantidadIndividuo)
 
 
 class Individuo(Base):
