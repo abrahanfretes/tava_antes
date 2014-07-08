@@ -3,9 +3,10 @@ Created on 27/06/2014
 
 @author: afretes
 '''
-from py.una.pol.tava.model.entity import Proyecto
-from py.una.pol.tava.model import abm
-from py.una.pol.tava.model import query
+from py.una.pol.tava.model.bd.entity import Proyecto
+from py.una.pol.tava.model.bd.entity import OPEN
+from py.una.pol.tava.model.bd import abm
+from py.una.pol.tava.model.bd import query
 
 from datetime import date
 
@@ -19,7 +20,7 @@ class ProyectoPresenter():
         Constructor
         '''
     def add(self, nombre):
-        proyecto = Proyecto(nombre, 0, date.today())
+        proyecto = Proyecto(nombre, OPEN, date.today())
         return abm.add(proyecto)
 
     def delete(self, proyecto):

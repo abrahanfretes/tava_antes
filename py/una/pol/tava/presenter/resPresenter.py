@@ -3,8 +3,9 @@ Created on 28/06/2014
 
 @author: abrahan
 '''
-from procesadorResultado import procesarArchivo
-from py.una.pol.tava.model import query
+from py.una.pol.tava.model.processor import styleVon
+from py.una.pol.tava.model.bd import query
+from py.una.pol.tava.model.bd import abm
 
 
 class ResultadoPresenter(object):
@@ -18,7 +19,10 @@ class ResultadoPresenter(object):
         '''
 
     def add(self, listPathFile, proyecto):
-        procesarArchivo(listPathFile, proyecto)
+        styleVon.procesarArchivo(listPathFile, proyecto)
+
+    def delete(self, resultado):
+        abm.delete(resultado)
 
     def getResultsByProject(self, proyecto):
         return query.getResultsByProject(proyecto)

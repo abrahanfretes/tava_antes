@@ -3,14 +3,14 @@ Created on 28/06/2014
 
 @author: abrahan
 '''
-from py.una.pol.tava.model.entity import Resultado, Iteracion
-from py.una.pol.tava.model.entity import Individuo
-from py.una.pol.tava.model import abm
+from py.una.pol.tava.model.bd.entity import Resultado, Iteracion
+from py.una.pol.tava.model.bd.entity import Individuo
+from py.una.pol.tava.model.bd import abm
 from datetime import date
 import os
 
 
-def __getPrimerValor__(string):
+def __getValue__(string):
     listaValores = string.split('\n')
     return listaValores[0]
 
@@ -24,6 +24,26 @@ def __getObjetiosString(listObjetivos):
     return ",".join(stringObjetivos)
 
 
+def __getAlias(proyecto):
+    return 'file-' + str(len(proyecto.resultados) + 1)
+
+
+def __buildVariablesDefaul(count, variable):
+
+    variables = []
+    key = ''
+
+    if variable:
+        key = 'Var_'
+    else:
+        key = 'Obj_'
+
+    for var in range(count):
+        variables.append(key + str(var + 1))
+
+    return ','.join(variables)
+
+
 def procesarArchivo(listFile, proyecto):
 
     for path in listFile:
@@ -32,15 +52,18 @@ def procesarArchivo(listFile, proyecto):
 
         fOpen = open(path, 'r')
         resultado.nombre = os.path.basename(path)
-        resultado.cantidadIteracion = int(__getPrimerValor__(fOpen.readline()))
-        resultado.etiqueta1 = __getPrimerValor__(fOpen.readline())
-        resultado.etiqueta2 = __getPrimerValor__(fOpen.readline())
-        resultado.etiqueta3 = __getPrimerValor__(fOpen.readline())
-        resultado.etiqueta4 = __getPrimerValor__(fOpen.readline())
-        resultado.nombreProblema = __getPrimerValor__(fOpen.readline())
-        resultado.numeroObjetivo = int(__getPrimerValor__(fOpen.readline()))
-        resultado.numeroVariable = int(__getPrimerValor__(fOpen.readline()))
-        resultado.poblacionInicial = int(__getPrimerValor__(fOpen.readline()))
+        resultado.alias = __getAlias(proyecto)
+        resultado.cantidadIteracion = int(__getValue__(fOpen.readline()))
+        resultado.etiqueta1 = __getValue__(fOpen.readline())
+        resultado.etiqueta2 = __getValue__(fOpen.readline())
+        resultado.etiqueta3 = __getValue__(fOpen.readline())
+        resultado.etiqueta4 = __getValue__(fOpen.readline())
+        resultado.nombreProblema = __getValue__(fOpen.readline())
+        countO = resultado.numeroObjetivo = int(__getValue__(fOpen.readline()))
+        countV = resultado.numeroVariable = int(__getValue__(fOpen.readline()))
+        resultado.poblacionInicial = int(__getValue__(fOpen.readline()))
+        resultado.nombreVariables = __buildVariablesDefaul(countV, True)
+        resultado.nombreObjetivos = __buildVariablesDefaul(countO, False)
         resultado.fechaAdd = date.today()
 
         proyecto.resultados.append(resultado)
@@ -48,7 +71,7 @@ def procesarArchivo(listFile, proyecto):
 
         print resultado
 
-        tiempoInicial = float(__getPrimerValor__(fOpen.readline()))
+        tiempoInicial = float(__getValue__(fOpen.readline()))
         iteTotal = resultado.cantidadIteracion
         iteSum = 0
         #t1 = time.time()
@@ -58,7 +81,7 @@ def procesarArchivo(listFile, proyecto):
             iteracion = Iteracion()
             iteracion.inicioEjecucion = tiempoInicial
             iteracion.cantidadIndividuo = int(
-                                    __getPrimerValor__(fOpen.readline()))
+                                    __getValue__(fOpen.readline()))
 
             unIndi = []
             listIndividuos = []
@@ -84,7 +107,7 @@ def procesarArchivo(listFile, proyecto):
 
             iteracion.identificador = unIndi[0]
             iteracion.finEjecucion = float(
-                                    __getPrimerValor__(fOpen.readline()))
+                                    __getValue__(fOpen.readline()))
             tiempoInicial = iteracion.finEjecucion
             iteracion.individuos = listIndividuos
             iteracion.resultado_id = resultado.id

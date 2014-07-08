@@ -13,6 +13,9 @@ import base
 
 
 Base = base.getBase()
+OPEN = 0
+CLOSED = 1
+HIDDEN = 2
 
 
 class Proyecto(Base):
@@ -54,6 +57,7 @@ class Resultado(Base):
     __tablename__ = 'resultado'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     nombre = Column(String(100))
+    alias = Column(String(50))
     cantidadIteracion = Column(Integer)
     etiqueta1 = Column(String(100))
     etiqueta2 = Column(String(100))
@@ -76,11 +80,11 @@ class Resultado(Base):
         pass
 
     def __repr__(self):
-        return "<Resultados(nombre='%s', cantidadIteracion='%s', \
+        return "<Resultados(nombre='%s', alias='%s', cantidadIteracion='%s', \
         etiqueta1='%s', etiqueta2='%s', etiqueta3='%s', etiqueta4='%s', \
         nombreProblema='%s', numeroObjetivo='%s', numeroVariable='%s', \
         poblacionInicial='%s', nombreVariables='%s', nombreObjetivos='%s',\
-        fechaAdd='%s')>" % (self.nombre, self.cantidadIteracion,
+        fechaAdd='%s')>" % (self.nombre, self.alias, self.cantidadIteracion,
         self.etiqueta1, self.etiqueta2, self.etiqueta3, self.etiqueta4,
         self.nombreProblema, self.numeroObjetivo, self.numeroVariable,
         self.poblacionInicial, self.nombreVariables, self.nombreObjetivos,
