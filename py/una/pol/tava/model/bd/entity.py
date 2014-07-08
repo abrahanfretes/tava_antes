@@ -20,10 +20,13 @@ HIDDEN = 2
 
 class Proyecto(Base):
     '''
-    Entidad Proyecto
-    estado: SmallInteger,
+    Entidad Proyecto, clase mapeada a una base de datos con nombre "proyecto"
+    :param nombre: String(100), regitra el nombre de un proyecto
+    :param estado: SmallInteger, regitra el estado de un proyecto, valores
+            posibles:
             0 = abierto
             1 = cerrado
+    :param fecha: Date, regitra la fecha de creación de un proyecto
     '''
 
     __tablename__ = 'proyecto'
@@ -37,11 +40,6 @@ class Proyecto(Base):
                               order_by='Resultado.id', backref='proyecto')
 
     def __init__(self, nombre, estado, fecha):
-        '''
-        :param nombre:
-        :param estado:
-        :param fecha:
-        '''
 
         self.nombre = nombre
         self.estado = estado
@@ -53,7 +51,25 @@ class Proyecto(Base):
 
 
 class Resultado(Base):
-
+    '''
+    Entidad Resultado, clase mapeada a una base de datos con nombre "resultado"
+    :param nombre: String(100), regitra el nombre de un archivo resultado.
+    :param alias: String(100), nombre corto generado para un archivo.
+    :param cantidadIteracion: Integer, registra el número de iteraciones
+            guardadas en un archivo.
+    :param etiqueta1: String(100),
+    :param etiqueta2: String(100),
+    :param etiqueta3: String(100),
+    :param etiqueta4: String(100),
+    :param nombreProblema: String(100), registra el nombre del problema.
+    :param numeroObjetivo: registra el número de objetivos.
+    :param numeroVariable: String(100), registra el número de variables.
+    :param nombreVariables: String(100), registra los valores de las variables.
+    :param nombreObjetivos: String(100), registra los valores de los objetivos.
+    :param poblacionInicial: Integer, registra el número de población inicial.
+    :param fechaAdd: Date, fecha registro del archivo.
+    :param proyecto_id: Integer, ForeignKey de un Proyecto.
+    '''
     __tablename__ = 'resultado'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     nombre = Column(String(100))
