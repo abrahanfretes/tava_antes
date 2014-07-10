@@ -6,7 +6,8 @@ Created on 27/06/2014
 '''
 
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, SmallInteger
+from sqlalchemy import ForeignKey, SmallInteger, Text
+from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy import Float
 from sqlalchemy.orm import relationship
 import base
@@ -20,34 +21,41 @@ HIDDEN = 2
 
 class Proyecto(Base):
     '''
-    Entidad Proyecto, clase mapeada a una base de datos con nombre "proyecto"
+    Entidad Proyecto, clase mapeada a base de datos con nombre "proyecto"
+
     :param nombre: String(100), regitra el nombre de un proyecto
+    :param blog: Text(2000), regitra la descripción de un proyecto
     :param estado: SmallInteger, regitra el estado de un proyecto, valores
             posibles:
             0 = abierto
             1 = cerrado
+            2 = oculto
     :param fecha: Date, regitra la fecha de creación de un proyecto
+
     '''
 
     __tablename__ = 'proyecto'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    nombre = Column(String(100))
-    estado = Column(SmallInteger)
-    fecha = Column(Date())
+    nombre = Column(String(100), nullable=False, unique=True)
+    blog = Column(Text(2000), nullable=True)
+    estado = Column(SmallInteger, nullable=False)
+    fecha = Column(Date(), nullable=False)
 
     resultados = relationship('Resultado',
                               cascade="save-update, merge, delete",
                               order_by='Resultado.id', backref='proyecto')
 
-    def __init__(self, nombre, estado, fecha):
+    def __init__(self, nombre, blog, estado, fecha):
 
         self.nombre = nombre
+        self.blog = blog
         self.estado = estado
         self.fecha = fecha
 
     def __repr__(self):
-        return "<Proyecto(nombre='%s', estado='%s', fecha de creacion='%s')>"\
-              % (self.nombre, self.estado, self.fecha)
+        return "<Proyecto(nombre='%s', blog='%s', estado='%s',\
+        fecha de creacion='%s')>" % (self.nombre,
+                                      self.blog, self.estado, self.fecha)
 
 
 class Resultado(Base):
