@@ -6,12 +6,14 @@ Created on 27/06/2014
 '''
 import wx
 from FramePrincipal import FramePrincipal
+from py.una.pol.tava.model.bd import base
 
 
 def main():
     '''
     Método principal de ejecución del programa
     '''
+    base.createDb()
     ex = wx.App()
     FramePrincipal(None)
     ex.MainLoop()

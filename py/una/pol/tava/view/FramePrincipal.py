@@ -28,6 +28,7 @@ class FramePrincipal (wx.Frame):
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
         self.Centre(wx.BOTH)
+#         self.Maximize()
         self.Show(True)
 
     def InitUI(self):

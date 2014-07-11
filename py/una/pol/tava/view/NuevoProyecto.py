@@ -6,6 +6,7 @@ Created on 28/05/2014
 '''
 
 import wx
+from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
 
 
 class NuevoProyecto(wx.Dialog):
@@ -22,6 +23,8 @@ class NuevoProyecto(wx.Dialog):
         panel = wx.Panel(self)
         sizer = wx.GridBagSizer(5, 5)
 
+        self.setNamesProjects()
+
         labelNewProject = "Crear un nuevo Proyecto"
         textNuevoProyecto = wx.StaticText(panel, label=labelNewProject)
         sum_font = textNuevoProyecto.GetFont()
@@ -35,8 +38,8 @@ class NuevoProyecto(wx.Dialog):
             border=5)
 
         labelAddNewProject = "Introduzca un nombre de proyecto."
-        textDescripcion = wx.StaticText(panel, label=labelAddNewProject)
-        sizer.Add(textDescripcion, pos=(1, 0), flag=wx.TOP | wx.LEFT |
+        self.textDescripcion = wx.StaticText(panel, label=labelAddNewProject)
+        sizer.Add(self.textDescripcion, pos=(1, 0), flag=wx.TOP | wx.LEFT |
                   wx.BOTTOM, border=15)
 
         line = wx.StaticLine(panel)
@@ -47,7 +50,7 @@ class NuevoProyecto(wx.Dialog):
         sizer.Add(text2, pos=(3, 0), flag=wx.LEFT, border=10)
 
         self.textNameProject = wx.TextCtrl(panel)
-        self.textNameProject.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.textNameProject.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.textNameProject.SetFocus()
         sizer.Add(self.textNameProject, pos=(3, 1), span=(1, 3), flag=wx.TOP |
                   wx.EXPAND)
@@ -57,6 +60,7 @@ class NuevoProyecto(wx.Dialog):
 
         self.botonOK = wx.Button(panel, label="Ok")
         self.botonOK.Bind(wx.EVT_BUTTON, self.AddProject)
+        self.botonOK.Disable()
         sizer.Add(self.botonOK, pos=(5, 3))
 
         botonCancelar = wx.Button(panel, label="Cancelar")
@@ -71,11 +75,35 @@ class NuevoProyecto(wx.Dialog):
     def AddProject(self, e):
         self.createProject()
 
-    def OnKeyDown(self, e):
+    def OnKeyUp(self, e):
         key = e.GetKeyCode()
-        if key == wx.WXK_RETURN:
-            self.createProject()
+        if self.isNameProjectValid():
+            if key == wx.WXK_RETURN:
+                self.createProject()
         e.Skip()
+
+    def isNameProjectValid(self):
+        self.textDescripcion.SetLabel("Introduzca un nombre de proyecto.")
+        self.textDescripcion.SetForegroundColour((0, 0, 0))
+        self.textNameProject.SetBackgroundColour("Blank")
+        if self.textNameProject.Value in self.nameProjects:
+            self.textDescripcion.SetLabel("Ya existe el Proyecto")
+            self.textDescripcion.SetForegroundColour((255, 0, 0))
+            self.textNameProject.SetBackgroundColour("Pink")
+            self.botonOK.Disable()
+            return False
+        elif not bool(self.textNameProject.Value):
+            self.botonOK.Disable()
+            return False
+        self.botonOK.Enable(True)
+        return True
+
+    def setNamesProjects(self):
+        proPresenter = ProyectoPresenter()
+        nameProjects = []
+        for p in proPresenter.getAll():
+            nameProjects.append(p.nombre)
+        self.nameProjects = nameProjects
 
     def createProject(self):
         self.arbolProyecto = self.Parent.cuerpoPrincipal.arbolProyecto
@@ -84,8 +112,12 @@ class NuevoProyecto(wx.Dialog):
         nameProject = self.textNameProject.Value
 
         #--> [] = del nuevo proyecto
-        listProject = [nameProject]
-        self.arbolProyecto.AddTreeNodes(self.arbolProyecto.root, [nameProject])
+        self.arbolProyecto.AddProjectNode(self.arbolProyecto.root, nameProject)
+        if self.arbolProyecto.root:
+            self.arbolProyecto.SortChildren(self.arbolProyecto.root)
+        proPresenter = ProyectoPresenter()
+        proPresenter.add(nameProject)
+
         self.Close(True)
 
     def OnClose(self, e):

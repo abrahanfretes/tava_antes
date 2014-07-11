@@ -120,13 +120,9 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
 
         il = wx.ImageList(16, 16)
 
-        self.fldridx = il.Add(wx.ArtProvider.GetBitmap(wx.ART_FOLDER,
-                                                       wx.ART_OTHER, (16, 16)))
-        self.fldropenidx = il.Add(wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN,
-                                                           wx.ART_OTHER, (16,
-                                                                          16)))
-        self.fileidx = il.Add(wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE,
-                                                       wx.ART_OTHER, (16, 16)))
+        self.fldridx = il.Add(bitmap=wx.Bitmap('icons/folder.png'))
+        self.fldropenidx = il.Add(bitmap=wx.Bitmap('icons/folderOpen.png'))
+        self.fileidx = il.Add(bitmap=wx.Bitmap('icons/result.png'))
 
         self.AssignImageList(il)
 
@@ -134,6 +130,12 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
 
     def setFramePrincipalReference(self, frame):
         self.framePrincipal = frame
+
+    def AddProjectNode(self, parentItem, item):
+        newItem = self.AppendItem(parentItem, item)
+        self.SetItemPyData(newItem, None)
+        self.SetItemImage(newItem, self.fldridx, wx.TreeItemIcon_Normal)
+        self.SetItemImage(newItem, self.fldropenidx, wx.TreeItemIcon_Expanded)
 
     def AddTreeNodes(self, parentItem, items):
         for item in items:
