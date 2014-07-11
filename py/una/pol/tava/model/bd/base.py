@@ -10,7 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 
-engine = create_engine('sqlite:///tava.db', echo=True)
+engine = create_engine('sqlite:///tava.db')
 Base = declarative_base()
 
 

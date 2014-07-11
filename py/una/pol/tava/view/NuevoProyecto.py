@@ -23,8 +23,6 @@ class NuevoProyecto(wx.Dialog):
         panel = wx.Panel(self)
         sizer = wx.GridBagSizer(5, 5)
 
-        self.setNamesProjects()
-
         labelNewProject = "Crear un nuevo Proyecto"
         textNuevoProyecto = wx.StaticText(panel, label=labelNewProject)
         sum_font = textNuevoProyecto.GetFont()
@@ -86,7 +84,7 @@ class NuevoProyecto(wx.Dialog):
         self.textDescripcion.SetLabel("Introduzca un nombre de proyecto.")
         self.textDescripcion.SetForegroundColour((0, 0, 0))
         self.textNameProject.SetBackgroundColour("Blank")
-        if self.textNameProject.Value in self.nameProjects:
+        if self.textNameProject.Value in self.getNamesProjects():
             self.textDescripcion.SetLabel("Ya existe el Proyecto")
             self.textDescripcion.SetForegroundColour((255, 0, 0))
             self.textNameProject.SetBackgroundColour("Pink")
@@ -98,12 +96,8 @@ class NuevoProyecto(wx.Dialog):
         self.botonOK.Enable(True)
         return True
 
-    def setNamesProjects(self):
-        proPresenter = ProyectoPresenter()
-        nameProjects = []
-        for p in proPresenter.getAll():
-            nameProjects.append(p.nombre)
-        self.nameProjects = nameProjects
+    def getNamesProjects(self):
+        return self.Parent.cuerpoPrincipal.nameProjects
 
     def createProject(self):
         self.arbolProyecto = self.Parent.cuerpoPrincipal.arbolProyecto
@@ -111,12 +105,16 @@ class NuevoProyecto(wx.Dialog):
         #--> aqui se van a crear los directorios
         nameProject = self.textNameProject.Value
 
+        proPresenter = ProyectoPresenter()
+        proyecto = proPresenter.add(nameProject)
+
         #--> [] = del nuevo proyecto
-        self.arbolProyecto.AddProjectNode(self.arbolProyecto.root, nameProject)
+        self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
+                                          proyecto.nombre, proyecto.id)
         if self.arbolProyecto.root:
             self.arbolProyecto.SortChildren(self.arbolProyecto.root)
-        proPresenter = ProyectoPresenter()
-        proPresenter.add(nameProject)
+
+        self.getNamesProjects().append(proyecto.nombre)
 
         self.Close(True)
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 28/05/2014
 
@@ -6,6 +7,7 @@ Created on 28/05/2014
 
 import wx
 import os
+from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
 
 
 class ContextMenu(object):
@@ -19,9 +21,9 @@ class ContextMenu(object):
             self._menu.Destroy()
         item = self.GetSelection()
         label = self.GetItemText(item)
-        dicc = self.framePrincipal.cuerpoPrincipal.dictPathProjects
+        projects = self.getNamesProjects()
         self._menu = wx.Menu()
-        if label in dicc:
+        if label in projects:
             self.CreateContextMenuProject(self._menu)
             self.PopupMenu(self._menu)
         elif wx.TreeItemIcon_Expanded == self.GetItemImage(item):
@@ -49,6 +51,11 @@ class ContextMenu(object):
         listAddItems.AppendItem(fileResult)
 
         self._menu.AppendMenu(wx.ID_ANY, 'Agregar', listAddItems)
+
+        itemDelPro = wx.MenuItem(self._menu, wx.ID_ANY, u"Eliminar")
+        self.Bind(wx.EVT_MENU, self.DeleteProject, itemDelPro)
+        self._menu.AppendItem(itemDelPro)
+
         itemAddFile = wx.MenuItem(self._menu, wx.ID_EXIT, u"Salir")
         self._menu.AppendItem(itemAddFile)
 
@@ -68,6 +75,22 @@ class ContextMenu(object):
             self.AddNewItemsFiles(self.resultados, dialog.GetFilenames())
 
         dialog.Destroy()
+
+    def DeleteProject(self, e):
+        result = wx.MessageBox("Está seguro que desea eliminar este Proyecto?",
+                               "Eliminar Proyecto", style=wx.CENTER |
+                               wx.ICON_WARNING | wx.YES_NO)
+        if result == wx.YES:
+            item = self.GetSelection()
+            idProyecto = self.GetItemPyData(item)
+            proPresenter = ProyectoPresenter()
+            proyecto = proPresenter.getProjectById(idProyecto)
+            projects = self.getNamesProjects()
+            del projects[projects.index(proyecto.nombre)]
+            proPresenter.delete(proyecto)
+            self.Delete(item)
+            if self.root:
+                self.SortChildren(self.root)
 
     def AddNewItemsFiles(self, parentItem, items):
         '''
@@ -100,6 +123,9 @@ class ContextMenu(object):
     def SetResultadosItem(self, item):
         self.resultados = item
 
+    def getNamesProjects(self):
+        return self.framePrincipal.cuerpoPrincipal.nameProjects
+
     def OnQuit(self, e):
         self.framePrincipal.Close()
 
@@ -131,9 +157,9 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
     def setFramePrincipalReference(self, frame):
         self.framePrincipal = frame
 
-    def AddProjectNode(self, parentItem, item):
+    def AddProjectNode(self, parentItem, item, id):
         newItem = self.AppendItem(parentItem, item)
-        self.SetItemPyData(newItem, None)
+        self.SetItemPyData(newItem, id)
         self.SetItemImage(newItem, self.fldridx, wx.TreeItemIcon_Normal)
         self.SetItemImage(newItem, self.fldropenidx, wx.TreeItemIcon_Expanded)
 

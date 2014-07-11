@@ -51,7 +51,9 @@ class CuerpoPrincipal(wx.Panel):
         # Seteamos la referencia al Frame Principal en el objeto arbol
         self.arbolProyecto.setFramePrincipalReference(parent)
 
-        self.loadProjects()
+        # Cargamos los proyectos existentes y creamos una lista de nombres
+        # de proyectos
+        self.nameProjects = self.loadProjects()
 
         # Creamos un boxSizer para el arbol de Proyectos
         boxTreeProject = wx.BoxSizer(wx.VERTICAL)
@@ -109,11 +111,14 @@ class CuerpoPrincipal(wx.Panel):
 
     def loadProjects(self):
         proPresenter = ProyectoPresenter()
+        namesProjects = []
         for p in proPresenter.getAll():
             self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
-                                              p.nombre)
+                                              p.nombre, p.id)
+            namesProjects.append(p.nombre)
         if self.arbolProyecto.root:
             self.arbolProyecto.SortChildren(self.arbolProyecto.root)
+        return namesProjects
 
 
 class DrawingPanel(wx.ScrolledWindow):
