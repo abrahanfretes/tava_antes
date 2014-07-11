@@ -13,14 +13,21 @@ from datetime import date
 
 class ProyectoPresenter():
     '''
-    classdocs
+    Clase ProyectoPresenter
+
+    Define todas las funciones para acceder a las entidad Proyecto.
+
     '''
     def __init__(self):
         '''
         Constructor
         '''
+
     def add(self, nombre):
-        proyecto = Proyecto(nombre, OPEN, date.today())
+        proyecto = Proyecto(nombre, None, OPEN, date.today())
+        return abm.add(proyecto)
+
+    def upDate(self, proyecto):
         return abm.add(proyecto)
 
     def delete(self, proyecto):
