@@ -86,7 +86,7 @@ class CuerpoPrincipal(wx.Panel):
         tabs = wx.Notebook(rightPanel)
 #         dpanel = DrawingPanel(tabs)
         dpanel = p1(tabs)
-        dpanel.plot()
+#         dpanel.plot()
         tabs.AddPage(dpanel, "Tab 1")
 
         spanel = SidePanel(rightPanel)
@@ -171,6 +171,8 @@ class SidePanel(wx.Panel):
         sizer.Add(self.cp, 1, wx.EXPAND)
 
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnToggleCollapse)
+
+        self.cp.Expand()
 
     def OnToggleCollapse(self, evt):
 #         frame = self.GetTopLevelParent()

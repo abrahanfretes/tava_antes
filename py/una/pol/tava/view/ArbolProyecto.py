@@ -157,9 +157,9 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
     def setFramePrincipalReference(self, frame):
         self.framePrincipal = frame
 
-    def AddProjectNode(self, parentItem, item, id):
+    def AddProjectNode(self, parentItem, item, idProject):
         newItem = self.AppendItem(parentItem, item)
-        self.SetItemPyData(newItem, id)
+        self.SetItemPyData(newItem, idProject)
         self.SetItemImage(newItem, self.fldridx, wx.TreeItemIcon_Normal)
         self.SetItemImage(newItem, self.fldropenidx, wx.TreeItemIcon_Expanded)
 
