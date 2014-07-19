@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2014-07-18 16:01+PYT\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+# ------------------------------- MenuPrincipal -------------------------------
+msgid "MENU_PRINCIPAL_NUEVO_PROYECTO"
+msgstr "Nuevo Proyecto"
+
+msgid "MENU_PRINCIPAL_ABRIR_PROYECTO"
+msgstr "Abrir Proyecto"
+
+msgid "MENU_PRINCIPAL_SALIR"
+msgstr "Salir"
+
+msgid "MENU_PRINCIPAL_ARCHIVO"
+msgstr "Archivo"
+
+msgid "MENU_PRINCIPAL_ACERCA_TAVA"
+msgstr "Acerca de TAVA"
+
+msgid "MENU_PRINCIPAL_AYUDA"
+msgstr "Ayuda"
+
+# ------------------------------- ToolbarPrincipal ----------------------------
+msgid "TOOLBAR_PRINCIPAL_NUEVO_PROYECTO"
+msgstr "Nuevo Proyecto"
+
+msgid "TOOLBAR_PRINCIPAL_ABRIR_PROYECTO"
+msgstr "Abrir Proyecto"
+
+msgid "TOOLBAR_PRINCIPAL_GUARDAR_PROYECTO"
+msgstr "Guardar"
+
+msgid "TOOLBAR_PRINCIPAL_SALIR"
+msgstr "Salir"
+
+# ------------------------------- CuerpoPrincipal ----------------------------
+msgid "CUERPO_PRINCIPAL_EXPLORADOR_PROYECTO"
+msgstr "Explorador de Proyectos"

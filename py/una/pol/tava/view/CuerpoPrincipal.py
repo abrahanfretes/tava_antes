@@ -7,6 +7,7 @@ Created on 28/05/2014
 import wx
 import ArbolProyecto
 from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
+from wx import GetTranslation as _
 
 import random
 
@@ -14,6 +15,8 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NTB
 import matplotlib.pyplot as plt
 from wx.lib import scrolledpanel as scrolled
+
+CP_EP = "CUERPO_PRINCIPAL_EXPLORADOR_PROYECTO"
 
 
 class CuerpoPrincipal(wx.Panel):
@@ -62,7 +65,7 @@ class CuerpoPrincipal(wx.Panel):
         panelTreeProjects.SetSizer(boxTreeProject)
 
         # Colocamos el panel del arbol dentro del componente Notebook
-        notebook.AddPage(panelTreeProjects, "Explorador de Proyectos")
+        notebook.AddPage(panelTreeProjects, _(CP_EP))
         il = wx.ImageList(16, 16)
         notebook.SetImageList(il)
         icon = il.Add(wx.Bitmap("icons/tree_explorer.gif", wx.BITMAP_TYPE_GIF))

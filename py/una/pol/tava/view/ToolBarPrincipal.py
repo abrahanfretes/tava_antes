@@ -7,9 +7,14 @@ Created on 27/05/2014
 
 import wx
 import NuevoProyecto
+from wx import GetTranslation as _
 
 TB_EXIT = 1
 TB_NEW_PROJECT = 2
+TB_NP = "TOOLBAR_PRINCIPAL_NUEVO_PROYECTO"
+TB_OP = "TOOLBAR_PRINCIPAL_ABRIR_PROYECTO"
+TB_SP = "TOOLBAR_PRINCIPAL_GUARDAR_PROYECTO"
+TB_EX = "TOOLBAR_PRINCIPAL_SALIR"
 
 
 class ToolBarPrincipal(wx.ToolBar):
@@ -27,7 +32,7 @@ class ToolBarPrincipal(wx.ToolBar):
 
         bmp = wx.ArtProvider.GetBitmap("gtk-new", wx.ART_NEW)
 
-        self.AddLabelTool(TB_NEW_PROJECT, '', bmp, shortHelp="Nuevo Proyecto")
+        self.AddLabelTool(TB_NEW_PROJECT, '', bmp, shortHelp=_(TB_NP))
 
         self.Bind(wx.EVT_TOOL, self.OnNuevoProyecto, id=TB_NEW_PROJECT)
 
@@ -35,15 +40,15 @@ class ToolBarPrincipal(wx.ToolBar):
 
         bmp = wx.ArtProvider.GetBitmap("gtk-open", wx.ART_FILE_OPEN)
 
-        self.AddLabelTool(wx.ID_ANY, '', bmp, shortHelp="Abrir Proyecto")
+        self.AddLabelTool(wx.ID_ANY, '', bmp, shortHelp=_(TB_OP))
 
         bmp = wx.ArtProvider.GetBitmap("gtk-save", wx.ART_FILE_SAVE)
 
-        self.AddLabelTool(wx.ID_ANY, '', bmp, shortHelp="Guardar")
+        self.AddLabelTool(wx.ID_ANY, '', bmp, shortHelp=_(TB_SP))
 
         bmp = wx.ArtProvider.GetBitmap("gtk-quit", wx.ART_QUIT)
 
-        self.AddLabelTool(TB_EXIT, '', bmp, shortHelp="Salir")
+        self.AddLabelTool(TB_EXIT, '', bmp, shortHelp=_(TB_EX))
 
         self.Bind(wx.EVT_TOOL, self.OnQuit, id=TB_EXIT)
 

@@ -8,8 +8,15 @@ Created on 27/05/2014
 import wx
 import AcercaDe
 import NuevoProyecto
+from wx import GetTranslation as _
 
 MP_ABOUT = 1
+MP_NP = "MENU_PRINCIPAL_NUEVO_PROYECTO"
+MP_AP = "MENU_PRINCIPAL_ABRIR_PROYECTO"
+MP_EXIT = "MENU_PRINCIPAL_SALIR"
+MP_FILE = "MENU_PRINCIPAL_ARCHIVO"
+MP_ABOUT_TAVA = "MENU_PRINCIPAL_ACERCA_TAVA"
+MP_HELP = "MENU_PRINCIPAL_AYUDA"
 
 
 class MenuPrincipal(wx.MenuBar):
@@ -28,28 +35,28 @@ class MenuPrincipal(wx.MenuBar):
         self.archivo = wx.Menu()
 
         self.nuevoProyecto = wx.MenuItem(self.archivo, wx.ID_NEW,
-                                         u"Nuevo Proyecto")
+                                         _(MP_NP))
         parent.Bind(wx.EVT_MENU, self.OnNuevoProyecto, id=wx.ID_NEW)
         self.archivo.AppendItem(self.nuevoProyecto)
 
-        self.abrir = wx.MenuItem(self.archivo, wx.ID_OPEN, u"Abrir Proyecto")
+        self.abrir = wx.MenuItem(self.archivo, wx.ID_OPEN, _(MP_AP))
         self.archivo.AppendItem(self.abrir)
 
-        self.salir = wx.MenuItem(self.archivo, wx.ID_EXIT, u"Salir",
+        self.salir = wx.MenuItem(self.archivo, wx.ID_EXIT, _(MP_EXIT),
                                  '&Quit\tCtrl+Q')
         self.archivo.AppendItem(self.salir)
 
         parent.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
 
-        self.Append(self.archivo, u"Archivo")
+        self.Append(self.archivo, _(MP_FILE))
 
         self.ayuda = wx.Menu()
-        self.about = wx.MenuItem(self.ayuda, MP_ABOUT, u"Acerca de TAVA",
+        self.about = wx.MenuItem(self.ayuda, MP_ABOUT, _(MP_ABOUT_TAVA),
                                  wx.EmptyString, wx.ITEM_NORMAL)
         parent.Bind(wx.EVT_MENU, self.OnAboutBox, id=MP_ABOUT)
         self.ayuda.AppendItem(self.about)
 
-        self.Append(self.ayuda, u"Ayuda")
+        self.Append(self.ayuda, _(MP_HELP))
 
     def OnAboutBox(self, e):
         '''

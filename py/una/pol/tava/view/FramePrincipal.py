@@ -10,6 +10,7 @@ import wx
 from MenuPrincipal import MenuPrincipal
 from CuerpoPrincipal import CuerpoPrincipal
 from ToolBarPrincipal import ToolBarPrincipal
+from I18nHelper import I18nHelper
 
 
 class FramePrincipal (wx.Frame):
@@ -25,11 +26,15 @@ class FramePrincipal (wx.Frame):
                                              size=wx.Size(1200, 800),
                                              style=wx.DEFAULT_FRAME_STYLE |
                                              wx.TAB_TRAVERSAL)
+        self.setI18n()
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
         self.Centre(wx.BOTH)
 #         self.Maximize()
         self.Show(True)
+
+    def setI18n(self):
+        self.i18n = I18nHelper()
 
     def InitUI(self):
         '''
