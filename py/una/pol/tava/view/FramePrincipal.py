@@ -11,6 +11,7 @@ from MenuPrincipal import MenuPrincipal
 from CuerpoPrincipal import CuerpoPrincipal
 from ToolBarPrincipal import ToolBarPrincipal
 from I18nHelper import I18nHelper
+import AcercaDe
 
 
 class FramePrincipal (wx.Frame):
@@ -64,3 +65,17 @@ class FramePrincipal (wx.Frame):
         Creación de la clase CuerpoPrincipal como parte del Frame Principal.
         '''
         self.cuerpoPrincipal = CuerpoPrincipal(self)
+
+    def OnExitAplication(self, e):
+
+        result = wx.MessageBox("Desea Salir de la Aplicacion",
+                               style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
+        if result == wx.YES:
+            self.Close()
+
+    def OnAboutBox(self, e):
+        '''
+        Método que inicializa la clase que representa al panel "Acerca de".
+        :param e: evento de selección de Menú.
+        '''
+        AcercaDe.AcercaDe()
