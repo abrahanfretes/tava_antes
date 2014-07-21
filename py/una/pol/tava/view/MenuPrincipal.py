@@ -6,9 +6,11 @@ Created on 27/05/2014
 '''
 
 import wx
-from wx import GetTranslation as _
 import AcercaDe
+import NuevoProyecto
+from wx import GetTranslation as _
 
+MP_ABOUT = 1
 MP_NP = "MENU_PRINCIPAL_NUEVO_PROYECTO"
 MP_AP = "MENU_PRINCIPAL_ABRIR_PROYECTO"
 MP_EXIT = "MENU_PRINCIPAL_SALIR"
@@ -30,27 +32,31 @@ class MenuPrincipal(wx.MenuBar):
 
         super(MenuPrincipal, self).__init__()
 
-        # Se inicializan los Menus con sus respectivos MenuItems
-        archivo = wx.Menu()
-        nuevoProyecto = wx.MenuItem(archivo, wx.ID_NEW, _(MP_NP))
-        archivo.AppendItem(nuevoProyecto)
-        abrir = wx.MenuItem(archivo, wx.ID_OPEN, _(MP_AP))
-        archivo.AppendItem(abrir)
-        salir = wx.MenuItem(archivo, wx.ID_EXIT, _(MP_EXIT), '&Quit\tCtrl+Q')
-        archivo.AppendItem(salir)
+        self.archivo = wx.Menu()
 
-        ayuda = wx.Menu()
-        about = wx.MenuItem(ayuda, wx.ID_ABOUT, _(MP_ABOUT_TAVA),
-        wx.EmptyString, wx.ITEM_NORMAL)
-        ayuda.AppendItem(about)
+        self.nuevoProyecto = wx.MenuItem(self.archivo, wx.ID_NEW,
+                                         _(MP_NP))
+        parent.Bind(wx.EVT_MENU, self.OnNuevoProyecto, id=wx.ID_NEW)
+        self.archivo.AppendItem(self.nuevoProyecto)
 
-        # Se agrega los Menus al MenuBar Principal
-        self.Append(archivo, _(MP_FILE))
-        self.Append(ayuda, _(MP_HELP))
+        self.abrir = wx.MenuItem(self.archivo, wx.ID_OPEN, _(MP_AP))
+        self.archivo.AppendItem(self.abrir)
 
-        self.Bind(wx.EVT_MENU, parent.OnNuevoProyecto, id=wx.ID_NEW)
-        self.Bind(wx.EVT_MENU, parent.OnExitAplication, id=wx.ID_EXIT)
-        self.Bind(wx.EVT_MENU, self.OnAboutBox, id=wx.ID_ABOUT)
+        self.salir = wx.MenuItem(self.archivo, wx.ID_EXIT, _(MP_EXIT),
+                                 '&Quit\tCtrl+Q')
+        self.archivo.AppendItem(self.salir)
+
+        parent.Bind(wx.EVT_MENU, self.OnQuit, id=wx.ID_EXIT)
+
+        self.Append(self.archivo, _(MP_FILE))
+
+        self.ayuda = wx.Menu()
+        self.about = wx.MenuItem(self.ayuda, MP_ABOUT, _(MP_ABOUT_TAVA),
+                                 wx.EmptyString, wx.ITEM_NORMAL)
+        parent.Bind(wx.EVT_MENU, self.OnAboutBox, id=MP_ABOUT)
+        self.ayuda.AppendItem(self.about)
+
+        self.Append(self.ayuda, _(MP_HELP))
 
     def OnAboutBox(self, e):
         '''
@@ -58,3 +64,18 @@ class MenuPrincipal(wx.MenuBar):
         :param e: evento de selección de Menú.
         '''
         AcercaDe.AcercaDe()
+
+    def OnNuevoProyecto(self, e):
+        '''
+        Método que inicializa la clase de creación de un Nuevo Proyecto.
+        :param e: evento de selección de Menú.
+        '''
+        NuevoProyecto.NuevoProyecto(self.Parent)
+
+    def OnQuit(self, e):
+        '''
+        Método invocado para cerrar el Frame Principal a través de una
+        referencia al padre.
+        :param e: evento de selección de Menú.
+        '''
+        self.Parent.Close()
