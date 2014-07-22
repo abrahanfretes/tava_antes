@@ -124,7 +124,8 @@ class ContextMenu(object):
         self.resultados = item
 
     def getNamesProjects(self):
-        return self.framePrincipal.cuerpoPrincipal.nameProjects
+        return self.framePrincipal.cuerpoPrincipal.notebook1.\
+            panelTreeProjects.nameProjects
 
     def OnQuit(self, e):
         self.framePrincipal.Close()

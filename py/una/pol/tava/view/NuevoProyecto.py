@@ -97,10 +97,12 @@ class NuevoProyecto(wx.Dialog):
         return True
 
     def getNamesProjects(self):
-        return self.Parent.cuerpoPrincipal.nameProjects
+        return self.Parent.cuerpoPrincipal.notebook1.\
+            panelTreeProjects.nameProjects
 
     def createProject(self):
-        self.arbolProyecto = self.Parent.cuerpoPrincipal.arbolProyecto
+        self.arbolProyecto = self.Parent.cuerpoPrincipal.notebook1.\
+            panelTreeProjects.arbolProyecto
 
         #--> aqui se van a crear los directorios
         nameProject = self.textNameProject.Value

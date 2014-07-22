@@ -19,6 +19,51 @@ from wx.lib import scrolledpanel as scrolled
 CP_EP = "CUERPO_PRINCIPAL_EXPLORADOR_PROYECTO"
 
 
+class PanelArbol(wx.Panel):
+    def __init__(self, parent, framePrincipal):
+        super(PanelArbol, self).__init__(parent)
+
+        # Creamos el arbol de Proyectos
+        self.arbolProyecto = ArbolProyecto.ArbolProyecto(self)
+
+        # Creamos un boxSizer para el arbol de Proyectos
+        boxTreeProject = wx.BoxSizer(wx.VERTICAL)
+        boxTreeProject.Add(self.arbolProyecto, 1, wx.EXPAND | wx.ALL, 3)
+        self.SetSizer(boxTreeProject)
+
+        # Seteamos la referencia al Frame Principal en el objeto arbol
+        # Cargamos los proyectos existentes y creamos una lista de nombres
+        # de proyectos
+        self.arbolProyecto.setFramePrincipalReference(framePrincipal)
+        self.nameProjects = self.loadProjects()
+
+    def loadProjects(self):
+        proPresenter = ProyectoPresenter()
+        namesProjects = []
+        for p in proPresenter.getAll():
+            self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
+                                              p.nombre, p.id)
+            namesProjects.append(p.nombre)
+        if self.arbolProyecto.root:
+            self.arbolProyecto.SortChildren(self.arbolProyecto.root)
+        return namesProjects
+
+
+class MiNotebook(wx.Notebook):
+    def __init__(self, parent, framePrincipal):
+        super(MiNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
+
+        # Se configura la pestaña de navegación de proyectos.
+        il = wx.ImageList(16, 16)
+        self.SetImageList(il)
+        icon = il.Add(wx.Bitmap("icons/tree_explorer.gif", wx.BITMAP_TYPE_GIF))
+        self.SetPageImage(0, icon)
+        self.SetBackgroundColour(self.GetThemeBackgroundColour())
+
+        self.panelTreeProjects = PanelArbol(self, framePrincipal)
+        self.AddPage(self.panelTreeProjects, _(CP_EP))
+
+
 class CuerpoPrincipal(wx.Panel):
     '''
     Clase que representa al Cuerpo Principal que contendrá el panel de
@@ -34,73 +79,38 @@ class CuerpoPrincipal(wx.Panel):
         super(CuerpoPrincipal, self).__init__(parent)
         self.SetBackgroundColour('#3B444B')
 
-        # Creamos un splitter window, separador de ventanas
         self.splitter = wx.SplitterWindow(self, style=wx.NO_3D | wx.SP_3D)
 
-        # Creamos el panel izquierdo contenedor del arbol de proyectos
+        # Se define un panel izquierdo que contendra el espacio de navegación
+        # de los proyectos y una Notebook para la pestaña de navegación.
         leftPanel = wx.Panel(self.splitter)
         leftPanel.SetBackgroundColour('#FFFFFF')
-
-        # Definimos un objeto Notebook que contendrá la única pestaña de
-        # navegación de proyectos
-        notebook = wx.Notebook(leftPanel, style=wx.BK_DEFAULT)
-
-        # Definimos el panel padre del Arbol de Proyectos
-        panelTreeProjects = wx.Panel(notebook)
-
-        # Creamos el arbol de Proyectos
-        self.arbolProyecto = ArbolProyecto.ArbolProyecto(panelTreeProjects)
-
-        # Seteamos la referencia al Frame Principal en el objeto arbol
-        self.arbolProyecto.setFramePrincipalReference(parent)
-
-        # Cargamos los proyectos existentes y creamos una lista de nombres
-        # de proyectos
-        self.nameProjects = self.loadProjects()
-
-        # Creamos un boxSizer para el arbol de Proyectos
-        boxTreeProject = wx.BoxSizer(wx.VERTICAL)
-        boxTreeProject.Add(self.arbolProyecto, 1, wx.EXPAND | wx.ALL, 10)
-
-        panelTreeProjects.SetSizer(boxTreeProject)
-
-        # Colocamos el panel del arbol dentro del componente Notebook
-        notebook.AddPage(panelTreeProjects, _(CP_EP))
-        il = wx.ImageList(16, 16)
-        notebook.SetImageList(il)
-        icon = il.Add(wx.Bitmap("icons/tree_explorer.gif", wx.BITMAP_TYPE_GIF))
-        notebook.SetPageImage(0, icon)
-        notebook.SetBackgroundColour(notebook.GetThemeBackgroundColour())
-
-        # Creamos un Sizer que contendra al objeto Notebook, para luego
-        # expandirlo por panel de Navegacion de Proyectos
+        self.notebook1 = MiNotebook(leftPanel, parent)
         sizerTreeProjects = wx.BoxSizer()
-        sizerTreeProjects.Add(notebook, 1, wx.EXPAND)
-        leftPanel.SetSizer(sizerTreeProjects)
+        sizerTreeProjects.Add(self.notebook1, 1, wx.EXPAND)
 
+        leftPanel.SetSizer(sizerTreeProjects)
+#
+#--------------------------------------------------------------
 #         self.rightPanel = p1(self.splitter)
 
         # Creamos el panel derecho para el splitter
         rightPanel = wx.Panel(self.splitter, -1)
 
-        # Creamos el sizer para el contenido del panel derecho
-        rightBox = wx.BoxSizer(wx.HORIZONTAL)
-
         tabs = wx.Notebook(rightPanel)
-#         dpanel = DrawingPanel(tabs)
-        dpanel = p1(tabs)
-#         dpanel.plot()
+        #dpanel = DrawingPanel(tabs)
+        dpanel = pl(tabs)
+        #dpanel.plot()
         tabs.AddPage(dpanel, "Tab 1")
 
+        # lado derecho del área de trabajo
         spanel = SidePanel(rightPanel)
 
-        # Add the display widget to the right panel
+        # Creamos el sizer para el contenido del panel derecho
+        rightBox = wx.BoxSizer(wx.HORIZONTAL)
         rightBox.Add(tabs, 2, wx.EXPAND)
         rightBox.Add(spanel, 0, wx.EXPAND)
-        # Set the size of the right panel to that required by the
-        # display widget
         rightPanel.SetSizer(rightBox)
-        # Put the left and right panes into the split window
 
         self.splitter.SplitVertically(leftPanel, rightPanel, 300)
         self.splitter.SetSashPosition(300, True)
@@ -183,7 +193,7 @@ class SidePanel(wx.Panel):
         frame.Layout()
 
 
-class p1(wx.Panel):
+class pl(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.figure = plt.figure()
