@@ -39,11 +39,14 @@ def getProjectByResult(resultado):
     return session.query(Proyecto).filter_by(id=resultado.proyecto_id).first()
 
 
+def getAllNamesProject():
+    return session.query(Proyecto.nombre).order_by(Proyecto.nombre).all()
+
 #Querys para Resultado
 
 
 def getAllResult():
-    return session.query(Resultado).order_by(Resultado.nombre)
+    return session.query(Resultado).order_by(Resultado.nombre).all()
 
 
 def getResultsByProject(proyecto):

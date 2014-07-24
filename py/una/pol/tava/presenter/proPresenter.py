@@ -73,3 +73,10 @@ class ProyectoPresenter():
         :return: Proyecto
         '''
         return query.getProjectByResult(resultado)
+
+    def getNamesProject(self):
+        listNames = []
+        for name in query.getAllNamesProject():
+            listNames.append(list(name).pop())
+
+        return listNames
