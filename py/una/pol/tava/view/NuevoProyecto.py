@@ -47,17 +47,17 @@ class NuevoProyecto(wx.Dialog):
         text2 = wx.StaticText(panel, label="Nombre de Proyecto")
         sizer.Add(text2, pos=(3, 0), flag=wx.LEFT, border=10)
 
-        self.textNameProject = wx.TextCtrl(panel)
-        self.textNameProject.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.textNameProject.SetFocus()
-        sizer.Add(self.textNameProject, pos=(3, 1), span=(1, 3), flag=wx.TOP |
+        self.namePro = wx.TextCtrl(panel)
+        self.namePro.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.namePro.SetFocus()
+        sizer.Add(self.namePro, pos=(3, 1), span=(1, 3), flag=wx.TOP |
                   wx.EXPAND)
 
         button3 = wx.Button(panel, label='Help')
         sizer.Add(button3, pos=(5, 0), flag=wx.LEFT, border=10)
 
         self.botonOK = wx.Button(panel, label="Ok")
-        self.botonOK.Bind(wx.EVT_BUTTON, self.AddProject)
+        self.botonOK.Bind(wx.EVT_BUTTON, self.OnNew)
         self.botonOK.Disable()
         sizer.Add(self.botonOK, pos=(5, 3))
 
@@ -70,7 +70,7 @@ class NuevoProyecto(wx.Dialog):
 
         panel.SetSizer(sizer)
 
-    def AddProject(self, e):
+    def OnNew(self, e):
         self.createProject()
 
     def OnKeyUp(self, e):
@@ -83,14 +83,14 @@ class NuevoProyecto(wx.Dialog):
     def isNameProjectValid(self):
         self.textDescripcion.SetLabel("Introduzca un nombre de proyecto.")
         self.textDescripcion.SetForegroundColour((0, 0, 0))
-        self.textNameProject.SetBackgroundColour("Blank")
-        if self.textNameProject.Value in self.getNamesProjects():
+        self.namePro.SetBackgroundColour("Blank")
+        if self.namePro.Value in self.getNamesProjects():
             self.textDescripcion.SetLabel("Ya existe el Proyecto")
             self.textDescripcion.SetForegroundColour((255, 0, 0))
-            self.textNameProject.SetBackgroundColour("Pink")
+            self.namePro.SetBackgroundColour("Pink")
             self.botonOK.Disable()
             return False
-        elif not bool(self.textNameProject.Value):
+        elif not bool(self.namePro.Value):
             self.botonOK.Disable()
             return False
         self.botonOK.Enable(True)
@@ -105,7 +105,7 @@ class NuevoProyecto(wx.Dialog):
             panelTreeProjects.arbolProyecto
 
         #--> aqui se van a crear los directorios
-        nameProject = self.textNameProject.Value
+        nameProject = self.namePro.Value
 
         proPresenter = ProyectoPresenter()
         proyecto = proPresenter.add(nameProject)

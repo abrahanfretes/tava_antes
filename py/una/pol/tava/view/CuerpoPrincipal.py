@@ -24,29 +24,12 @@ class PanelArbol(wx.Panel):
         super(PanelArbol, self).__init__(parent)
 
         # Creamos el arbol de Proyectos
-        self.arbolProyecto = ArbolProyecto.ArbolProyecto(self)
+        self.arbolProyecto = ArbolProyecto.ArbolProyecto(self, framePrincipal)
 
         # Creamos un boxSizer para el arbol de Proyectos
         boxTreeProject = wx.BoxSizer(wx.VERTICAL)
         boxTreeProject.Add(self.arbolProyecto, 1, wx.EXPAND | wx.ALL, 3)
         self.SetSizer(boxTreeProject)
-
-        # Seteamos la referencia al Frame Principal en el objeto arbol
-        # Cargamos los proyectos existentes y creamos una lista de nombres
-        # de proyectos
-        self.arbolProyecto.setFramePrincipalReference(framePrincipal)
-        self.nameProjects = self.loadProjects()
-
-    def loadProjects(self):
-        proPresenter = ProyectoPresenter()
-        namesProjects = []
-        for p in proPresenter.getAll():
-            self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
-                                              p.nombre, p.id)
-            namesProjects.append(p.nombre)
-        if self.arbolProyecto.root:
-            self.arbolProyecto.SortChildren(self.arbolProyecto.root)
-        return namesProjects
 
 
 class MiNotebook(wx.Notebook):

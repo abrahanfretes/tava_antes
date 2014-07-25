@@ -11,7 +11,9 @@ from MenuPrincipal import MenuPrincipal
 from CuerpoPrincipal import CuerpoPrincipal
 from ToolBarPrincipal import ToolBarPrincipal
 from I18nHelper import I18nHelper
-import NuevoProyecto
+#import NuevoProyecto
+from projectview import Project as proView
+from py.una.pol.tava.view import projectview
 
 
 class FramePrincipal (wx.Frame):
@@ -71,7 +73,9 @@ class FramePrincipal (wx.Frame):
         Método que inicializa la clase de creación de un Nuevo Proyecto.
         :param e: evento de selección de Menú.
         '''
-        NuevoProyecto.NuevoProyecto(self)
+        #NuevoProyecto.NuevoProyecto(self)
+        #self.cuerpoPrincipal.notebook1.panelTreeProjects.
+        projectview.NewProjectDialog(self)
 
     def OnExitAplication(self, e):
 

@@ -8,6 +8,7 @@ Created on 28/05/2014
 import wx
 import os
 from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
+from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter as pro
 
 
 class ContextMenu(object):
@@ -65,10 +66,12 @@ class ContextMenu(object):
                                "", wildcard, wx.OPEN | wx.FD_MULTIPLE)
         if dialog.ShowModal() == wx.ID_OK:
             item = self.GetSelection()
-            cuerpoPrincipal = self.framePrincipal.cuerpoPrincipal
-            path = cuerpoPrincipal.dictPathProjects[self.GetItemText(item)]
-            + "/RecursosDeUsuario/Resultados"
-#             copyDirOrFile(dialog.GetPaths(), path)
+#==============================================================================
+#             cuerpoPrincipal = self.framePrincipal.cuerpoPrincipal
+#             path = cuerpoPrincipal.dictPathProjects[self.GetItemText(item)]
+#             + "/RecursosDeUsuario/Resultados"
+# #             copyDirOrFile(dialog.GetPaths(), path)
+#==============================================================================
 
             self.resultados = item
             self.GetResultadosItem(item)
@@ -124,8 +127,7 @@ class ContextMenu(object):
         self.resultados = item
 
     def getNamesProjects(self):
-        return self.framePrincipal.cuerpoPrincipal.notebook1.\
-            panelTreeProjects.nameProjects
+        return pro().getNamesProject()
 
     def OnQuit(self, e):
         self.framePrincipal.Close()
@@ -136,7 +138,7 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
     classdocs
     '''
 
-    def __init__(self, parent):
+    def __init__(self, parent, framePrincipal):
         '''
         Constructor
         '''
@@ -146,23 +148,23 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
         ContextMenu.__init__(self)
 
         il = wx.ImageList(16, 16)
-
         self.fldridx = il.Add(bitmap=wx.Bitmap('icons/folder.png'))
         self.fldropenidx = il.Add(bitmap=wx.Bitmap('icons/folderOpen.png'))
         self.fileidx = il.Add(bitmap=wx.Bitmap('icons/result.png'))
 
         self.AssignImageList(il)
-
         self.root = self.AddRoot("Proyectos")
+        self.framePrincipal = framePrincipal
+        self.OnInitializetree()
 
-    def setFramePrincipalReference(self, frame):
-        self.framePrincipal = frame
-
-    def AddProjectNode(self, parentItem, item, idProject):
-        newItem = self.AppendItem(parentItem, item)
-        self.SetItemPyData(newItem, idProject)
+    #def AddProjectNode(self, item, idProject):proyecto
+    def AddProjectNode(self, proyecto):
+        newItem = self.AppendItem(self.root, proyecto.nombre)
+        self.SetItemPyData(newItem, proyecto.id)
         self.SetItemImage(newItem, self.fldridx, wx.TreeItemIcon_Normal)
         self.SetItemImage(newItem, self.fldropenidx, wx.TreeItemIcon_Expanded)
+
+        self.SortChildren(self.root)
 
     def AddTreeNodes(self, parentItem, items):
         for item in items:
@@ -180,3 +182,9 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
                                   wx.TreeItemIcon_Expanded)
 
                 self.AddTreeNodes(newItem, item[1])
+
+    def OnInitializetree(self):
+
+        proPresenter = ProyectoPresenter()
+        for proyecto in proPresenter.getAll():
+            self.AddProjectNode(proyecto)
