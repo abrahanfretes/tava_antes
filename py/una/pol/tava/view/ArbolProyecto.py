@@ -7,8 +7,8 @@ Created on 28/05/2014
 
 import wx
 import os
-from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
-from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter as pro
+from py.una.pol.tava.model.mproject import ProjectModel
+from py.una.pol.tava.model.mproject import ProjectModel as pro
 
 
 class ContextMenu(object):
@@ -86,10 +86,10 @@ class ContextMenu(object):
         if result == wx.YES:
             item = self.GetSelection()
             idProyecto = self.GetItemPyData(item)
-            proPresenter = ProyectoPresenter()
+            proPresenter = ProjectModel()
             proyecto = proPresenter.getProjectById(idProyecto)
             projects = self.getNamesProjects()
-            del projects[projects.index(proyecto.nombre)]
+            del projects[projects.index(proyecto.name)]
             proPresenter.delete(proyecto)
             self.Delete(item)
             if self.root:
@@ -159,7 +159,7 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
 
     #def AddProjectNode(self, item, idProject):proyecto
     def AddProjectNode(self, proyecto):
-        newItem = self.AppendItem(self.root, proyecto.nombre)
+        newItem = self.AppendItem(self.root, proyecto.name)
         self.SetItemPyData(newItem, proyecto.id)
         self.SetItemImage(newItem, self.fldridx, wx.TreeItemIcon_Normal)
         self.SetItemImage(newItem, self.fldropenidx, wx.TreeItemIcon_Expanded)
@@ -185,6 +185,6 @@ class ArbolProyecto(wx.TreeCtrl, ContextMenu):
 
     def OnInitializetree(self):
 
-        proPresenter = ProyectoPresenter()
+        proPresenter = ProjectModel()
         for proyecto in proPresenter.getAll():
             self.AddProjectNode(proyecto)

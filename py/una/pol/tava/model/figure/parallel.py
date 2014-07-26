@@ -33,20 +33,20 @@ def __getCsv(listIteracion, resultado):
     iteraciones = __getObjetivosOfIterations(listIteracion)
     f = open(pathFileTemp, 'w')
 
-    f.write(__getHeader(resultado.nombreObjetivos))
+    f.write(__getHeader(resultado.name_objectives))
     pos = 0
     for individuos in iteraciones:
-        identificador = listIteracion[pos].identificador
+        identificador = listIteracion[pos].identifier
         for individuo in individuos:
-            linea = individuo.objetivos + __getIden(identificador)
+            linea = individuo.objectives + __getIden(identificador)
             f.write(linea)
         pos += 1
     f.close()
     return pathFileTemp
 
 
-def getAxis(axes, listIteration, resultado):
+def getAxis(axes, list_iteration, result):
 
-    df = read_csv(__getCsv(listIteration, resultado))
+    df = read_csv(__getCsv(list_iteration, result))
     return parallel_coordinates(df, 'Name', None, axes)
-    #return 'Se genero: ' + __getCsv(listIteration, resultado)
+    #return 'Se genero: ' + __getCsv(list_iteration, result)

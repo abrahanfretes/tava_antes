@@ -19,143 +19,145 @@ CLOSED = 1
 HIDDEN = 2
 
 
-class Proyecto(Base):
+class Project(Base):
     '''
-    Entidad Proyecto, clase mapeada a base de datos con nombre "proyecto"
+    Entidad Project, clase mapeada a base de datos con name "project"
 
-    :param nombre: String(100), regitra el nombre de un proyecto
-    :param blog: Text(2000), regitra la descripción de un proyecto
-    :param estado: SmallInteger, regitra el estado de un proyecto, valores
+    :param name: String(100), regitra el name de un project
+    :param blog: Text(2000), regitra la descripción de un project
+    :param state: SmallInteger, regitra el state de un project, valores
             posibles:
             0 = abierto
             1 = cerrado
             2 = oculto
-    :param fecha: Date, regitra la fecha de creación de un proyecto
+    :param creation_date: Date, regitra la fecha de creación de un project
 
     '''
 
-    __tablename__ = 'proyecto'
+    __tablename__ = 'project'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    nombre = Column(String(100), nullable=False, unique=True)
+    name = Column(String(100), nullable=False, unique=True)
     blog = Column(Text(2000), nullable=True)
-    estado = Column(SmallInteger, nullable=False)
-    fecha = Column(Date(), nullable=False)
+    state = Column(SmallInteger, nullable=False)
+    creation_date = Column(Date(), nullable=False)
 
-    resultados = relationship('Resultado',
+    results = relationship('Result',
                               cascade="save-update, merge, delete",
-                              order_by='Resultado.id', backref='proyecto')
+                              order_by='Result.id', backref='project')
 
-    def __init__(self, nombre, blog, estado, fecha):
+    def __init__(self, name, blog, state, date):
 
-        self.nombre = nombre
+        self.name = name
         self.blog = blog
-        self.estado = estado
-        self.fecha = fecha
+        self.state = state
+        self.creation_date = date
 
     def __repr__(self):
-        return "<Proyecto(nombre='%s', blog='%s', estado='%s',\
-        fecha de creacion='%s')>" % (self.nombre,
-                                      self.blog, self.estado, self.fecha)
+        return "<Project(name='%s', blog='%s', state='%s',\
+        creation_date='%s')>" % (self.name,
+                                    self.blog, self.state, self.creation_date)
 
 
-class Resultado(Base):
+class Result(Base):
     '''
-    Entidad Resultado, clase mapeada a una base de datos con nombre "resultado"
-    :param nombre: String(100), regitra el nombre de un archivo resultado.
-    :param alias: String(100), nombre corto generado para un archivo.
-    :param cantidadIteracion: Integer, registra el número de iteraciones
+    Entidad Result, clase mapeada a una base de datos con name "result"
+    :param name: String(100), regitra el name de un archivo result.
+    :param alias: String(100), name corto generado para un archivo.
+    :param iteration_count: Integer, registra el número de iterations
             guardadas en un archivo.
-    :param etiqueta1: String(100),
-    :param etiqueta2: String(100),
-    :param etiqueta3: String(100),
-    :param etiqueta4: String(100),
-    :param nombreProblema: String(100), registra el nombre del problema.
-    :param numeroObjetivo: registra el número de objetivos.
-    :param numeroVariable: String(100), registra el número de variables.
-    :param nombreVariables: String(100), registra los valores de las variables.
-    :param nombreObjetivos: String(100), registra los valores de los objetivos.
-    :param poblacionInicial: Integer, registra el número de población inicial.
-    :param fechaAdd: Date, fecha registro del archivo.
-    :param proyecto_id: Integer, ForeignKey de un Proyecto.
+    :param label1: String(100),
+    :param label2: String(100),
+    :param label3: String(100),
+    :param label4: String(100),
+    :param problem_name: String(100), registra el name del problema.
+    :param number_objectives: registra el número de objectives.
+    :param number_variables: String(100), registra el número de variables.
+    :param name_variables: String(100), registra los valores de las variables.
+    :param name_objectives: String(100), registra los valores de loss
+    objectives.
+    :param number_initial_population: Integer, registra el número de población
+    inicial.
+    :param add_date: Date, fecha registro del archivo.
+    :param project_id: Integer, ForeignKey de un Project.
     '''
-    __tablename__ = 'resultado'
+    __tablename__ = 'result'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    nombre = Column(String(100))
+    name = Column(String(100))
     alias = Column(String(50))
-    cantidadIteracion = Column(Integer)
-    etiqueta1 = Column(String(100))
-    etiqueta2 = Column(String(100))
-    etiqueta3 = Column(String(100))
-    etiqueta4 = Column(String(100))
-    nombreProblema = Column(String(100))
-    numeroObjetivo = Column(Integer)
-    numeroVariable = Column(Integer)
-    nombreVariables = Column(String(100))
-    nombreObjetivos = Column(String(100))
-    poblacionInicial = Column(Integer)
-    fechaAdd = Column(Date())
-    proyecto_id = Column(Integer, ForeignKey('proyecto.id'))
+    iteration_count = Column(Integer)
+    label1 = Column(String(100))
+    label2 = Column(String(100))
+    label3 = Column(String(100))
+    label4 = Column(String(100))
+    problem_name = Column(String(100))
+    number_objectives = Column(Integer)
+    number_variables = Column(Integer)
+    name_objectives = Column(String(100))
+    name_variables = Column(String(100))
+    number_initial_population = Column(Integer)
+    add_date = Column(Date())
+    project_id = Column(Integer, ForeignKey('project.id'))
 
-    iteraciones = relationship('Iteracion',
+    iterations = relationship('Iteration',
                           cascade="save-update, merge, delete",
-                          order_by='Iteracion.id', backref='resultado')
+                          order_by='Iteration.id', backref='result')
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<Resultados(nombre='%s', alias='%s', cantidadIteracion='%s', \
-        etiqueta1='%s', etiqueta2='%s', etiqueta3='%s', etiqueta4='%s', \
-        nombreProblema='%s', numeroObjetivo='%s', numeroVariable='%s', \
-        poblacionInicial='%s', nombreVariables='%s', nombreObjetivos='%s',\
-        fechaAdd='%s')>" % (self.nombre, self.alias, self.cantidadIteracion,
-        self.etiqueta1, self.etiqueta2, self.etiqueta3, self.etiqueta4,
-        self.nombreProblema, self.numeroObjetivo, self.numeroVariable,
-        self.poblacionInicial, self.nombreVariables, self.nombreObjetivos,
-        self.fechaAdd)
+        return "<Result(name='%s', alias='%s', iteration_count='%s', \
+        label1='%s', label2='%s', label3='%s', label4='%s', \
+        problem_name='%s', number_objectives='%s', number_variables='%s', \
+        number_initial_population='%s', name_variables='%s', \
+        name_objectives='%s', add_date='%s')>" % (self.name, self.alias, \
+        self.iteration_count, self.label1, self.label2, self.label3,
+        self.label4, self.problem_name, self.number_objectives,\
+        self.number_variables, self.number_initial_population, \
+        self.name_variables, self.name_objectives, self.add_date)
 
 
-class Iteracion(Base):
+class Iteration(Base):
     ''''''
 
-    __tablename__ = 'iteracion'
+    __tablename__ = 'iteration'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    identificador = Column(Integer)
-    inicioEjecucion = Column(Float)
-    finEjecucion = Column(Float)
-    cantidadIndividuo = Column(Integer)
-    resultado_id = Column(Integer, ForeignKey('resultado.id'))
+    identifier = Column(Integer)
+    execution_start = Column(Float)
+    execution_end = Column(Float)
+    number_individuals = Column(Integer)
+    result_id = Column(Integer, ForeignKey('result.id'))
 
-    individuos = relationship('Individuo',
+    individuals = relationship('Individual',
                           cascade="save-update, merge, delete",
-                          order_by='Individuo.id', backref='iteracion')
+                          order_by='Individual.id', backref='iteration')
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<Iteracion(identificador: '%s', inicioEjecucion :'%s', \
-        finEjecucion:'%s', cantidadindividuo:'%s')>" % (self.identificador,
-        self.inicioEjecucion, self.finEjecucion, self.cantidadIndividuo)
+        return "<Iteration(identifier: '%s', execution_start :'%s', \
+        execution_end:'%s', number_individuals:'%s')>" % (self.identifier,
+        self.execution_start, self.execution_end, self.number_individuals)
 
 
-class Individuo(Base):
+class Individual(Base):
     ''''''
 
-    __tablename__ = 'individuo'
+    __tablename__ = 'individual'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    identificador = Column(Integer)
+    identifier = Column(Integer)
     varDTLZ = Column(Float)
-    objetivos = Column(String(500))
+    objectives = Column(String(500))
     variables = Column(String(500))
-    iteracion_id = Column(Integer, ForeignKey('iteracion.id'))
+    iteration_id = Column(Integer, ForeignKey('iteration.id'))
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<Individuo(identificador: '%s', objetivos: '%s', variables: \
-        '%s', varDTLZ: '%f')>" % (self.identificador, self.objetivos,
+        return "<Individual(identifier: '%s', objectives: '%s', variables: \
+        '%s', varDTLZ: '%f')>" % (self.identifier, self.objectives,
                                   self.variables, self.varDTLZ)
 
 

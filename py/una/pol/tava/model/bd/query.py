@@ -4,13 +4,8 @@ Created on 27/06/2014
 @author: afretes
 '''
 import base
-from entity import Proyecto, Resultado, Iteracion, Individuo
+from entity import Project, Result, Iteration, Individual
 from sqlalchemy.orm import subqueryload
-#==============================================================================
-# SQL>>> jack = session.query(User).\
-# ...                 options(subqueryload(User.addresses)).\
-# ...                 filter_by(name='jack').one()
-#==============================================================================
 
 session = base.getSession()
 
@@ -18,111 +13,112 @@ session = base.getSession()
 
 
 def getAllProject():
-    return session.query(Proyecto).order_by(Proyecto.fecha, Proyecto.estado)
+    return session.query(Project).order_by(Project.creation_date,
+                                           Project.state)
 
 
 def getAllProjectWithResults():
-    return session.query(Proyecto).options(subqueryload(Proyecto.resultados))
+    return session.query(Project).options(subqueryload(Project.results))
 
 
-def getProjectWithResults(proyecto):
+def getProjectWithResults(project):
 
-    return session.query(Proyecto).options(subqueryload(Proyecto.resultados)).\
-            filter_by(id=proyecto.id).first()
-
-
-def getProjectById(idProyecto):
-    return session.query(Proyecto).filter_by(id=idProyecto).first()
+    return session.query(Project).options(subqueryload(Project.results)).\
+            filter_by(id=project.id).first()
 
 
-def getProjectByResult(resultado):
-    return session.query(Proyecto).filter_by(id=resultado.proyecto_id).first()
+def getProjectById(id_project):
+    return session.query(Project).filter_by(id=id_project).first()
+
+
+def getProjectByResult(result):
+    return session.query(Project).filter_by(id=result.proyecto_id).first()
 
 
 def getAllNamesProject():
-    return session.query(Proyecto.nombre).order_by(Proyecto.nombre).all()
+    return session.query(Project.name).order_by(Project.name).all()
 
-#Querys para Resultado
+#Querys para Result
 
 
 def getAllResult():
-    return session.query(Resultado).order_by(Resultado.nombre).all()
+    return session.query(Result).order_by(Result.name).all()
 
 
-def getResultsByProject(proyecto):
-    return session.query(Resultado).filter_by(proyecto_id=proyecto.id).all()
+def getResultsByProject(project):
+    return session.query(Result).filter_by(proyecto_id=project.id).all()
 
 
-def getResultById(idResultado):
-    return session.query(Resultado).filter_by(id=idResultado).first()
+def getResultById(id_result):
+    return session.query(Result).filter_by(id=id_result).first()
 
 
-def getResultWithIterations(resultado):
-    return session.query(Resultado).options(
-            subqueryload(Resultado.iteraciones)).\
-            filter_by(id=resultado.id).first()
+def getResultWithIterations(result):
+    return session.query(Result).options(
+            subqueryload(Result.iterations)).\
+            filter_by(id=result.id).first()
 
 
-#Querys para Iteracion
+#Querys para Iteration
 
-def getIterationsByResult(resultado):
-    return session.query(Iteracion).order_by(Iteracion.id).\
-                        filter_by(id=resultado.id).all()
-
-
-def getIterationsByIdResult(resultadoId):
-    return session.query(Iteracion).order_by(Iteracion.id).\
-                        filter_by(id=resultadoId).all()
+def getIterationsByResult(result):
+    return session.query(Iteration).order_by(Iteration.id).\
+                        filter_by(id=result.id).all()
 
 
-def getIterationById(idIteracion):
-    return session.query(Iteracion).filter_by(id=idIteracion).first()
+def getIterationsByIdResult(id_result):
+    return session.query(Iteration).order_by(Iteration.id).\
+                        filter_by(id=id_result).all()
 
 
-def getIterationWithIndividuo(idIteracion):
-    return session.query(Iteracion).options(
-            subqueryload(Iteracion.individuos)).\
-            filter_by(id=idIteracion).first()
+def getIterationById(id_iteration):
+    return session.query(Iteration).filter_by(id=id_iteration).first()
 
 
-#Querys para Individuo
+def getIterationWithIndividual(id_iteration):
+    return session.query(Iteration).options(
+            subqueryload(Iteration.individuals)).\
+            filter_by(id=id_iteration).first()
 
 
-def getIndividuosByIteracion(iteracion):
-    return session.query(Individuo).order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=iteracion.id).all()
+#Querys para Individual
 
 
-def getIndividuosByIteracionId(idIteracion):
-    return session.query(Individuo).order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=idIteracion).all()
+def getIndividuosByIteracion(iteration):
+    return session.query(Individual).order_by(Individual.identifier).\
+                            filter_by(iteracion_id=iteration.id).all()
 
 
-def getIdenVarOfIndividuo(idIteracion):
-    return session.query(Individuo.identificador, Individuo.variables).\
-                            order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=idIteracion).all()
+def getIndividualsByIteracionId(id_iteration):
+    return session.query(Individual).order_by(Individual.identifier).\
+                            filter_by(iteracion_id=id_iteration).all()
 
 
-def getIdenObjOfIndividuo(idIteracion):
-    return session.query(Individuo.identificador, Individuo.objetivos).\
-                            order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=idIteracion).all()
+def getIdentifierAndVariableOfIndividual(id_iteration):
+    return session.query(Individual.identifier, Individual.variables).\
+                            order_by(Individual.identifier).\
+                            filter_by(iteracion_id=id_iteration).all()
 
 
-def getIdenObjOfIndividuoByIteracion(iteracion):
-    return session.query(Individuo.identificador, Individuo.objetivos).\
-                            order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=iteracion.id).all()
+def getIdentifierAndObjectiveOfIndividual(id_iteration):
+    return session.query(Individual.identifier, Individual.objectives).\
+                            order_by(Individual.identifier).\
+                            filter_by(iteracion_id=id_iteration).all()
 
 
-def getIdenObjVarOfIndividuo(idIteracion):
-    return session.query(Individuo.identificador, Individuo.objetivos,
-                    Individuo.variables).order_by(Individuo.identificador).\
-                            filter_by(iteracion_id=idIteracion).all()
+def getIdenObjOfIndividuoByIteracion(iteration):
+    return session.query(Individual.identifier, Individual.objectives).\
+                            order_by(Individual.identifier).\
+                            filter_by(iteracion_id=iteration.id).all()
 
 
-def getVarDTLZOfIndividuo(idIteracion):
-    return session.query(Individuo.identificador, Individuo.varDTLZ).\
-                            rder_by(Individuo.identificador).\
-                            filter_by(iteracion_id=idIteracion).all()
+def getIdentifierObjectiveVariableOfIndividual(id_iteration):
+    return session.query(Individual.identifier, Individual.objectives,
+                    Individual.variables).order_by(Individual.identifier).\
+                            filter_by(iteracion_id=id_iteration).all()
+
+
+def getVarDTLZOfIndividual(id_iteration):
+    return session.query(Individual.identifier, Individual.varDTLZ).\
+                            rder_by(Individual.identifier).\
+                            filter_by(iteracion_id=id_iteration).all()

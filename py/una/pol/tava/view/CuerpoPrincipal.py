@@ -6,7 +6,7 @@ Created on 28/05/2014
 '''
 import wx
 import ArbolProyecto
-from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter
+from py.una.pol.tava.model.mproject import ProjectModel
 from wx import GetTranslation as _
 
 import random
@@ -83,7 +83,7 @@ class CuerpoPrincipal(wx.Panel):
         tabs = wx.Notebook(rightPanel)
         #dpanel = DrawingPanel(tabs)
         dpanel = pl(tabs)
-        #dpanel.plot()
+        dpanel.plot()
         tabs.AddPage(dpanel, "Tab 1")
 
         # lado derecho del área de trabajo
@@ -106,12 +106,12 @@ class CuerpoPrincipal(wx.Panel):
         self.SetSizer(boxProjectBrowser)
 
     def loadProjects(self):
-        proPresenter = ProyectoPresenter()
+        proPresenter = ProjectModel()
         namesProjects = []
         for p in proPresenter.getAll():
             self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
-                                              p.nombre, p.id)
-            namesProjects.append(p.nombre)
+                                              p.name, p.id)
+            namesProjects.append(p.name)
         if self.arbolProyecto.root:
             self.arbolProyecto.SortChildren(self.arbolProyecto.root)
         return namesProjects

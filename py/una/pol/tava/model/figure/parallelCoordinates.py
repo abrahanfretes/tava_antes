@@ -15,5 +15,5 @@ class Axis(object):
         '''
         Constructor
         '''
-    def getAxis(self, axes, listIteration, resultado):
-        return parallel.getAxis(axes, listIteration, resultado)
+    def getAxis(self, axes, list_iteration, result):
+        return parallel.getAxis(axes, list_iteration, result)

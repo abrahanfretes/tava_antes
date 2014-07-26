@@ -6,7 +6,7 @@ Created on 23/07/2014
 
 
 import wx
-from py.una.pol.tava.presenter.proPresenter import ProyectoPresenter as pro
+from py.una.pol.tava.model.mproject import ProjectModel as pro
 
 
 class NewProjectDialog(wx.Dialog):

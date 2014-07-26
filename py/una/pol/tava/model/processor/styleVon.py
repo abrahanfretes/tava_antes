@@ -3,8 +3,8 @@ Created on 28/06/2014
 
 @author: abrahan
 '''
-from py.una.pol.tava.model.bd.entity import Resultado, Iteracion
-from py.una.pol.tava.model.bd.entity import Individuo
+from py.una.pol.tava.model.bd.entity import Result, Iteration
+from py.una.pol.tava.model.bd.entity import Individual
 from py.una.pol.tava.model.bd import abm
 from datetime import date
 import os
@@ -48,23 +48,26 @@ def procesarArchivo(listFile, proyecto):
 
     for path in listFile:
 
-        resultado = Resultado()
+        resultado = Result()
 
         fOpen = open(path, 'r')
-        resultado.nombre = os.path.basename(path)
+        resultado.name = os.path.basename(path)
         resultado.alias = __getAlias(proyecto)
-        resultado.cantidadIteracion = int(__getValue__(fOpen.readline()))
+        resultado.iteration_count = int(__getValue__(fOpen.readline()))
         resultado.etiqueta1 = __getValue__(fOpen.readline())
         resultado.etiqueta2 = __getValue__(fOpen.readline())
         resultado.etiqueta3 = __getValue__(fOpen.readline())
         resultado.etiqueta4 = __getValue__(fOpen.readline())
-        resultado.nombreProblema = __getValue__(fOpen.readline())
-        countO = resultado.numeroObjetivo = int(__getValue__(fOpen.readline()))
-        countV = resultado.numeroVariable = int(__getValue__(fOpen.readline()))
-        resultado.poblacionInicial = int(__getValue__(fOpen.readline()))
-        resultado.nombreVariables = __buildVariablesDefaul(countV, True)
-        resultado.nombreObjetivos = __buildVariablesDefaul(countO, False)
-        resultado.fechaAdd = date.today()
+        resultado.problem_name = __getValue__(fOpen.readline())
+        countO = resultado.number_objectives = int(__getValue__(fOpen.
+                                                                readline()))
+        countV = resultado.number_variables = int(__getValue__(fOpen.
+                                                               readline()))
+        resultado.number_initial_population = int(__getValue__(fOpen.
+                                                               readline()))
+        resultado.name_variables = __buildVariablesDefaul(countV, True)
+        resultado.name_objectives = __buildVariablesDefaul(countO, False)
+        resultado.add_date = date.today()
 
         proyecto.resultados.append(resultado)
         abm.add(proyecto)
@@ -72,43 +75,44 @@ def procesarArchivo(listFile, proyecto):
         print resultado
 
         tiempoInicial = float(__getValue__(fOpen.readline()))
-        iteTotal = resultado.cantidadIteracion
+        iteTotal = resultado.iteration_count
         iteSum = 0
         #t1 = time.time()
         while(iteSum < iteTotal):
             iteSum += 1
 
-            iteracion = Iteracion()
-            iteracion.inicioEjecucion = tiempoInicial
-            iteracion.cantidadIndividuo = int(
+            iteracion = Iteration()
+            iteracion.execution_start = tiempoInicial
+            iteracion.number_individuals = int(
                                     __getValue__(fOpen.readline()))
 
             unIndi = []
             listIndividuos = []
-            indiTotal = iteracion.cantidadIndividuo
+            indiTotal = iteracion.number_individuals
             indiSum = 0
             while(indiSum < indiTotal):
                 indiSum += 1
-                individuo = Individuo()
+                individuo = Individual()
 
                 lineaRead = fOpen.readline()
                 unIndi = lineaRead.split("\t")
 
-                individuo.identificador = int(unIndi[1])
+                individuo.identifier = int(unIndi[1])
                 individuo.varDTLZ = float(unIndi[2 +
-                        resultado.numeroVariable + resultado.numeroObjetivo])
-                longV = 2 + resultado.numeroVariable
+                        resultado.number_variables +\
+                        resultado.number_objectives])
+                longV = 2 + resultado.number_variables
                 individuo.variables = ",".join(unIndi[2:longV])
-                longO = longV + resultado.numeroObjetivo
-                individuo.objetivos = ",".join(unIndi[longV:longO])
-                individuo.objetivos = __getObjetiosString(unIndi[longV:longO])
-                individuo.identificador = unIndi[1]
+                longO = longV + resultado.number_objectives
+                individuo.objectives = ",".join(unIndi[longV:longO])
+                individuo.objectives = __getObjetiosString(unIndi[longV:longO])
+                individuo.identifier = unIndi[1]
                 listIndividuos.append(individuo)
 
-            iteracion.identificador = unIndi[0]
-            iteracion.finEjecucion = float(
+            iteracion.identifier = unIndi[0]
+            iteracion.execution_end = float(
                                     __getValue__(fOpen.readline()))
-            tiempoInicial = iteracion.finEjecucion
+            tiempoInicial = iteracion.execution_end
             iteracion.individuos = listIndividuos
             iteracion.resultado_id = resultado.id
 
