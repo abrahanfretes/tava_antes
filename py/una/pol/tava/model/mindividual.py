@@ -3,7 +3,7 @@ Created on 03/07/2014
 
 @author: abrahan
 '''
-from py.una.pol.tava.model.bd import query
+from py.una.pol.tava.dao import dindividual
 
 
 class IndividualModel(object):
@@ -17,13 +17,13 @@ class IndividualModel(object):
         '''
 
     def getIndividualsByIteracionId(self, id_iteration):
-        return query.getIndividualsByIteracionId(id_iteration)
+        return dindividual.getIndividualsByIteracionId(id_iteration)
 
     def getIndividualsByIterationId(self, list_id_iteration):
 
         individual = []
         for id_ite in list_id_iteration:
-            individual.append(query.getIndividualsByIteracionId(id_ite))
+            individual.append(dindividual.getIndividualsByIteracionId(id_ite))
         return individual
 
     def getIdentifierAndVariableOfIndividual(self, list_id_iteration):
@@ -31,7 +31,7 @@ class IndividualModel(object):
         individual = []
         for id_ite in list_id_iteration:
             individual.\
-            append(query.getIdentifierAndVariableOfIndividual(id_ite))
+            append(dindividual.getIdentifierAndVariableOfIndividual(id_ite))
         return individual
 
     def getIdentifierAndObjectiveOfIndividual(self, list_id_iteration):
@@ -39,14 +39,14 @@ class IndividualModel(object):
         individual = []
         for id_ite in list_id_iteration:
             individual.\
-            append(query.getIdentifierAndObjectiveOfIndividual(id_ite))
+            append(dindividual.getIdentifierAndObjectiveOfIndividual(id_ite))
         return individual
 
     def getIdentifierObjectiveVariableOfIndividual(self, list_id_iteration):
 
         individual = []
         for id_ite in list_id_iteration:
-            individual.append(query.\
+            individual.append(dindividual.\
                             getIdentifierObjectiveVariableOfIndividual(id_ite))
         return individual
 
@@ -54,5 +54,5 @@ class IndividualModel(object):
 
         individual = []
         for idIte in list_id_iteration:
-            individual.append(query.getVarDTLZOfIndividual(idIte))
+            individual.append(dindividual.getVarDTLZOfIndividual(idIte))
         return individual

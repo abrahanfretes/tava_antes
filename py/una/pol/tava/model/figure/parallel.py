@@ -5,7 +5,7 @@ Created on 04/07/2014
 '''
 from pandas import read_csv
 from pandas.tools.plotting import parallel_coordinates
-from py.una.pol.tava.model.bd import query
+from py.una.pol.tava.dao import dindividual
 import os
 
 path = os.getcwd()
@@ -16,7 +16,7 @@ def __getObjetivosOfIterations(listIteracion):
 
     individuos = []
     for ite in listIteracion:
-        individuos.append(query.getIdenObjOfIndividuoByIteracion(ite))
+        individuos.append(dindividual.getIdenObjOfIndividuoByIteracion(ite))
     return individuos
 
 

@@ -114,7 +114,6 @@ class Project:
     def __init__(self):
 
         self.listNamesProject = self.GetNamesProject()
-        print self.listNamesProject
 
     def GetNamesProject(self):
         return pro().getNamesProject()

@@ -6,7 +6,7 @@ Created on 27/06/2014
 '''
 import wx
 from FramePrincipal import FramePrincipal
-from py.una.pol.tava.model.bd import base
+from py.una.pol.tava.base import base
 
 
 def main():

@@ -4,10 +4,9 @@ Created on 27/06/2014
 
 @author: afretes
 '''
-from py.una.pol.tava.model.bd.entity import Project
-from py.una.pol.tava.model.bd.entity import OPEN
-from py.una.pol.tava.model.bd import abm
-from py.una.pol.tava.model.bd import query
+from py.una.pol.tava.base.entity import Project
+from py.una.pol.tava.base.entity import OPEN
+from py.una.pol.tava.dao import dproject
 
 from datetime import date
 
@@ -30,7 +29,7 @@ class ProjectModel():
         :return: Project.
         '''
         project = Project(name, None, OPEN, date.today())
-        return abm.add(project)
+        return dproject.add(project)
 
     def upDate(self, project):
         '''
@@ -39,7 +38,7 @@ class ProjectModel():
         :param project: Project, representa un project en la base de datos.
         :return: Project.
         '''
-        return abm.add(project)
+        return dproject.add(project)
 
     def delete(self, project):
         '''
@@ -47,14 +46,14 @@ class ProjectModel():
 
         :param project: Project, representa un project en la base de datos.
         '''
-        abm.delete(project)
+        dproject.delete(project)
 
     def getAll(self):
         '''
         Función que obtiene todos los projects de la base de datos.
         :return: Lista de projects.
         '''
-        return query.getAllProject()
+        return dproject.getAllProject()
 
     def getProjectById(self, id_project):
         '''
@@ -63,7 +62,7 @@ class ProjectModel():
         :param id_project:
         :return: Project
         '''
-        return query.getProjectById(id_project)
+        return dproject.getProjectById(id_project)
 
     def getProjectByResult(self, result):
         '''
@@ -72,11 +71,11 @@ class ProjectModel():
         :param result:
         :return: Project
         '''
-        return query.getProjectByResult(result)
+        return dproject.getProjectByResult(result)
 
     def getNamesProject(self):
         listNames = []
-        for name in query.getAllNamesProject():
+        for name in dproject.getAllNamesProject():
             listNames.append(list(name).pop())
 
         return listNames

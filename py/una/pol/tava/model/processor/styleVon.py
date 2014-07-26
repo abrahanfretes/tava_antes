@@ -3,9 +3,8 @@ Created on 28/06/2014
 
 @author: abrahan
 '''
-from py.una.pol.tava.model.bd.entity import Result, Iteration
-from py.una.pol.tava.model.bd.entity import Individual
-from py.una.pol.tava.model.bd import abm
+from py.una.pol.tava.base.entity import Result, Iteration, Individual
+from py.una.pol.tava.dao import dproject, diteration
 from datetime import date
 import os
 
@@ -70,7 +69,7 @@ def procesarArchivo(listFile, proyecto):
         resultado.add_date = date.today()
 
         proyecto.resultados.append(resultado)
-        abm.add(proyecto)
+        dproject.upDate(proyecto)
 
         print resultado
 
@@ -116,6 +115,6 @@ def procesarArchivo(listFile, proyecto):
             iteracion.individuos = listIndividuos
             iteracion.resultado_id = resultado.id
 
-            abm.add(iteracion)
+            diteration.add(iteracion)
 
         fOpen.close()
