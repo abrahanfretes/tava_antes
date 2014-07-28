@@ -7,14 +7,14 @@ Created on 27/06/2014
 
 import wx
 
-from MenuPrincipal import MenuPrincipal
-from CuerpoPrincipal import CuerpoPrincipal
-from ToolBarPrincipal import ToolBarPrincipal
-from I18nHelper import I18nHelper
-from py.una.pol.tava.view import projectview
+from py.una.pol.tava.view.vmenu import MainMenuBar
+from py.una.pol.tava.view.vbody import MainPanel
+from py.una.pol.tava.view.vtoolbar import MainToolBar
+from py.una.pol.tava.view.vi18n import I18nLocale
+from py.una.pol.tava.view.vproject import NewProjectDialog
 
 
-class FramePrincipal (wx.Frame):
+class MainFrame(wx.Frame):
     '''
     Clase que representa al Frame raíz que contendrá a los demás componentes.
     '''
@@ -23,7 +23,7 @@ class FramePrincipal (wx.Frame):
         '''
         :param parent: referencia a la clase padre del Frame Principal.
         '''
-        super(FramePrincipal, self).__init__(parent, title='TAVA',
+        super(MainFrame, self).__init__(parent, title='TAVA',
                                              size=wx.Size(1200, 800),
                                              style=wx.DEFAULT_FRAME_STYLE |
                                              wx.TAB_TRAVERSAL)
@@ -31,52 +31,51 @@ class FramePrincipal (wx.Frame):
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
         self.Centre(wx.BOTH)
-#         self.Maximize()
+        self.Maximize()
         self.Show(True)
 
     def setI18n(self):
-        self.i18n = I18nHelper()
+        self.i18n = I18nLocale()
 
     def InitUI(self):
         '''
         Método de inicialización del Menú, Toolbar y Cuerpo principal del
         programa.
         '''
-        self.setMenuPrincipal()
-        self.setToolbarPrincipal()
-        self.setCuerpoPrincipal()
+        self.SetMainMenuBar()
+        self.SetMainToolBar()
+        self.SetMainPanel()
 
-    def setMenuPrincipal(self):
+    def SetMainMenuBar(self):
         '''
-        Creación de la clase MenuPrincipal como parte del Frame Principal.
+        Creación de la clase vmenu como parte del Frame Principal.
         '''
-        self.menuPrincipal = MenuPrincipal(self)
-        self.SetMenuBar(self.menuPrincipal)
+        self.main_menubar = MainMenuBar(self)
+        self.SetMenuBar(self.main_menubar)
 
-    def setToolbarPrincipal(self):
+    def SetMainToolBar(self):
         '''
-        Creación de la clase ToolBarPrincipal como parte del Frame Principal.
+        Creación de la clase vtoolbar como parte del Frame Principal.
         '''
-        self.toolBarPrincipal = ToolBarPrincipal(self)
-        self.SetToolBar(self.toolBarPrincipal)
+        self.main_toolbar = MainToolBar(self)
+        self.SetToolBar(self.main_toolbar)
 
-    def setCuerpoPrincipal(self):
+    def SetMainPanel(self):
         '''
-        Creación de la clase CuerpoPrincipal como parte del Frame Principal.
+        Creación de la clase vbody como parte del Frame Principal.
         '''
-        self.cuerpoPrincipal = CuerpoPrincipal(self)
+        self.main_panel = MainPanel(self)
 
-    def OnNuevoProyecto(self, e):
+    def OnNewProject(self, e):
         '''
         Método que inicializa la clase de creación de un Nuevo Proyecto.
         :param e: evento de selección de Menú.
         '''
-
-        projectview.NewProjectDialog(self)
+        NewProjectDialog(self)
 
     def OnExitAplication(self, e):
 
-        result = wx.MessageBox("Desea Salir de la Aplicacion",
+        result = wx.MessageBox("Desea salir de la aplicación",
                                style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
         if result == wx.YES:
             self.Close()

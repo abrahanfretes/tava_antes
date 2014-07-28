@@ -24,7 +24,7 @@ TB_CP = 'Cerrar Proyecto'
 TB_DP = 'Eliminar Proyecto'
 
 
-class ToolBarPrincipal(wx.ToolBar):
+class MainToolBar(wx.ToolBar):
     '''
     Clase que representa al ToolBar Principal desplegando algunas opciones
     de trabajo que pueden utilizarse dentro del área de trabajo.
@@ -32,25 +32,23 @@ class ToolBarPrincipal(wx.ToolBar):
 
     def __init__(self, parent):
         '''
-        Constructor para la clase ToolBarPrincipal
-        :param parent: referencia a la clase padre de ToolBarPrincipal.
+        Constructor para la clase MainToolBar
+        :param parent: referencia a la clase padre de MainToolBar.
         '''
-        super(ToolBarPrincipal, self).__init__(parent, wx.TB_HORIZONTAL)
+        super(MainToolBar, self).__init__(parent, wx.TB_HORIZONTAL)
 
         # iconos para los proyectos
-        bmpNew = wx.ArtProvider.GetBitmap("gtk-new", wx.ART_NEW)
-        bmpOpen = wx.ArtProvider.GetBitmap("gtk-open", wx.ART_FILE_OPEN)
-        bmpClose = wx.Bitmap('icons/close.png')
-        bmpDelete = wx.Bitmap('icons/delete.png')
-        bmpBlog = wx.Bitmap('icons/blog.png')
-        ##bmpSave = wx.ArtProvider.GetBitmap("gtk-save", wx.ART_FILE_SAVE)
+        new_bmp = wx.ArtProvider.GetBitmap(wx.ART_NEW)
+        open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN)
+        close_bmp = wx.Bitmap('icons/close.png')
+        delete_bmp = wx.Bitmap('icons/delete.png')
+        blog_bmp = wx.Bitmap('icons/blog.png')
 
-        self.AddLabelTool(wx.ID_NEW, '', bmpNew, shortHelp=_(TB_NP))
-        self.AddLabelTool(wx.ID_OPEN, '', bmpOpen, shortHelp=_(TB_OP))
-        self.AddLabelTool(wx.ID_SAVE, '', bmpClose, shortHelp=_(TB_CP))
-        self.AddLabelTool(wx.ID_DELETE, '', bmpDelete, shortHelp=_(TB_DP))
-        self.AddLabelTool(wx.ID_EDIT, '', bmpBlog, shortHelp=TB_BP)
-        ###self.AddLabelTool(wx.ID_SAVE, '', bmpSave, shortHelp=_(TB_SP))
+        self.AddLabelTool(wx.ID_NEW, '', new_bmp, shortHelp=_(TB_NP))
+        self.AddLabelTool(wx.ID_OPEN, '', open_bmp, shortHelp=_(TB_OP))
+        self.AddLabelTool(wx.ID_SAVE, '', close_bmp, shortHelp=_(TB_CP))
+        self.AddLabelTool(wx.ID_DELETE, '', delete_bmp, shortHelp=_(TB_DP))
+        self.AddLabelTool(wx.ID_EDIT, '', blog_bmp, shortHelp=TB_BP)
 
         self.EnableToolNew()
         self.DisableToolOpen()
@@ -58,19 +56,14 @@ class ToolBarPrincipal(wx.ToolBar):
         self.DisableToolDelete()
         self.DisableToolEdit()
 
-        self.Bind(wx.EVT_TOOL, parent.OnNuevoProyecto, id=wx.ID_NEW)
-        #self.Bind(wx.EVT_TOOL, parent.OnOpenProyecto, id=wx.ID_OPEN)
-        #self.Bind(wx.EVT_TOOL, parent.OnOpenProyecto, id=wx.ID_SAVE)
-        #self.Bind(wx.EVT_TOOL, parent.OnDeleteProyecto, id=wx.ID_DELETE)
-        #self.Bind(wx.EVT_TOOL, parent.OnEditProyecto, id=wx.ID_EDIT)
-        ##self.Bind(wx.EVT_TOOL, parent.OnSaveProyecto, id=wx.ID_SAVE)
+        self.Bind(wx.EVT_TOOL, parent.OnNewProject, id=wx.ID_NEW)
 
         self.AddSeparator()
 
         # iconos para el sistema
-        bmp = wx.ArtProvider.GetBitmap("gtk-quit", wx.ART_QUIT)
+        exit_bmp = wx.ArtProvider.GetBitmap(wx.ART_QUIT)
 
-        self.AddLabelTool(wx.ID_EXIT, '', bmp, shortHelp=_(TB_EX))
+        self.AddLabelTool(wx.ID_EXIT, '', exit_bmp, shortHelp=_(TB_EX))
 
         self.Bind(wx.EVT_TOOL, parent.OnExitAplication, id=wx.ID_EXIT)
 

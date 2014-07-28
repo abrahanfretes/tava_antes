@@ -5,8 +5,8 @@ Created on 27/06/2014
 @author: aferreira
 '''
 import wx
-from FramePrincipal import FramePrincipal
 from py.una.pol.tava.base import base
+from py.una.pol.tava.view.vframe import MainFrame
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     '''
     base.createDb()
     ex = wx.App()
-    FramePrincipal(None)
+    MainFrame(None)
     ex.MainLoop()
 
 if __name__ == '__main__':

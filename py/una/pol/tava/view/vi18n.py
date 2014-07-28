@@ -6,9 +6,9 @@ Created on 18/07/2014
 import wx
 
 
-class I18nHelper(wx.Locale):
+class I18nLocale(wx.Locale):
     def __init__(self):
-        super(I18nHelper, self).__init__(language=wx.LANGUAGE_DEFAULT)
+        super(I18nLocale, self).__init__(language=wx.LANGUAGE_DEFAULT)
 
         self.AddCatalogLookupPathPrefix('.')
         self.AddCatalog('tava_es')

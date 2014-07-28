@@ -5,8 +5,9 @@ Created on 28/05/2014
 @author: aferreira
 '''
 import wx
-import ArbolProyecto
+
 from py.una.pol.tava.model.mproject import ProjectModel
+from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from wx import GetTranslation as _
 
 import random
@@ -19,35 +20,36 @@ from wx.lib import scrolledpanel as scrolled
 CP_EP = "CUERPO_PRINCIPAL_EXPLORADOR_PROYECTO"
 
 
-class PanelArbol(wx.Panel):
-    def __init__(self, parent, framePrincipal):
-        super(PanelArbol, self).__init__(parent)
+class TreePanel(wx.Panel):
+    def __init__(self, parent, main_frame):
+        super(TreePanel, self).__init__(parent)
 
         # Creamos el arbol de Proyectos
-        self.arbolProyecto = ArbolProyecto.ArbolProyecto(self, framePrincipal)
+        self.project_tree = ProjectTreeCtrl(self, main_frame)
 
         # Creamos un boxSizer para el arbol de Proyectos
-        boxTreeProject = wx.BoxSizer(wx.VERTICAL)
-        boxTreeProject.Add(self.arbolProyecto, 1, wx.EXPAND | wx.ALL, 3)
-        self.SetSizer(boxTreeProject)
+        project_tree_vsizer = wx.BoxSizer(wx.VERTICAL)
+        project_tree_vsizer.Add(self.project_tree, 1, wx.EXPAND | wx.ALL, 3)
+        self.SetSizer(project_tree_vsizer)
 
 
-class MiNotebook(wx.Notebook):
-    def __init__(self, parent, framePrincipal):
-        super(MiNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
+class ProjectTreeNotebook(wx.Notebook):
+    def __init__(self, parent, main_frame):
+        super(ProjectTreeNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
+
+        self.project_tree_panel = TreePanel(self, main_frame)
+        self.AddPage(self.project_tree_panel, _(CP_EP))
 
         # Se configura la pestaña de navegación de proyectos.
         il = wx.ImageList(16, 16)
         self.SetImageList(il)
-        icon = il.Add(wx.Bitmap("icons/tree_explorer.gif", wx.BITMAP_TYPE_GIF))
-        self.SetPageImage(0, icon)
+        tree_explorer_bmp = il.Add(wx.Bitmap("icons/tree_explorer.gif",
+                                             wx.BITMAP_TYPE_GIF))
+        self.SetPageImage(0, tree_explorer_bmp)
         self.SetBackgroundColour(self.GetThemeBackgroundColour())
 
-        self.panelTreeProjects = PanelArbol(self, framePrincipal)
-        self.AddPage(self.panelTreeProjects, _(CP_EP))
 
-
-class CuerpoPrincipal(wx.Panel):
+class MainPanel(wx.Panel):
     '''
     Clase que representa al Cuerpo Principal que contendrá el panel de
     navegación de Proyectos, área de trabajo y panel de propiedades de los
@@ -56,64 +58,59 @@ class CuerpoPrincipal(wx.Panel):
 
     def __init__(self, parent):
         '''
-        Constructor de la clase CuerpoPrincipal.
-        :param parent: referencia a la clase padre de CuerpoPrincipal.
+        Constructor de la clase MainPanel.
+        :param parent: referencia a la clase padre de MainPanel.
         '''
-        super(CuerpoPrincipal, self).__init__(parent)
+        super(MainPanel, self).__init__(parent)
         self.SetBackgroundColour('#3B444B')
 
-        self.splitter = wx.SplitterWindow(self, style=wx.NO_3D | wx.SP_3D)
+        self.splitter = wx.SplitterWindow(self, style=wx.SP_3D)
 
         # Se define un panel izquierdo que contendra el espacio de navegación
         # de los proyectos y una Notebook para la pestaña de navegación.
-        leftPanel = wx.Panel(self.splitter)
-        leftPanel.SetBackgroundColour('#FFFFFF')
-        self.notebook1 = MiNotebook(leftPanel, parent)
-        sizerTreeProjects = wx.BoxSizer()
-        sizerTreeProjects.Add(self.notebook1, 1, wx.EXPAND)
+        left_panel = wx.Panel(self.splitter)
+        left_panel.SetBackgroundColour('#FFFFFF')
+        self.project_tree_notebook = ProjectTreeNotebook(left_panel, parent)
+        project_tree_sizer = wx.BoxSizer()
+        project_tree_sizer.Add(self.project_tree_notebook, 1, wx.EXPAND)
 
-        leftPanel.SetSizer(sizerTreeProjects)
-#
-#--------------------------------------------------------------
-#         self.rightPanel = p1(self.splitter)
+        left_panel.SetSizer(project_tree_sizer)
 
         # Creamos el panel derecho para el splitter
-        rightPanel = wx.Panel(self.splitter, -1)
+        right_panel = wx.Panel(self.splitter, -1)
 
-        tabs = wx.Notebook(rightPanel)
-        #dpanel = DrawingPanel(tabs)
-        dpanel = pl(tabs)
-        dpanel.plot()
-        tabs.AddPage(dpanel, "Tab 1")
+        right_notebook = wx.Notebook(right_panel)
+        dpanel = pl(right_notebook)
+        right_notebook.AddPage(dpanel, "Tab 1")
 
         # lado derecho del área de trabajo
-        spanel = SidePanel(rightPanel)
+        side_panel = SidePanel(right_panel)
 
         # Creamos el sizer para el contenido del panel derecho
-        rightBox = wx.BoxSizer(wx.HORIZONTAL)
-        rightBox.Add(tabs, 2, wx.EXPAND)
-        rightBox.Add(spanel, 0, wx.EXPAND)
-        rightPanel.SetSizer(rightBox)
+        right_panel_hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        right_panel_hsizer.Add(right_notebook, 2, wx.EXPAND)
+        right_panel_hsizer.Add(side_panel, 0, wx.EXPAND)
+        right_panel.SetSizer(right_panel_hsizer)
 
-        self.splitter.SplitVertically(leftPanel, rightPanel, 300)
+        self.splitter.SplitVertically(left_panel, right_panel, 300)
         self.splitter.SetSashPosition(300, True)
         self.splitter.SetMinimumPaneSize(200)
 
         # Creamos el sizer para colocar el widget Splitter y expandirlo
         # en el Cuerpo Principal
-        boxProjectBrowser = wx.BoxSizer(wx.VERTICAL)
-        boxProjectBrowser.Add(self.splitter, 1, wx.EXPAND | wx.ALL, 10)
-        self.SetSizer(boxProjectBrowser)
+        body_sizer = wx.BoxSizer(wx.VERTICAL)
+        body_sizer.Add(self.splitter, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(body_sizer)
 
-    def loadProjects(self):
+    def LoadProjects(self):
         proPresenter = ProjectModel()
         namesProjects = []
         for p in proPresenter.getAll():
-            self.arbolProyecto.AddProjectNode(self.arbolProyecto.root,
-                                              p.name, p.id)
+            self.project_tree.AddProjectNode(self.project_tree.root,
+                                              p.nombre, p.id)
             namesProjects.append(p.name)
-        if self.arbolProyecto.root:
-            self.arbolProyecto.SortChildren(self.arbolProyecto.root)
+        if self.project_tree.root:
+            self.project_tree.SortChildren(self.project_tree.root)
         return namesProjects
 
 

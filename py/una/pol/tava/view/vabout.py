@@ -8,7 +8,7 @@ Created on 28/05/2014
 import wx
 
 
-class AcercaDe(wx.AboutDialogInfo):
+class AboutDialog(wx.AboutDialogInfo):
     '''
     Clase que representa a la ventana que despliega información acerca de
     detalles del programa.
@@ -17,7 +17,7 @@ class AcercaDe(wx.AboutDialogInfo):
         '''
         Constructor
         '''
-        super(AcercaDe, self).__init__()
+        super(AboutDialog, self).__init__()
 
         description = """TAVA es una herramienta para el soporte de
         visualización de archivos resultados de algoritmos evolutivos.
