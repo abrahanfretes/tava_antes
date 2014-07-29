@@ -6,7 +6,8 @@ Created on 28/05/2014
 '''
 
 import wx
-from py.una.pol.tava.model.mproject import ProjectModel as pro
+from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
+#from py.una.pol.tava.model.mproject import ProjectModel as pro
 
 
 class NewProjectDialog(wx.Dialog):
@@ -15,8 +16,8 @@ class NewProjectDialog(wx.Dialog):
         super(NewProjectDialog, self).__init__(parent,
             title="Nuevo Proyecto", size=(621, 220))
 
-        self.presenter = NewProjectDialogPresenter()
-        self.parent = parent
+        self.presenter = NewProjectDialogPresenter(self)
+        #self.parent = parent
 
         self.InitUI()
         self.Centre()
@@ -103,9 +104,10 @@ class NewProjectDialog(wx.Dialog):
         self.name_project_textctrl.SetBackgroundColour("Pink")
 
     def OnCreate(self, nameProject):
-        project = self.presenter.OnNew(nameProject)
-        self.parent.main_panel.project_tree_notebook.project_tree_panel.\
-        project_tree.AddProjectNode(project)
+        self.presenter.OnNew(nameProject)
+        #project = self.presenter.OnNew(nameProject)
+        #self.parent.main_panel.project_tree_notebook.project_tree_panel.\
+        #project_tree.AddProjectNode(project)
         self.OnClose()
 
     def OnCancel(self, e):
@@ -115,16 +117,18 @@ class NewProjectDialog(wx.Dialog):
         self.Close(True)
 
 
-class NewProjectDialogPresenter:
-    def __init__(self):
-
-        self.listNamesProject = self.GetNamesProject()
-
-    def GetNamesProject(self):
-        return pro().getNamesProject()
-
-    def OnNew(self, name):
-        return pro().add(name)
-
-    def IsNameValido(self, name):
-        return name not in self.listNamesProject and bool(name)
+#==============================================================================
+# class NewProjectDialogPresenter:
+#     def __init__(self):
+# 
+#         self.listNamesProject = self.GetNamesProject()
+# 
+#     def GetNamesProject(self):
+#         return pro().getNamesProject()
+# 
+#     def OnNew(self, name):
+#         return pro().add(name)
+# 
+#     def IsNameValido(self, name):
+#         return name not in self.listNamesProject and bool(name)
+#==============================================================================
