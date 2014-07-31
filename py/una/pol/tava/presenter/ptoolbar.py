@@ -1,0 +1,47 @@
+'''
+Created on 29/07/2014
+
+@author: afretes
+'''
+from wx.lib.pubsub import Publisher as pub
+from py.una.pol.tava.base.entity import OPEN
+from py.una.pol.tava.base.entity import CLOSED
+
+
+class ToolBarPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+        self.project_selected = None
+        self.item_selected = None
+        pub.subscribe(self.OnDisablePub, 'PROJECT.SELECTED')
+
+    def OnDisableAll(self):
+        self.iview.OnAllDisable()
+
+    def OnCloseProject(self):
+        self.OnDisableAll()
+        pub.sendMessage('PROJECT.CLOSED',
+                        (self.project_selected, self.item_selected))
+
+    def OnOpenProject(self):
+        self.OnDisableAll()
+        pub.sendMessage('PROJECT.OPEN',
+                        (self.project_selected, self.item_selected))
+
+    def OnDeleteProject(self):
+        self.OnDisableAll()
+        pub.sendMessage('PROJECT.DELETE',
+                        (self.project_selected, self.item_selected))
+
+    def OnDisablePub(self, message):
+
+        project_item = message.data
+        self.project_selected = project_item[0]
+        self.item_selected = project_item[1]
+
+        if self.project_selected.state == OPEN:
+            self.iview.OnOpenDisable()
+
+        if self.project_selected.state == CLOSED:
+            self.iview.OnCloseDisable()
