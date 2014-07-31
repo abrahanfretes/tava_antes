@@ -12,14 +12,14 @@ class I18nLocale(wx.Locale):
         super(I18nLocale, self).__init__(language=wx.LANGUAGE_DEFAULT)
 
         self.MakeMO(os.getcwd(), applicationDomain="tava")
-        self.AddCatalogLookupPathPrefix('./locale/es_PY/')
+        self.AddCatalogLookupPathPrefix('./view/locale/es_PY/')
         self.AddCatalog('tava_es_PY')
 
     def SetCatalog(self, catalog):
         self.AddCatalog(catalog)
 
-    def MakeMO(self, applicationDirectoryPath, targetDir='./locale',
-               applicationDomain=None, verbose=0, forceEnglish=0):
+    def MakeMO(self, applicationDirectoryPath, targetDir='./view/locale',
+               applicationDomain=None, verbose=0):
         '''
         MakeMO converts all translated language-specific PO files located
         inside the  application directory into the binary .MO files stored
@@ -39,7 +39,6 @@ class I18nLocale(wx.Locale):
         :param targetDir:
         :param applicationDomain:
         :param verbose:
-        :param forceEnglish:
         '''
 
         if targetDir is None:

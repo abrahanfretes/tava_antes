@@ -43,9 +43,9 @@ class MainToolBar(wx.ToolBar):
         # iconos para los proyectos
         new_bmp = wx.ArtProvider.GetBitmap(wx.ART_NEW)
         open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN)
-        close_bmp = wx.Bitmap('icons/close.png')
-        delete_bmp = wx.Bitmap('icons/delete.png')
-        blog_bmp = wx.Bitmap('icons/blog.png')
+        close_bmp = wx.Bitmap('view/icons/close.png')
+        delete_bmp = wx.Bitmap('view/icons/delete.png')
+        blog_bmp = wx.Bitmap('view/icons/blog.png')
 
         self.AddLabelTool(wx.ID_NEW, '', new_bmp, shortHelp=_(MTB_NP))
         self.AddLabelTool(wx.ID_OPEN, '', open_bmp, shortHelp=_(MTB_OP))

@@ -26,11 +26,12 @@ class ProjectTreeCtrl(wx.TreeCtrl):
                                 style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT)
 
         il = wx.ImageList(16, 16)
-        self.folder_bmp = il.Add(bitmap=wx.Bitmap('icons/folder.png'))
-        self.folder_open_bmp = il.Add(bitmap=wx.Bitmap('icons/folderOpen.png'))
+        self.folder_bmp = il.Add(bitmap=wx.Bitmap('view/icons/folder.png'))
+        self.folder_open_bmp = il.Add(
+                            bitmap=wx.Bitmap('view/icons/folderOpen.png'))
         self.folder_closed_bmp = il.\
-        Add(bitmap=wx.Bitmap('icons/folderClosed.png'))
-        self.file_bmp = il.Add(bitmap=wx.Bitmap('icons/result.png'))
+        Add(bitmap=wx.Bitmap('view/icons/folderClosed.png'))
+        self.file_bmp = il.Add(bitmap=wx.Bitmap('view/icons/result.png'))
         self.AssignImageList(il)
 
         self.root = self.AddRoot("Proyectos")
@@ -41,7 +42,7 @@ class ProjectTreeCtrl(wx.TreeCtrl):
 
         #menu del contexto de Proyecto
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnTreeContextMenu)
-        self.Bind(wx.EVT_LEFT_UP, self.OnSelectedItemTree)
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectedItemTree)
 
     def OnSelectedItemTree(self, event):
         item = self.GetSelection()

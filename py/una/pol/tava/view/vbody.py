@@ -39,7 +39,7 @@ class ProjectTreeNotebook(wx.Notebook):
         # Se configura la pestaña de navegación de proyectos.
         il = wx.ImageList(16, 16)
         self.SetImageList(il)
-        tree_explorer_bmp = il.Add(wx.Bitmap("icons/tree_explorer.gif",
+        tree_explorer_bmp = il.Add(wx.Bitmap("view/icons/tree_explorer.gif",
                                              wx.BITMAP_TYPE_GIF))
         self.SetPageImage(0, tree_explorer_bmp)
         self.SetBackgroundColour(self.GetThemeBackgroundColour())
