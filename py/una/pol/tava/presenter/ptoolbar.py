@@ -16,21 +16,25 @@ class ToolBarPresenter:
         self.item_selected = None
         pub.subscribe(self.OnDisablePub, 'PROJECT.SELECTED')
 
-    def OnDisableAll(self):
+        pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.CLOSED')
+        pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.OPEN')
+        pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.DELETE')
+
+    def OnDisableIcomProjectAll(self):
         self.iview.OnAllDisable()
 
     def OnCloseProject(self):
-        self.OnDisableAll()
         pub.sendMessage('PROJECT.CLOSED',
                         (self.project_selected, self.item_selected))
 
+    def OnNewProject(self):
+        pub.sendMessage('BAR.PROJECT.NEW', 'NEWPROJECT')
+
     def OnOpenProject(self):
-        self.OnDisableAll()
         pub.sendMessage('PROJECT.OPEN',
                         (self.project_selected, self.item_selected))
 
     def OnDeleteProject(self):
-        self.OnDisableAll()
         pub.sendMessage('PROJECT.DELETE',
                         (self.project_selected, self.item_selected))
 
@@ -45,3 +49,6 @@ class ToolBarPresenter:
 
         if self.project_selected.state == CLOSED:
             self.iview.OnCloseDisable()
+
+    def OnDisableIcomProjectAllPub(self, message):
+        self.OnDisableIcomProjectAll()

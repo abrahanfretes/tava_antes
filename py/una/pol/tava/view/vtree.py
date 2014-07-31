@@ -8,6 +8,7 @@ Created on 28/05/2014
 import wx
 from py.una.pol.tava.presenter.ptree import ProjectTreeCtrlPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
+from py.una.pol.tava.view.vproject import NewProjectDialog
 from py.una.pol.tava.base.entity import OPEN
 from py.una.pol.tava.base.entity import CLOSED
 
@@ -73,6 +74,9 @@ class ProjectTreeCtrl(wx.TreeCtrl):
     def OnDeleteItem(self, item):
         self.Delete(item)
 
+    def OnCreateProject(self):
+        NewProjectDialog(self)
+
 
 class ProjectMenu(wx.Menu):
     def __init__(self, parent, project_selected, item):
@@ -88,8 +92,8 @@ class ProjectMenu(wx.Menu):
         closed_item = wx.MenuItem(self, wx.ID_ANY, u"Close")
         delete_item = wx.MenuItem(self, wx.ID_DELETE, u"Delete")
 
-        rename = wx.MenuItem(self, wx.ID_ANY, u"Rename")
-        properties = wx.MenuItem(self, wx.ID_ANY, u"Properties")
+        rename_item = wx.MenuItem(self, wx.ID_ANY, u"Rename")
+        properties_item = wx.MenuItem(self, wx.ID_ANY, u"Properties")
 
         self.AppendItem(new)
 
@@ -99,14 +103,16 @@ class ProjectMenu(wx.Menu):
         self.AppendItem(delete_item)
 
         self.AppendSeparator()
-        self.AppendItem(rename)
-        self.AppendItem(properties)
+        self.AppendItem(rename_item)
+        self.AppendItem(properties_item)
 
         if self.project.state == OPEN:
             open_item.Enable(False)
 
         if self.project.state == CLOSED:
             closed_item.Enable(False)
+            rename_item.Enable(False)
+            properties_item.Enable(False)
 
         self.Bind(wx.EVT_MENU, self.OpenProject, open_item)
         self.Bind(wx.EVT_MENU, self.CloseProject, closed_item)

@@ -53,13 +53,13 @@ class MainToolBar(wx.ToolBar):
         self.AddLabelTool(wx.ID_DELETE, '', delete_bmp, shortHelp=_(TB_DP))
         self.AddLabelTool(wx.ID_EDIT, '', blog_bmp, shortHelp=TB_BP)
 
-        self.EnableToolNew()
-        self.DisableToolOpen()
-        self.DisableToolClose()
-        self.DisableToolDelete()
-        self.DisableToolEdit()
+        self.EnableTool(wx.ID_NEW, True)
+        self.EnableTool(wx.ID_OPEN, False)
+        self.EnableTool(wx.ID_SAVE, False)
+        self.EnableTool(wx.ID_DELETE, False)
+        self.EnableTool(wx.ID_EDIT, False)
 
-        self.Bind(wx.EVT_TOOL, parent.OnNewProject, id=wx.ID_NEW)
+        self.Bind(wx.EVT_TOOL, self.OnNewProjectView, id=wx.ID_NEW)
         self.Bind(wx.EVT_TOOL, self.OnCloseProjectView, id=wx.ID_SAVE)
         self.Bind(wx.EVT_TOOL, self.OnOpenProjectView, id=wx.ID_OPEN)
         self.Bind(wx.EVT_TOOL, self.OnDeleteProjectView, id=wx.ID_DELETE)
@@ -74,36 +74,6 @@ class MainToolBar(wx.ToolBar):
         self.Bind(wx.EVT_TOOL, parent.OnExitAplication, id=wx.ID_EXIT)
 
         self.Realize()
-
-    def EnableToolNew(self):
-        self.EnableTool(wx.ID_NEW, True)
-
-    def DisableToolNew(self):
-        self.EnableTool(wx.ID_NEW, False)
-
-    def EnableToolOpen(self):
-        self.EnableTool(wx.ID_OPEN, True)
-
-    def DisableToolOpen(self):
-        self.EnableTool(wx.ID_OPEN, False)
-
-    def EnableToolClose(self):
-        self.EnableTool(wx.ID_SAVE, True)
-
-    def DisableToolClose(self):
-        self.EnableTool(wx.ID_SAVE, False)
-
-    def EnableToolDelete(self):
-        self.EnableTool(wx.ID_DELETE, True)
-
-    def DisableToolDelete(self):
-        self.EnableTool(wx.ID_DELETE, False)
-
-    def EnableToolEdit(self):
-        self.EnableTool(wx.ID_EDIT, True)
-
-    def DisableToolEdit(self):
-        self.EnableTool(wx.ID_EDIT, False)
 
     def OnOpenDisable(self):
         self.EnableTool(wx.ID_DELETE, True)
@@ -131,3 +101,6 @@ class MainToolBar(wx.ToolBar):
 
     def OnDeleteProjectView(self, event):
         self.presenter.OnDeleteProject()
+
+    def OnNewProjectView(self, event):
+        self.presenter.OnNewProject()
