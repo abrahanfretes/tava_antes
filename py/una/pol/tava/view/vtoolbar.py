@@ -6,6 +6,7 @@ Created on 27/05/2014
 '''
 
 import wx
+from py.una.pol.tava.presenter.ptoolbar import ToolBarPresenter
 from wx import GetTranslation as _
 
 ID_EXIT_PRO = wx.NewId()
@@ -37,6 +38,8 @@ class MainToolBar(wx.ToolBar):
         '''
         super(MainToolBar, self).__init__(parent, wx.TB_HORIZONTAL)
 
+        #El Presenter
+        self.presenter = ToolBarPresenter(self)
         # iconos para los proyectos
         new_bmp = wx.ArtProvider.GetBitmap(wx.ART_NEW)
         open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN)
@@ -57,6 +60,9 @@ class MainToolBar(wx.ToolBar):
         self.DisableToolEdit()
 
         self.Bind(wx.EVT_TOOL, parent.OnNewProject, id=wx.ID_NEW)
+        self.Bind(wx.EVT_TOOL, self.OnCloseProjectView, id=wx.ID_SAVE)
+        self.Bind(wx.EVT_TOOL, self.OnOpenProjectView, id=wx.ID_OPEN)
+        self.Bind(wx.EVT_TOOL, self.OnDeleteProjectView, id=wx.ID_DELETE)
 
         self.AddSeparator()
 
@@ -98,3 +104,30 @@ class MainToolBar(wx.ToolBar):
 
     def DisableToolEdit(self):
         self.EnableTool(wx.ID_EDIT, False)
+
+    def OnOpenDisable(self):
+        self.EnableTool(wx.ID_DELETE, True)
+        self.EnableTool(wx.ID_SAVE, True)
+        self.EnableTool(wx.ID_EDIT, True)
+        self.EnableTool(wx.ID_OPEN, False)
+
+    def OnCloseDisable(self):
+        self.EnableTool(wx.ID_DELETE, True)
+        self.EnableTool(wx.ID_OPEN, True)
+        self.EnableTool(wx.ID_SAVE, False)
+        self.EnableTool(wx.ID_EDIT, False)
+
+    def OnAllDisable(self):
+        self.EnableTool(wx.ID_DELETE, False)
+        self.EnableTool(wx.ID_SAVE, False)
+        self.EnableTool(wx.ID_EDIT, False)
+        self.EnableTool(wx.ID_OPEN, False)
+
+    def OnCloseProjectView(self, event):
+        self.presenter.OnCloseProject()
+
+    def OnOpenProjectView(self, event):
+        self.presenter.OnOpenProject()
+
+    def OnDeleteProjectView(self, event):
+        self.presenter.OnDeleteProject()
