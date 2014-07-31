@@ -1,0 +1,59 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Tava 1.0\n"
+"POT-Creation-Date: 2014-07-18 16:01+PYT\n"
+"Last-Translator: Arsenio Ferreira <arse.ferreira@gmail.com>\n"
+"Language: es_PY\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+# ------------------------------- MainMenuBar ---------------------------------
+msgid "MAIN_MENU_BAR_NEW_PROJECT"
+msgstr "Nuevo Proyecto"
+
+msgid "MAIN_MENU_BAR_OPEN_PROJECT"
+msgstr "Abrir Proyecto"
+
+msgid "MAIN_MENU_BAR_EXIT"
+msgstr "Salir"
+
+msgid "MAIN_MENU_BAR_FILE"
+msgstr "Archivo"
+
+msgid "MAIN_MENU_BAR_ABOUT_TAVA"
+msgstr "Acerca de TAVA"
+
+msgid "MAIN_MENU_BAR_HELP"
+msgstr "Ayuda"
+
+msgid "MAIN_MENU_BAR_EN_US_LANGUAGE"
+msgstr "Inglés"
+
+msgid "MAIN_MENU_BAR_ES_PY_LANGUAGE"
+msgstr "Español"
+
+msgid "MAIN_MENU_BAR_LANGUAGE"
+msgstr "Idioma"
+
+# ------------------------------- MainToolBar ---------------------------------
+msgid "MAIN_TOOLBAR_NEW_PROJECT"
+msgstr "Nuevo Proyecto"
+
+msgid "MAIN_TOOLBAR_OPEN_PROJECT"
+msgstr "Abrir Proyecto"
+
+msgid "MAIN_TOOLBAR_SAVE_PROJECT"
+msgstr "Guardar"
+
+msgid "MAIN_TOOLBAR_EXIT"
+msgstr "Salir"
+
+# ------------------------------- MainPanel -----------------------------------
+msgid "MAIN_PANEL_PROJECT_EXPLORER"
+msgstr "Explorador de Proyectos"

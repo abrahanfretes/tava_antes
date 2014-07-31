@@ -10,14 +10,10 @@ from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from wx import GetTranslation as _
 
-import random
+import wx.propgrid as wxpg
+from wx.lib.pubsub import Publisher as pub
 
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as NTB
-import matplotlib.pyplot as plt
-from wx.lib import scrolledpanel as scrolled
-
-CP_EP = "CUERPO_PRINCIPAL_EXPLORADOR_PROYECTO"
+MP_PE = "MAIN_PANEL_PROJECT_EXPLORER"
 
 
 class TreePanel(wx.Panel):
@@ -38,7 +34,7 @@ class ProjectTreeNotebook(wx.Notebook):
         super(ProjectTreeNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
 
         self.project_tree_panel = TreePanel(self, main_frame)
-        self.AddPage(self.project_tree_panel, _(CP_EP))
+        self.AddPage(self.project_tree_panel, _(MP_PE))
 
         # Se configura la pestaña de navegación de proyectos.
         il = wx.ImageList(16, 16)
@@ -79,21 +75,24 @@ class MainPanel(wx.Panel):
         # Creamos el panel derecho para el splitter
         right_panel = wx.Panel(self.splitter, -1)
 
-        right_notebook = wx.Notebook(right_panel)
-        dpanel = pl(right_notebook)
+        rigth_splitter = wx.SplitterWindow(right_panel)
+
+        right_notebook = wx.Notebook(rigth_splitter, style=wx.SP_BORDER)
+        dpanel = wx.Panel(right_notebook, -1)
         right_notebook.AddPage(dpanel, "Tab 1")
 
         # lado derecho del área de trabajo
-        side_panel = SidePanel(right_panel)
+        side_panel = PropertiesPanel(rigth_splitter)
+
+        rigth_splitter.SplitVertically(right_notebook, side_panel, 700)
+        rigth_splitter.SetMinimumPaneSize(1)
 
         # Creamos el sizer para el contenido del panel derecho
         right_panel_hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        right_panel_hsizer.Add(right_notebook, 2, wx.EXPAND)
-        right_panel_hsizer.Add(side_panel, 0, wx.EXPAND)
+        right_panel_hsizer.Add(rigth_splitter, 1, wx.EXPAND)
         right_panel.SetSizer(right_panel_hsizer)
 
         self.splitter.SplitVertically(left_panel, right_panel, 300)
-        self.splitter.SetSashPosition(300, True)
         self.splitter.SetMinimumPaneSize(200)
 
         # Creamos el sizer para colocar el widget Splitter y expandirlo
@@ -114,83 +113,43 @@ class MainPanel(wx.Panel):
         return namesProjects
 
 
-class DrawingPanel(wx.ScrolledWindow):
-    def __init__(self, tab):
-        wx.ScrolledWindow.__init__(self, tab, style=wx.CLIP_CHILDREN)
-        self.SetBackgroundColour("#B2BEB5")
-
-
-class Notes(wx.Panel):
+class PropertiesPanel(wx.Panel):
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent, size=(170, -1), style=wx.RAISED_BORDER)
-        tree = wx.TreeCtrl(self, size=(170, -1), style=wx.TR_HAS_BUTTONS)
-        tree.AddRoot("Aqui hay una notaaa")
-        sizer = wx.BoxSizer()
-        sizer.Add(tree, 1, wx.EXPAND)
-        self.SetSizer(sizer)
-
-
-class Thumbs(scrolled.ScrolledPanel):
-
-    def __init__(self, parent):
-        scrolled.ScrolledPanel.__init__(self, parent, size=(170, -1),
-                                        style=wx.VSCROLL | wx.RAISED_BORDER)
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(self.sizer)
-        self.SetScrollRate(0, 250)
-        btn = wx.BitmapButton(self, size=(150, 150))
-        text = wx.StaticText(self, label="Tab 1")
-
-        self.sizer.Add(text, flag=wx.ALIGN_CENTER | wx.TOP, border=5)
-        self.sizer.Add(btn, flag=wx.TOP | wx.LEFT, border=6)
-
-
-class SidePanel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, size=(170, -1), style=wx.RAISED_BORDER)
-        self.cp = wx.CollapsiblePane(self, style=wx.CP_DEFAULT_STYLE |
-                                                  wx.CP_NO_TLW_RESIZE)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.SetSizer(sizer)
-        csizer = wx.BoxSizer(wx.VERTICAL)
-        self.cp.GetPane().SetSizer(csizer)
-
-        self.tabs = wx.Notebook(self.cp.GetPane())
-        self.thumbs = Thumbs(self.tabs)
-        self.notes = Notes(self.tabs)
-        self.tabs.AddPage(self.thumbs, "Thumbnails")
-        self.tabs.AddPage(self.notes, "Notes")
-        csizer.Add(self.tabs, 1, wx.EXPAND)
-        sizer.Add(self.cp, 1, wx.EXPAND)
-
-        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnToggleCollapse)
-
-        self.cp.Expand()
-
-    def OnToggleCollapse(self, evt):
-#         frame = self.GetTopLevelParent()
-        frame = self.GetParent()
-        frame.Layout()
-
-
-class pl(wx.Panel):
-    def __init__(self, parent):
+        pub.subscribe(self.OnChange, "project.selected")
         wx.Panel.__init__(self, parent)
-        self.figure = plt.figure()
+        topsizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.canvas = FigureCanvas(self, -1, self.figure)
-        self.toolbar = NTB(self.canvas)
-        self.toolbar.Hide()
+        # Difference between using PropertyGridManager vs PropertyGrid is that
+        # the manager supports multiple pages and a description box.
+        pg = wxpg.PropertyGrid(self, style=wxpg.PG_AUTO_SORT |
+                              wxpg.PG_TOOLBAR | wxpg.PG_SPLITTER_AUTO_CENTER)
 
-        bs = wx.BoxSizer()
-        bs.Add(self.canvas, 1, wx.EXPAND | wx.ALL, 10)
-        self.SetSizer(bs)
+        # Show help as tooltips
+        pg.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
 
-    def plot(self):
-        ''' plot some random stuff '''
-        data = [random.random() for i in range(25)]
-#         data = [random.randrange(0, 25)]
-        ax = self.figure.add_subplot(111)
-        ax.hold(False)
-        ax.plot(data, '*-')
-        self.canvas.draw()
+        pg.Append(wxpg.PropertyCategory("Project Properties"))
+        name = pg.Append(wxpg.StringProperty("Name", value=""))
+        pg.SetPropertyValue(name, "Proyecto1")
+        pg.DisableProperty(name)
+        date = pg.Append(wxpg.DateProperty("Date", value=wx.DateTime_Now()))
+        pg.DisableProperty(date)
+
+        p = wx.Panel(self, wx.ID_ANY)
+        text = wx.StaticText(p, label="Properties")
+        text.SetForegroundColour(wx.BLACK)
+        bsizer = wx.BoxSizer(wx.VERTICAL)
+        bsizer.Add(text, 1, wx.ALL | wx.EXPAND)
+        p.SetSizer(bsizer)
+        p.SetBackgroundColour("#F07746")
+
+        topsizer.Add(p, 0, wx.EXPAND | wx.ALL)
+
+        topsizer.Add(pg, 1, wx.EXPAND | wx.ALL)
+
+        self.SetSizer(topsizer)
+        topsizer.SetSizeHints(self)
+
+    def OnChange(self, message):
+        print("esto tiene data")
+        print message.data
+        print("esto tiene data")

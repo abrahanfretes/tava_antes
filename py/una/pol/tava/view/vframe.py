@@ -31,7 +31,7 @@ class MainFrame(wx.Frame):
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
         self.Centre(wx.BOTH)
-        self.Maximize()
+#         self.Maximize()
         self.Show(True)
 
     def setI18n(self):
