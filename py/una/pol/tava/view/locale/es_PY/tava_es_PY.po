@@ -57,3 +57,53 @@ msgstr "Salir"
 # ------------------------------- MainPanel -----------------------------------
 msgid "MAIN_PANEL_PROJECT_EXPLORER"
 msgstr "Explorador de Proyectos"
+
+# ------------------------------- NewProjectDialog ----------------------------
+msgid "NEW_PROJECT_DIALOG_NEW_PROJECT"
+msgstr "Nuevo Proyecto"
+
+msgid "NEW_PROJECT_DIALOG_CREATE_NEW_PROJECT"
+msgstr "Crear un nuevo Proyecto"
+
+msgid "NEW_PROJECT_DIALOG_ENTER_NAME_PROJECT"
+msgstr "Introduzca un nombre de Proyecto."
+
+msgid "NEW_PROJECT_DIALOG_NAME_PROJECT"
+msgstr "Nombre de Proyecto"
+
+msgid "NEW_PROJECT_DIALOG_HELP"
+msgstr "Ayuda"
+
+msgid "NEW_PROJECT_DIALOG_OK"
+msgstr "OK"
+
+msgid "NEW_PROJECT_DIALOG_CANCEL"
+msgstr "Cancelar"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
+msgstr "Ya existe el Proyecto"
+
+# ------------------------------- ProjectMenu ---------------------------------
+msgid "PROJECT_MENU_NEW"
+msgstr "Nuevo"
+
+msgid "PROJECT_MENU_OPEN"
+msgstr "Abrir"
+
+msgid "PROJECT_MENU_CLOSE"
+msgstr "Cerrar"
+
+msgid "PROJECT_MENU_DELETE"
+msgstr "Eliminar"
+
+msgid "PROJECT_MENU_RENAME"
+msgstr "Renombrar"
+
+msgid "PROJECT_MENU_PROPERTIES"
+msgstr "Propiedades"
+
+msgid "PROJECT_MENU_DELETE_MESSAGE_BOX"
+msgstr "Está seguro que desea eliminar este Proyecto?"
+
+msgid "PROJECT_MENU_DELETE_PROJECT"
+msgstr "Eliminar Proyecto"
