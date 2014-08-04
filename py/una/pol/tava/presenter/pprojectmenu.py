@@ -4,6 +4,7 @@ Created on 29/07/2014
 @author: afretes
 '''
 from wx.lib.pubsub import Publisher as pub
+import topic as t
 
 
 class ProjectMenuPresenter:
@@ -11,10 +12,10 @@ class ProjectMenuPresenter:
         self.iview = iview
 
     def OnOpen(self, project, item):
-        pub.sendMessage('PROJECT.OPEN', (project, item))
+        pub.sendMessage(t.PROJECT_OPEN, (project, item))
 
     def OnClose(self, project, item):
-        pub.sendMessage('PROJECT.CLOSED', (project, item))
+        pub.sendMessage(t.PROJECT_CLOSE, (project, item))
 
     def OnDelete(self, project, item):
-        pub.sendMessage('PROJECT.DELETE', (project, item))
+        pub.sendMessage(t.PROJECT_DELETE, (project, item))

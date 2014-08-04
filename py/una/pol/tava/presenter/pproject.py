@@ -5,6 +5,7 @@ Created on 28/07/2014
 '''
 from py.una.pol.tava.model.mproject import ProjectModel as pro
 from wx.lib.pubsub import Publisher as pub
+import topic as t
 
 
 class NewProjectDialogPresenter():
@@ -18,7 +19,7 @@ class NewProjectDialogPresenter():
     def OnNew(self, name):
 
         project = pro().add(name)
-        pub.sendMessage('PROJECT.NEW', project)
+        pub.sendMessage(t.PROJECT_NEW, project)
 
     def IsNameValido(self, name):
         return name not in self.listNamesProject and bool(name)

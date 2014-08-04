@@ -7,16 +7,17 @@ from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.base.entity import CLOSED
 from py.una.pol.tava.base.entity import OPEN
+import topic as t
 
 
 class ProjectTreeCtrlPresenter:
     def __init__(self, iview):
         self.iview = iview
 
-        pub.subscribe(self.OnNewPub, 'PROJECT.NEW')
-        pub.subscribe(self.OnDeletePub, 'PROJECT.DELETE')
-        pub.subscribe(self.OnClosedPub, 'PROJECT.CLOSED')
-        pub.subscribe(self.OnOpenPub, 'PROJECT.OPEN')
+        pub.subscribe(self.OnNewPub, t.PROJECT_NEW)
+        pub.subscribe(self.OnDeletePub, t.PROJECT_DELETE)
+        pub.subscribe(self.OnClosedPub, t.PROJECT_CLOSE)
+        pub.subscribe(self.OnOpenPub, t.PROJECT_OPEN)
 
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)
@@ -29,7 +30,7 @@ class ProjectTreeCtrlPresenter:
         self.iview.OnInitializeTree(list_project)
 
     def OnSelectedProject(self, project, item):
-        pub.sendMessage('PROJECT.SELECTED', (project, item))
+        pub.sendMessage(t.PROJECT_SELECTED, (project, item))
 
     def GetNamesProjects(self):
         return ProjectModel().getNamesProject()
