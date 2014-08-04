@@ -8,17 +8,13 @@ Created on 27/05/2014
 import wx
 from py.una.pol.tava.presenter.ptoolbar import ToolBarPresenter
 from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
 
 ID_EXIT_PRO = wx.NewId()
 ID_NEW_PRO = wx.NewId()
 ID_OPEN_PRO = wx.NewId()
 ID_SAVE_PRO = wx.NewId()
 ID_BLOG_PRO = wx.NewId()
-
-MTB_NP = "MAIN_TOOLBAR_NEW_PROJECT"
-MTB_OP = "MAIN_TOOLBAR_OPEN_PROJECT"
-MTB_SP = "MAIN_TOOLBAR_SAVE_PROJECT"
-MTB_EX = "MAIN_TOOLBAR_EXIT"
 
 MTB_BP = 'Blog del Proyecto'
 MTB_CP = 'Cerrar Proyecto'
@@ -47,8 +43,8 @@ class MainToolBar(wx.ToolBar):
         delete_bmp = wx.Bitmap('view/icons/delete.png')
         blog_bmp = wx.Bitmap('view/icons/blog.png')
 
-        self.AddLabelTool(wx.ID_NEW, '', new_bmp, shortHelp=_(MTB_NP))
-        self.AddLabelTool(wx.ID_OPEN, '', open_bmp, shortHelp=_(MTB_OP))
+        self.AddLabelTool(wx.ID_NEW, '', new_bmp, shortHelp=_(C.MTB_NP))
+        self.AddLabelTool(wx.ID_OPEN, '', open_bmp, shortHelp=_(C.MTB_OP))
         self.AddLabelTool(wx.ID_SAVE, '', close_bmp, shortHelp=_(MTB_CP))
         self.AddLabelTool(wx.ID_DELETE, '', delete_bmp, shortHelp=_(MTB_DP))
         self.AddLabelTool(wx.ID_EDIT, '', blog_bmp, shortHelp=MTB_BP)
@@ -69,7 +65,7 @@ class MainToolBar(wx.ToolBar):
         # iconos para el sistema
         exit_bmp = wx.ArtProvider.GetBitmap(wx.ART_QUIT)
 
-        self.AddLabelTool(wx.ID_EXIT, '', exit_bmp, shortHelp=_(MTB_EX))
+        self.AddLabelTool(wx.ID_EXIT, '', exit_bmp, shortHelp=_(C.MTB_EX))
 
         self.Bind(wx.EVT_TOOL, parent.OnExitAplication, id=wx.ID_EXIT)
 

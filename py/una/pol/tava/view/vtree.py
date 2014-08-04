@@ -12,15 +12,7 @@ from py.una.pol.tava.view.vproject import NewProjectDialog
 from py.una.pol.tava.base.entity import OPEN
 from py.una.pol.tava.base.entity import CLOSED
 from wx import GetTranslation as _
-
-PM_NEW = "PROJECT_MENU_NEW"
-PM_OPEN = "PROJECT_MENU_OPEN"
-PM_CLOSE = "PROJECT_MENU_CLOSE"
-PM_DEL = "PROJECT_MENU_DELETE"
-PM_REN = "PROJECT_MENU_RENAME"
-PM_PROP = "PROJECT_MENU_PROPERTIES"
-PM_DEL_MESS = "PROJECT_MENU_DELETE_MESSAGE_BOX"
-PM_DEL_PRO = "PROJECT_MENU_DELETE_PROJECT"
+import py.una.pol.tava.view.vi18n as C
 
 
 class ProjectTreeCtrl(wx.TreeCtrl):
@@ -97,14 +89,14 @@ class ProjectMenu(wx.Menu):
         self.item = item
         self.presentermenu = ProjectMenuPresenter(self)
 
-        new = wx.MenuItem(self, wx.ID_ANY, _(PM_NEW))
+        new = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
 
-        open_item = wx.MenuItem(self, wx.ID_ANY, _(PM_OPEN))
-        closed_item = wx.MenuItem(self, wx.ID_ANY, _(PM_CLOSE))
-        delete_item = wx.MenuItem(self, wx.ID_DELETE, _(PM_DEL))
+        open_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_OPEN))
+        closed_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_CLOSE))
+        delete_item = wx.MenuItem(self, wx.ID_DELETE, _(C.PM_DEL))
 
-        rename_item = wx.MenuItem(self, wx.ID_ANY, _(PM_REN))
-        properties_item = wx.MenuItem(self, wx.ID_ANY, _(PM_PROP))
+        rename_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_REN))
+        properties_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_PROP))
 
         self.AppendItem(new)
 
@@ -143,5 +135,5 @@ class ProjectMenu(wx.Menu):
             self.presentermenu.OnDelete(self.project, self.item)
 
     def  GetDialog(self):
-        return wx.MessageBox(_(PM_DEL_MESS), _(PM_DEL_PRO), style=wx.CENTER |
-                               wx.ICON_WARNING | wx.YES_NO)
+        return wx.MessageBox(_(C.PM_DEL_MESS), _(C.PM_DEL_PRO),
+                             style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)

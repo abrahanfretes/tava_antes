@@ -174,3 +174,44 @@ class I18nLocale(wx.Locale):
                 languageDict[i.CanonicalName] = i.Description
 
         return languageDict
+
+# ------------------------------- Constants -----------------------------------
+# ------------------------------- MainMenuBar ---------------------------------
+MMB_NP = "MAIN_MENU_BAR_NEW_PROJECT"
+MMB_OP = "MAIN_MENU_BAR_OPEN_PROJECT"
+MMB_EXIT = "MAIN_MENU_BAR_EXIT"
+MMB_FILE = "MAIN_MENU_BAR_FILE"
+MMB_EN_US_LA = "MAIN_MENU_BAR_EN_US_LANGUAGE"
+MMB_ES_PY_LA = "MAIN_MENU_BAR_ES_PY_LANGUAGE"
+MMB_LANGUAGE = "MAIN_MENU_BAR_LANGUAGE"
+MMB_ABOUT_TAVA = "MAIN_MENU_BAR_ABOUT_TAVA"
+MMB_HELP = "MAIN_MENU_BAR_HELP"
+
+# ------------------------------- MainToolBar ---------------------------------
+MTB_NP = "MAIN_TOOLBAR_NEW_PROJECT"
+MTB_OP = "MAIN_TOOLBAR_OPEN_PROJECT"
+MTB_SP = "MAIN_TOOLBAR_SAVE_PROJECT"
+MTB_EX = "MAIN_TOOLBAR_EXIT"
+
+# ------------------------------- MainPanel -----------------------------------
+MP_PE = "MAIN_PANEL_PROJECT_EXPLORER"
+
+# ------------------------------- NewProjectDialog ----------------------------
+NPD_NEP = "NEW_PROJECT_DIALOG_NEW_PROJECT"
+NPD_CNP = "NEW_PROJECT_DIALOG_CREATE_NEW_PROJECT"
+NPD_ENP = "NEW_PROJECT_DIALOG_ENTER_NAME_PROJECT"
+NPD_NAP = "NEW_PROJECT_DIALOG_NAME_PROJECT"
+NPD_HELP = "NEW_PROJECT_DIALOG_HELP"
+NPD_OK = "NEW_PROJECT_DIALOG_OK"
+NPD_CAN = "NEW_PROJECT_DIALOG_CANCEL"
+NPD_PAE = "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
+
+# ------------------------------- ProjectMenu ---------------------------------
+PM_NEW = "PROJECT_MENU_NEW"
+PM_OPEN = "PROJECT_MENU_OPEN"
+PM_CLOSE = "PROJECT_MENU_CLOSE"
+PM_DEL = "PROJECT_MENU_DELETE"
+PM_REN = "PROJECT_MENU_RENAME"
+PM_PROP = "PROJECT_MENU_PROPERTIES"
+PM_DEL_MESS = "PROJECT_MENU_DELETE_MESSAGE_BOX"
+PM_DEL_PRO = "PROJECT_MENU_DELETE_PROJECT"

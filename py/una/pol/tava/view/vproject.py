@@ -8,22 +8,14 @@ Created on 28/05/2014
 import wx
 from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
-
-NPD_NEP = "NEW_PROJECT_DIALOG_NEW_PROJECT"
-NPD_CNP = "NEW_PROJECT_DIALOG_CREATE_NEW_PROJECT"
-NPD_ENP = "NEW_PROJECT_DIALOG_ENTER_NAME_PROJECT"
-NPD_NAP = "NEW_PROJECT_DIALOG_NAME_PROJECT"
-NPD_HELP = "NEW_PROJECT_DIALOG_HELP"
-NPD_OK = "NEW_PROJECT_DIALOG_OK"
-NPD_CAN = "NEW_PROJECT_DIALOG_CANCEL"
-NPD_PAE = "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
+import py.una.pol.tava.view.vi18n as C
 
 
 class NewProjectDialog(wx.Dialog):
 
     def __init__(self, parent):
         super(NewProjectDialog, self).__init__(parent,
-            title=_(NPD_NEP), size=(621, 220))
+            title=_(C.NPD_NEP), size=(621, 220))
 
         self.presenter = NewProjectDialogPresenter(self)
 
@@ -36,7 +28,7 @@ class NewProjectDialog(wx.Dialog):
         container_sizer = wx.GridBagSizer(5, 5)
 
         new_project_text = wx.StaticText(container_panel,
-                                          label=_(NPD_CNP))
+                                          label=_(C.NPD_CNP))
         new_project_text_font = new_project_text.GetFont()
         new_project_text_font.SetWeight(wx.BOLD)
         new_project_text.SetFont(new_project_text_font)
@@ -49,7 +41,7 @@ class NewProjectDialog(wx.Dialog):
                             wx.ALIGN_RIGHT, border=5)
 
         self.description_text = wx.StaticText(container_panel,
-                                             label=_(NPD_ENP))
+                                             label=_(C.NPD_ENP))
         container_sizer.Add(self.description_text, pos=(1, 0), flag=wx.TOP |
                             wx.LEFT | wx.BOTTOM, border=15)
 
@@ -58,7 +50,7 @@ class NewProjectDialog(wx.Dialog):
             flag=wx.EXPAND | wx.BOTTOM, border=10)
 
         name_project_text = wx.StaticText(container_panel,
-                                          label=_(NPD_NAP))
+                                          label=_(C.NPD_NAP))
         container_sizer.Add(name_project_text, pos=(3, 0), flag=wx.LEFT,
                             border=10)
 
@@ -68,15 +60,15 @@ class NewProjectDialog(wx.Dialog):
         container_sizer.Add(self.name_project_textctrl, pos=(3, 1),
                             span=(1, 3), flag=wx.TOP | wx.EXPAND)
 
-        help_button = wx.Button(container_panel, label=_(NPD_HELP))
+        help_button = wx.Button(container_panel, label=_(C.NPD_HELP))
         container_sizer.Add(help_button, pos=(5, 0), flag=wx.LEFT, border=10)
 
-        self.ok_button = wx.Button(container_panel, label=_(NPD_OK))
+        self.ok_button = wx.Button(container_panel, label=_(C.NPD_OK))
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnNew)
         self.ok_button.Disable()
         container_sizer.Add(self.ok_button, pos=(5, 3))
 
-        cancel_button = wx.Button(container_panel, label=_(NPD_CAN))
+        cancel_button = wx.Button(container_panel, label=_(C.NPD_CAN))
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         container_sizer.Add(cancel_button, pos=(5, 4), span=(1, 1),
             flag=wx.BOTTOM | wx.RIGHT, border=5)
@@ -100,12 +92,12 @@ class NewProjectDialog(wx.Dialog):
             self.ConfigDisableLabel()
 
     def ConfigEnableLabel(self):
-        self.description_text.SetLabel(_(NPD_ENP))
+        self.description_text.SetLabel(_(C.NPD_ENP))
         self.description_text.SetForegroundColour((0, 0, 0))
         self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
 
     def ConfigDisableLabel(self):
-        self.description_text.SetLabel(_(NPD_PAE))
+        self.description_text.SetLabel(_(C.NPD_PAE))
         self.description_text.SetForegroundColour((255, 0, 0))
         self.name_project_textctrl.SetBackgroundColour("Pink")
 

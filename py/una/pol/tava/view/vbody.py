@@ -9,11 +9,10 @@ import wx
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
 
 import wx.propgrid as wxpg
 from wx.lib.pubsub import Publisher as pub
-
-MP_PE = "MAIN_PANEL_PROJECT_EXPLORER"
 
 
 class TreePanel(wx.Panel):
@@ -34,7 +33,7 @@ class ProjectTreeNotebook(wx.Notebook):
         super(ProjectTreeNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
 
         self.project_tree_panel = TreePanel(self, main_frame)
-        self.AddPage(self.project_tree_panel, _(MP_PE))
+        self.AddPage(self.project_tree_panel, _(C.MP_PE))
 
         # Se configura la pestaña de navegación de proyectos.
         il = wx.ImageList(16, 16)
