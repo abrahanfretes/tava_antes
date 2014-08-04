@@ -15,7 +15,6 @@ class ToolBarPresenter:
         self.project_selected = None
         self.item_selected = None
         pub.subscribe(self.OnDisablePub, 'PROJECT.SELECTED')
-
         pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.CLOSED')
         pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.OPEN')
         pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.DELETE')

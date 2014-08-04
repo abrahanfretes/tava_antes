@@ -12,6 +12,7 @@ from py.una.pol.tava.view.vbody import MainPanel
 from py.una.pol.tava.view.vtoolbar import MainToolBar
 from py.una.pol.tava.view.vi18n import I18nLocale
 from py.una.pol.tava.view.vproject import NewProjectDialog
+from py.una.pol.tava.presenter.pframe import FramePresenter
 
 
 class MainFrame(wx.Frame):
@@ -27,6 +28,9 @@ class MainFrame(wx.Frame):
                                              size=wx.Size(1200, 800),
                                              style=wx.DEFAULT_FRAME_STYLE |
                                              wx.TAB_TRAVERSAL)
+        #se agrega el presenter
+        self.presenter = FramePresenter(self)
+
         self.setI18n()
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
@@ -79,3 +83,6 @@ class MainFrame(wx.Frame):
                                style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
         if result == wx.YES:
             self.Close()
+
+    def OnBarNewProject(self):
+        NewProjectDialog(self)

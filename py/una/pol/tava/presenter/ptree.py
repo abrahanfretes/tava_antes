@@ -17,7 +17,6 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.OnDeletePub, 'PROJECT.DELETE')
         pub.subscribe(self.OnClosedPub, 'PROJECT.CLOSED')
         pub.subscribe(self.OnOpenPub, 'PROJECT.OPEN')
-        pub.subscribe(self.OnNewProjectBarPub, 'BAR.PROJECT.NEW')
 
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)
@@ -76,6 +75,3 @@ class ProjectTreeCtrlPresenter:
         item = project_item[1]
 
         self.OnOpen(project, item)
-
-    def OnNewProjectBarPub(self, message):
-        self.iview.OnCreateProject()

@@ -8,7 +8,6 @@ Created on 28/05/2014
 import wx
 from py.una.pol.tava.presenter.ptree import ProjectTreeCtrlPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
-from py.una.pol.tava.view.vproject import NewProjectDialog
 from py.una.pol.tava.base.entity import OPEN
 from py.una.pol.tava.base.entity import CLOSED
 from wx import GetTranslation as _
@@ -49,7 +48,9 @@ class ProjectTreeCtrl(wx.TreeCtrl):
     def OnSelectedItemTree(self, event):
         item = self.GetSelection()
         project = self.GetItemPyData(item)
-        self.presenter.OnSelectedProject(project, item)
+        #verificar despues
+        if project is not None:
+            self.presenter.OnSelectedProject(project, item)
 
     def AddProjectNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
@@ -76,9 +77,6 @@ class ProjectTreeCtrl(wx.TreeCtrl):
 
     def OnDeleteItem(self, item):
         self.Delete(item)
-
-    def OnCreateProject(self):
-        NewProjectDialog(self)
 
 
 class ProjectMenu(wx.Menu):
