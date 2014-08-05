@@ -18,6 +18,7 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.OnDeletePub, t.PROJECT_DELETE)
         pub.subscribe(self.OnClosedPub, t.PROJECT_CLOSE)
         pub.subscribe(self.OnOpenPub, t.PROJECT_OPEN)
+        pub.subscribe(self.OnRenameUpPub, t.PROJECT_RENAME_UP)
 
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)
@@ -48,6 +49,13 @@ class ProjectTreeCtrlPresenter:
     def OnOpen(self, project, item):
         project.state = OPEN
         project = ProjectModel().upDate(project)
+
+        self.OnUpDateTree(project, item)
+
+    def OnRenameUpPub(self, message):
+        project_item = message.data
+        project = project_item[0]
+        item = project_item[1]
 
         self.OnUpDateTree(project, item)
 

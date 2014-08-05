@@ -12,6 +12,7 @@ from py.una.pol.tava.view.vbody import MainPanel
 from py.una.pol.tava.view.vtoolbar import MainToolBar
 from py.una.pol.tava.view.vi18n import I18nLocale
 from py.una.pol.tava.view.vproject import NewProjectDialog
+from py.una.pol.tava.view.vproject import RenameProjectDialog
 from py.una.pol.tava.presenter.pframe import FramePresenter
 
 
@@ -86,3 +87,6 @@ class MainFrame(wx.Frame):
 
     def OnBarNewProject(self):
         NewProjectDialog(self)
+
+    def OnRenameProject(self, message):
+        RenameProjectDialog(self, message)

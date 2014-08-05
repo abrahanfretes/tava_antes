@@ -12,6 +12,10 @@ class FramePresenter:
         self.iview = iview
 
         pub.subscribe(self.OnNewProjectBarPub, t.BAR_PROJECT_NEW)
+        pub.subscribe(self.OnRenameProjectPub, t.PROJECT_RENAME)
 
     def OnNewProjectBarPub(self, message):
         self.iview.OnBarNewProject()
+
+    def OnRenameProjectPub(self, message):
+        self.iview.OnRenameProject(message)

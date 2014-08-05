@@ -27,3 +27,18 @@ PROJECT_SELECTED = 'PROJECT.SELECTED'
 # Send = pproject
 # Subscribe = ptree
 PROJECT_NEW = 'PROJECT.NEW'
+
+# Send = pprojectmenu
+# Subscribe =pframe
+PROJECT_RENAME = 'PROJECT.RENAME'
+
+#Asi no funciona
+#==============================================================================
+# # Send = pproject
+# # Subscribe = ptree
+# PROJECT_RENAME_UP = 'PROJECT.RENAME.UP'
+#==============================================================================
+
+# Send = pproject
+# Subscribe = ptree
+PROJECT_RENAME_UP = 'PROJECT.UPRENAME'

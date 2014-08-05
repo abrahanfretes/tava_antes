@@ -23,3 +23,20 @@ class NewProjectDialogPresenter():
 
     def IsNameValido(self, name):
         return name not in self.listNamesProject and bool(name)
+
+
+class RenameProjectDialogPresenter():
+    def __init__(self, iview):
+        self.iview = iview
+        self.listNamesProject = self.GetNamesProject()
+
+    def IsNameValido(self, name):
+        return name not in self.listNamesProject and bool(name)
+
+    def OnUpDateName(self, new_name, project, item):
+        project.name = new_name
+        project = pro().upDate(project)
+        pub.sendMessage(t.PROJECT_RENAME_UP, (project, item))
+
+    def GetNamesProject(self):
+        return pro().getNamesProject()
