@@ -42,3 +42,15 @@ PROJECT_RENAME = 'PROJECT.RENAME'
 # Send = pproject
 # Subscribe = ptree
 PROJECT_RENAME_UP = 'PROJECT.UPRENAME'
+
+# Send = pmenu
+# Subscribe = pframe
+ENGLISH_SELECTED = 'ENGLISH.SELECTED'
+
+# Send = pmenu
+# Subscribe = pframe
+SPANISH_SELECTED = 'SPANISH.SELECTED'
+
+# Send = pframe
+# Subscribe = pmenu
+LANGUAGE_CHANGED = 'LANGUAGE.CHANGED'

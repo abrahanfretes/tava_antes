@@ -12,11 +12,18 @@ class I18nLocale(wx.Locale):
         super(I18nLocale, self).__init__(language=wx.LANGUAGE_DEFAULT)
 
         self.MakeMO(os.getcwd(), applicationDomain="tava")
-        self.AddCatalogLookupPathPrefix('./view/locale/es_PY/')
-        self.AddCatalog('tava_es_PY')
+        self.SpanishLanguageSelected()
 
     def SetCatalog(self, catalog):
         self.AddCatalog(catalog)
+
+    def EnglishLanguageSelected(self):
+        self.AddCatalogLookupPathPrefix('./view/locale/en_US/')
+        self.AddCatalog('tava_en_US')
+
+    def SpanishLanguageSelected(self):
+        self.AddCatalogLookupPathPrefix('./view/locale/es_PY/')
+        self.AddCatalog('tava_es_PY')
 
     def MakeMO(self, applicationDirectoryPath, targetDir='./view/locale',
                applicationDomain=None, verbose=0):
