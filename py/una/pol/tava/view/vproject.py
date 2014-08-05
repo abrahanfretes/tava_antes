@@ -65,7 +65,6 @@ class NewProjectDialog(wx.Dialog):
 
         self.ok_button = wx.Button(container_panel, label=_(C.NPD_OK))
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnNew)
-        self.ok_button.Disable()
         container_sizer.Add(self.ok_button, pos=(5, 3))
 
         cancel_button = wx.Button(container_panel, label=_(C.NPD_CAN))
@@ -75,6 +74,8 @@ class NewProjectDialog(wx.Dialog):
 
         container_sizer.AddGrowableCol(2)
         container_panel.SetSizer(container_sizer)
+
+        self.ConfigDefaulLabel()
 
     def OnNew(self, e):
         self.OnCreate(self.name_project_textctrl.Value)
@@ -88,8 +89,18 @@ class NewProjectDialog(wx.Dialog):
             if wx.WXK_RETURN == e.GetKeyCode():
                 self.OnCreate(self.name_project_textctrl.Value)
         else:
-            self.ok_button.Disable()
-            self.ConfigDisableLabel()
+            if len(self.name_project_textctrl.Value) == 0:
+                print len(self.name_project_textctrl.Value)
+                self.ConfigDefaulLabel()
+            else:
+                self.ok_button.Disable()
+                self.ConfigDisableLabel()
+
+    def ConfigDefaulLabel(self):
+        self.description_text.SetLabel(_(C.NPD_ENP))
+        self.ok_button.Disable()
+        self.description_text.SetForegroundColour((77, 77, 77))
+        self.name_project_textctrl.SetBackgroundColour((250, 250, 250))
 
     def ConfigEnableLabel(self):
         self.description_text.SetLabel(_(C.NPD_ENP))
@@ -98,8 +109,8 @@ class NewProjectDialog(wx.Dialog):
 
     def ConfigDisableLabel(self):
         self.description_text.SetLabel(_(C.NPD_PAE))
-        self.description_text.SetForegroundColour((255, 0, 0))
-        self.name_project_textctrl.SetBackgroundColour("Pink")
+        self.description_text.SetForegroundColour(wx.RED)
+        self.name_project_textctrl.SetBackgroundColour((237, 93, 93))
 
     def OnCreate(self, nameProject):
         self.presenter.OnNew(nameProject)
