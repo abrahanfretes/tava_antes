@@ -47,10 +47,8 @@ class ProjectTreeCtrl(wx.TreeCtrl):
 
     def OnSelectedItemTree(self, event):
         item = self.GetSelection()
-        project = self.GetItemPyData(item)
-        #verificar despues
-        if project is not None:
-            self.presenter.OnSelectedProject(project, item)
+        if self.GetItemPyData(item) is not None:
+            self.presenter.OnSelectedProjectSend()
 
     def AddProjectNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
@@ -72,7 +70,7 @@ class ProjectTreeCtrl(wx.TreeCtrl):
     def OnTreeContextMenu(self, event):
         item = self.GetSelection()
         project = self.GetItemPyData(item)
-        project_menu = ProjectMenu(self, project, item)
+        project_menu = ProjectMenu(self, project)
         self.PopupMenu(project_menu)
 
     def OnDeleteItem(self, item):
@@ -80,11 +78,10 @@ class ProjectTreeCtrl(wx.TreeCtrl):
 
 
 class ProjectMenu(wx.Menu):
-    def __init__(self, parent, project_selected, item):
+    def __init__(self, parent, project):
         super(ProjectMenu, self).__init__()
 
-        self.project = project_selected
-        self.item = item
+        self.project = project
         self.presentermenu = ProjectMenuPresenter(self)
 
         new = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
@@ -121,20 +118,18 @@ class ProjectMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.RenameProject, rename_item)
 
     def RenameProject(self, event):
-        self.presentermenu.OnRename(self.project, self.item)
+        self.presentermenu.OnRename(self.project)
 
     def OpenProject(self, event):
-
-        self.presentermenu.OnOpen(self.project, self.item)
+        self.presentermenu.OnOpen()
 
     def CloseProject(self, event):
-
-        self.presentermenu.OnClose(self.project, self.item)
+        self.presentermenu.OnClose()
 
     def DeleteProject(self, event):
         result = self.GetDialog()
         if result == wx.YES:
-            self.presentermenu.OnDelete(self.project, self.item)
+            self.presentermenu.OnDelete()
 
     def  GetDialog(self):
         return wx.MessageBox(_(C.PM_DEL_MESS), _(C.PM_DEL_PRO),
