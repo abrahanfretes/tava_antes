@@ -17,7 +17,6 @@ class NewProjectDialogPresenter():
         return pro().getNamesProject()
 
     def OnNew(self, name):
-
         project = pro().add(name)
         pub.sendMessage(t.PROJECT_NEW, project)
 
@@ -33,10 +32,10 @@ class RenameProjectDialogPresenter():
     def IsNameValido(self, name):
         return name not in self.listNamesProject and bool(name)
 
-    def OnUpDateName(self, new_name, project, item):
+    def OnUpDateName(self, new_name, project):
         project.name = new_name
         project = pro().upDate(project)
-        pub.sendMessage(t.PROJECT_RENAME_UP, (project, item))
+        pub.sendMessage(t.PROJECT_RENAME_UP, project)
 
     def GetNamesProject(self):
         return pro().getNamesProject()
