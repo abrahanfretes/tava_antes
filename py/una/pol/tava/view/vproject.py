@@ -10,7 +10,6 @@ from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import RenameProjectDialogPresenter
 import py.una.pol.tava.view.vi18n as C
-#from sympy.printing.preview import preview
 
 
 class NewProjectDialog(wx.Dialog):
@@ -130,9 +129,7 @@ class RenameProjectDialog(wx.Dialog):
         super(RenameProjectDialog, self).__init__(parent,
             title='Renombrar Recurso', size=(550, 180))
 
-        project_item = message.data
-        self.project = project_item[0]
-        self.item = project_item[1]
+        self.project = message.data
         self.previous_name = self.project.name
 
         self.presenter_re = RenameProjectDialogPresenter(self)
@@ -202,7 +199,7 @@ class RenameProjectDialog(wx.Dialog):
 
     def OnOkRename(self, new_name):
         if self.previous_name != self.new_name.Value:
-            self.presenter_re.OnUpDateName(new_name, self.project, self.item)
+            self.presenter_re.OnUpDateName(new_name, self.project)
         self.Close(True)
 
     def OnCancel(self, e):
