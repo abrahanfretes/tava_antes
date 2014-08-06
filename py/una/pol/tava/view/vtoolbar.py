@@ -90,7 +90,7 @@ class MainToolBar(wx.ToolBar):
         self.EnableTool(wx.ID_OPEN, False)
 
     def OnCloseProjectView(self, event):
-        self.presenter.OnCloseProject()
+        self.presenter.OnCloseProjectSend()
 
     def OnOpenProjectView(self, event):
         self.presenter.OnOpenProject()
