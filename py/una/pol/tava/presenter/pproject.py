@@ -5,7 +5,7 @@ Created on 28/07/2014
 '''
 from py.una.pol.tava.model.mproject import ProjectModel as pro
 from wx.lib.pubsub import Publisher as pub
-import topic as t
+import topic as T
 
 
 class NewProjectDialogPresenter():
@@ -18,7 +18,7 @@ class NewProjectDialogPresenter():
 
     def OnNew(self, name):
         project = pro().add(name)
-        pub.sendMessage(t.PROJECT_NEW, project)
+        pub.sendMessage(T.PROJECT_NEW, project)
 
     def IsNameValido(self, name):
         return name not in self.listNamesProject and bool(name)
@@ -35,7 +35,7 @@ class RenameProjectDialogPresenter():
     def OnUpDateName(self, new_name, project):
         project.name = new_name
         project = pro().upDate(project)
-        pub.sendMessage(t.PROJECT_RENAME_UP, project)
+        pub.sendMessage(T.PROJECT_RENAME_UP, project)
 
     def GetNamesProject(self):
         return pro().getNamesProject()
@@ -46,4 +46,4 @@ class DeleteProjectDialogPresenter():
         self.iview = iview
 
     def OnDeleteOk(self):
-        pub.sendMessage(t.PROJECT_DELETE_OK)
+        pub.sendMessage(T.PROJECT_DELETE_OK)

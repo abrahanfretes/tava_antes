@@ -216,6 +216,12 @@ NPD_OK = "NEW_PROJECT_DIALOG_OK"
 NPD_CAN = "NEW_PROJECT_DIALOG_CANCEL"
 NPD_PAE = "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
 
+# ------------------------------- RenameProjectDialog -------------------------
+RPD_RN = "RENAME_PROJECT_DIALOG_RENAME"
+RPD_NN = "RENAME_PROJECT_DIALOG_NEW_NAME"
+RPD_OK = "RENAME_PROJECT_DIALOG_OK"
+RPD_CAN = "RENAME_PROJECT_DIALOG_CANCEL"
+
 # ------------------------------- ProjectMenu ---------------------------------
 PM_NEW = "PROJECT_MENU_NEW"
 PM_OPEN = "PROJECT_MENU_OPEN"

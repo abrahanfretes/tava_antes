@@ -92,6 +92,19 @@ msgstr "Cancelar"
 msgid "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
 msgstr "Ya existe el Proyecto"
 
+# ------------------------------- RenameProjectDialog -------------------------
+msgid "RENAME_PROJECT_DIALOG_RENAME"
+msgstr "Renombrar"
+
+msgid "RENAME_PROJECT_DIALOG_NEW_NAME"
+msgstr "Nuevo nombre:"
+
+msgid "RENAME_PROJECT_DIALOG_OK"
+msgstr "OK"
+
+msgid "RENAME_PROJECT_DIALOG_CANCEL"
+msgstr "Cancelar"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "Nuevo"
