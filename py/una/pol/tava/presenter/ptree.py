@@ -23,64 +23,57 @@ class ProjectTreeCtrlPresenter:
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)
 
-    def OnDelete(self, item):
-        self.iview.OnDeleteItem(item)
+    def OnDelete(self):
+        self.iview.OnDeleteItem(self.iview.GetSelection())
 
     def OnInitializeTree(self):
         list_project = ProjectModel().getAll()
         self.iview.OnInitializeTree(list_project)
 
-    def OnSelectedProject(self, project, item):
-        pub.sendMessage(t.PROJECT_SELECTED, (project, item))
+    def OnSelectedProjectSend(self):
+        if self.GetProjectSelected().state == OPEN:
+            pub.sendMessage(t.PROJECT_SELECTED_OPEN)
+        else:
+            pub.sendMessage(t.PROJECT_SELECTED_CLOSE)
 
     def GetNamesProjects(self):
         return ProjectModel().getNamesProject()
 
-    def OnUpDateTree(self, project, item):
-        self.OnDelete(item)
+    def OnUpDateTree(self, project):
+        self.OnDelete()
         self.OnAddNode(project)
 
-    def OnClose(self, project, item):
+    def OnClose(self):
+        project = self.GetProjectSelected()
         project.state = CLOSED
         project = ProjectModel().upDate(project)
+        self.OnUpDateTree(project)
 
-        self.OnUpDateTree(project, item)
-
-    def OnOpen(self, project, item):
+    def OnOpen(self):
+        project = self.GetProjectSelected()
         project.state = OPEN
         project = ProjectModel().upDate(project)
-
-        self.OnUpDateTree(project, item)
+        self.OnUpDateTree(project)
 
     def OnRenameUpPub(self, message):
-        project_item = message.data
-        project = project_item[0]
-        item = project_item[1]
-
-        self.OnUpDateTree(project, item)
+        project = message.data
+        self.OnUpDateTree(project)
 
     def OnNewPub(self, message):
         project = message.data
         self.OnAddNode(project)
 
     def OnDeletePub(self, message):
-        project_item = message.data
-        project = project_item[0]
-        item = project_item[1]
-
+        project = self.GetProjectSelected()
         ProjectModel().delete(project)
-        self.OnDelete(item)
+        self.OnDelete()
 
     def OnClosedPub(self, message):
-        project_item = message.data
-        project = project_item[0]
-        item = project_item[1]
-
-        self.OnClose(project, item)
+        self.OnClose()
 
     def OnOpenPub(self, message):
-        project_item = message.data
-        project = project_item[0]
-        item = project_item[1]
+        self.OnOpen()
 
-        self.OnOpen(project, item)
+    def GetProjectSelected(self):
+        item_selected = self.iview.GetSelection()
+        return self.iview.GetItemPyData(item_selected)
