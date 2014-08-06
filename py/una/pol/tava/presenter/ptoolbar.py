@@ -18,7 +18,6 @@ class ToolBarPresenter:
 
         pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_CLOSE)
         pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_OPEN)
-        pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_DELETE)
         pub.subscribe(self.OnUpdateLabels, T.LANGUAGE_CHANGED)
 
     def OnDisableIcomProjectAll(self):

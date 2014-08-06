@@ -8,6 +8,7 @@ import wx
 
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.view.vtree import ProjectTreeCtrl
+from py.una.pol.tava.presenter.pbody import ProjectTreeNotebookPresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
 
@@ -31,6 +32,8 @@ class TreePanel(wx.Panel):
 class ProjectTreeNotebook(wx.Notebook):
     def __init__(self, parent, main_frame):
         super(ProjectTreeNotebook, self).__init__(parent, style=wx.BK_DEFAULT)
+
+        self.presenter = ProjectTreeNotebookPresenter(self)
 
         self.project_tree_panel = TreePanel(self, main_frame)
         self.AddPage(self.project_tree_panel, _(C.MP_PE))
