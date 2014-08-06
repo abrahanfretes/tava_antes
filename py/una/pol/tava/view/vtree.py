@@ -127,10 +127,4 @@ class ProjectMenu(wx.Menu):
         self.presentermenu.OnClose()
 
     def DeleteProject(self, event):
-        result = self.GetDialog()
-        if result == wx.YES:
-            self.presentermenu.OnDelete()
-
-    def  GetDialog(self):
-        return wx.MessageBox(_(C.PM_DEL_MESS), _(C.PM_DEL_PRO),
-                             style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
+        self.presentermenu.OnDelete()

@@ -9,6 +9,7 @@ import wx
 from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import RenameProjectDialogPresenter
+from py.una.pol.tava.presenter.pproject import DeleteProjectDialogPresenter
 import py.una.pol.tava.view.vi18n as C
 
 
@@ -207,3 +208,14 @@ class RenameProjectDialog(wx.Dialog):
 
     def OnClose(self):
         self.Close(True)
+
+
+class DeleteProjectDialog():
+    def __init__(self, parent, message):
+
+        self.presenter_re1 = DeleteProjectDialogPresenter(self)
+
+        result = wx.MessageBox(_(C.PM_DEL_MESS), _(C.PM_DEL_PRO),
+                      style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
+        if result == wx.YES:
+            self.presenter_re1.OnDeleteOk()
