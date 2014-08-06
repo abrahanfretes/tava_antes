@@ -20,9 +20,19 @@ PROJECT_OPEN = 'PROJECT.OPEN'
 # Subscribe = ptoolbar, ptree
 PROJECT_DELETE = 'PROJECT.DELETE'
 
+#==============================================================================
+# # Send = ptree
+# # Subscribe = ptoolbar
+# PROJECT_SELECTED = 'PROJECT.SELECTED'
+#==============================================================================
+
 # Send = ptree
 # Subscribe = ptoolbar
-PROJECT_SELECTED = 'PROJECT.SELECTED'
+PROJECT_SELECTED_OPEN = 'PROJECT.SELECTEDOPEN'
+
+# Send = ptree
+# Subscribe = ptoolbar
+PROJECT_SELECTED_CLOSE = 'PROJECT.SELECTEDCLOSE'
 
 # Send = pproject
 # Subscribe = ptree
