@@ -39,3 +39,11 @@ class RenameProjectDialogPresenter():
 
     def GetNamesProject(self):
         return pro().getNamesProject()
+
+
+class DeleteProjectDialogPresenter():
+    def __init__(self, iview):
+        self.iview = iview
+
+    def OnDeleteOk(self):
+        pub.sendMessage(t.PROJECT_DELETE_OK)

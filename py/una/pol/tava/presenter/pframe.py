@@ -13,6 +13,7 @@ class FramePresenter:
 
         pub.subscribe(self.OnNewProjectBarPub, t.BAR_PROJECT_NEW)
         pub.subscribe(self.OnRenameProjectPub, t.PROJECT_RENAME)
+        pub.subscribe(self.OnDeleteSelectProjectPub, t.PROJECT_DELETE_SELECT)
         pub.subscribe(self.EnglishLanguageSelected, t.ENGLISH_SELECTED)
         pub.subscribe(self.SpanishLanguageSelected, t.SPANISH_SELECTED)
 
@@ -21,6 +22,9 @@ class FramePresenter:
 
     def OnRenameProjectPub(self, message):
         self.iview.OnRenameProject(message)
+
+    def OnDeleteSelectProjectPub(self, message):
+        self.iview.OnDeleteSelectedProject(message)
 
     def EnglishLanguageSelected(self, message):
         self.iview.i18n.EnglishLanguageSelected()

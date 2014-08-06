@@ -15,7 +15,10 @@ class ProjectTreeCtrlPresenter:
         self.iview = iview
 
         pub.subscribe(self.OnNewPub, t.PROJECT_NEW)
-        pub.subscribe(self.OnDeletePub, t.PROJECT_DELETE)
+
+        pub.subscribe(self.OnDeleteClickPub, t.PROJECT_DELETE_CLICK)
+        pub.subscribe(self.OnDeletedOkPub, t.PROJECT_DELETE_OK)
+
         pub.subscribe(self.OnClosedPub, t.PROJECT_CLOSE)
         pub.subscribe(self.OnOpenPub, t.PROJECT_OPEN)
         pub.subscribe(self.OnRenameUpPub, t.PROJECT_RENAME_UP)
@@ -63,7 +66,10 @@ class ProjectTreeCtrlPresenter:
         project = message.data
         self.OnAddNode(project)
 
-    def OnDeletePub(self, message):
+    def OnDeleteClickPub(self, message):
+        pub.sendMessage(t.PROJECT_DELETE_SELECT, self.GetProjectSelected())
+
+    def OnDeletedOkPub(self, message):
         project = self.GetProjectSelected()
         ProjectModel().delete(project)
         self.OnDelete()

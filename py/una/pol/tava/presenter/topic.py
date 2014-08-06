@@ -17,14 +17,16 @@ PROJECT_CLOSE = 'PROJECT.CLOSE'
 PROJECT_OPEN = 'PROJECT.OPEN'
 
 # Send = ptoolbar, pprojectmenu
-# Subscribe = ptoolbar, ptree
-PROJECT_DELETE = 'PROJECT.DELETE'
+# Subscribe = ptree
+PROJECT_DELETE_CLICK = 'PROJECT.CLICKDELETE'
 
-#==============================================================================
-# # Send = ptree
-# # Subscribe = ptoolbar
-# PROJECT_SELECTED = 'PROJECT.SELECTED'
-#==============================================================================
+# Send = ptree
+# Subscribe = pframe
+PROJECT_DELETE_SELECT = 'PROJECT.SELECTDELETE'
+
+# Send = pproject
+# Subscribe = ptree
+PROJECT_DELETE_OK = 'PROJECT.OKDELETE'
 
 # Send = ptree
 # Subscribe = ptoolbar

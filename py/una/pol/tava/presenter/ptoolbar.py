@@ -11,14 +11,11 @@ class ToolBarPresenter:
     def __init__(self, iview):
         self.iview = iview
 
-        self.project_selected = None
-        self.item_selected = None
         pub.subscribe(self.OnDisableOpenPub, t.PROJECT_SELECTED_OPEN)
         pub.subscribe(self.OnDisableClosePub, t.PROJECT_SELECTED_CLOSE)
 
         pub.subscribe(self.OnDisableIcomProjectAllPub, t.PROJECT_CLOSE)
         pub.subscribe(self.OnDisableIcomProjectAllPub, t.PROJECT_OPEN)
-        pub.subscribe(self.OnDisableIcomProjectAllPub, t.PROJECT_DELETE)
 
     def OnDisableIcomProjectAll(self):
         self.iview.OnAllDisable()
@@ -33,7 +30,7 @@ class ToolBarPresenter:
         pub.sendMessage(t.PROJECT_OPEN)
 
     def OnDeleteProject(self):
-        pub.sendMessage(t.PROJECT_DELETE)
+        pub.sendMessage(t.PROJECT_DELETE_CLICK)
 
     def OnDisableOpenPub(self, message):
         self.iview.OnOpenDisable()

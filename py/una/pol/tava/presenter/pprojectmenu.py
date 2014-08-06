@@ -18,7 +18,7 @@ class ProjectMenuPresenter:
         pub.sendMessage(t.PROJECT_CLOSE)
 
     def OnDelete(self):
-        pub.sendMessage(t.PROJECT_DELETE)
+        pub.sendMessage(t.PROJECT_DELETE_CLICK)
 
     def OnRename(self, project):
         pub.sendMessage(t.PROJECT_RENAME, project)
