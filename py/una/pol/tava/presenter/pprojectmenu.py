@@ -11,14 +11,14 @@ class ProjectMenuPresenter:
     def __init__(self, iview):
         self.iview = iview
 
-    def OnOpen(self, project, item):
-        pub.sendMessage(t.PROJECT_OPEN, (project, item))
+    def OnOpen(self):
+        pub.sendMessage(t.PROJECT_OPEN)
 
-    def OnClose(self, project, item):
-        pub.sendMessage(t.PROJECT_CLOSE, (project, item))
+    def OnClose(self):
+        pub.sendMessage(t.PROJECT_CLOSE)
 
-    def OnDelete(self, project, item):
-        pub.sendMessage(t.PROJECT_DELETE, (project, item))
+    def OnDelete(self):
+        pub.sendMessage(t.PROJECT_DELETE)
 
-    def OnRename(self, project, item):
-        pub.sendMessage(t.PROJECT_RENAME, (project, item))
+    def OnRename(self, project):
+        pub.sendMessage(t.PROJECT_RENAME, project)
