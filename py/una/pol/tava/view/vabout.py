@@ -31,7 +31,7 @@ class AboutDialog(wx.AboutDialogInfo):
         Licencia, o (a su elección) cualquier versión posterior.
         """
 
-        self.SetIcon(wx.Icon('icons/logoTVAA.jpg',
+        self.SetIcon(wx.Icon('view/icons/logoTVAA.jpg',
                              wx.BITMAP_TYPE_JPEG))
         self.SetName('TAVA')
         self.SetVersion('1.0')

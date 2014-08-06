@@ -54,6 +54,15 @@ msgstr "Guardar"
 msgid "MAIN_TOOLBAR_EXIT"
 msgstr "Salir"
 
+msgid "MAIN_TOOLBAR_PROJECT_BLOG"
+msgstr "Blog del Proyecto"
+
+msgid "MAIN_TOOLBAR_CLOSE_PROJECT"
+msgstr "Cerrar Proyecto"
+
+msgid "MAIN_TOOLBAR_DELETE_PROJECT"
+msgstr "Eliminar Proyecto"
+
 # ------------------------------- MainPanel -----------------------------------
 msgid "MAIN_PANEL_PROJECT_EXPLORER"
 msgstr "Explorador de Proyectos"

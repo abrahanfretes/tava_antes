@@ -54,6 +54,15 @@ msgstr "Save"
 msgid "MAIN_TOOLBAR_EXIT"
 msgstr "Exit"
 
+msgid "MAIN_TOOLBAR_PROJECT_BLOG"
+msgstr "Project Blog"
+
+msgid "MAIN_TOOLBAR_CLOSE_PROJECT"
+msgstr "Close Project"
+
+msgid "MAIN_TOOLBAR_DELETE_PROJECT"
+msgstr "Delete Project"
+
 # ------------------------------- MainPanel -----------------------------------
 msgid "MAIN_PANEL_PROJECT_EXPLORER"
 msgstr "Project Explorer"
