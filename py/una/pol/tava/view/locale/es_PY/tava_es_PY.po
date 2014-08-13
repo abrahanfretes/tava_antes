@@ -121,6 +121,9 @@ msgstr "OK"
 msgid "RENAME_PROJECT_DIALOG_CANCEL"
 msgstr "Cancelar"
 
+msgid "RENAME_PROJECT_DIALOG_NEW_NAME_ALERT"
+msgstr "Renombrar proyecto"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "Nuevo"
