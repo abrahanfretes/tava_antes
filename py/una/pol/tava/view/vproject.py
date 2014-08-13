@@ -170,7 +170,7 @@ class RenameProjectDialog(wx.Dialog):
 
     def __init__(self, parent, message):
         super(RenameProjectDialog, self).__init__(parent,
-            title=_(C.RPD_RN), size=(550, 180))
+            title=_(C.RPD_RN), size=(550, 220))
 
         self.project = message.data
         self.previous_name = self.project.name
@@ -184,73 +184,113 @@ class RenameProjectDialog(wx.Dialog):
     def InitUI(self):
 
         cpanel = wx.Panel(self)
-        csizer = wx.GridBagSizer(4, 5)
+        csizer = wx.GridBagSizer(3, 4)
+
+        #Figura de tava
+        fig_bmp = wx.StaticBitmap(cpanel,
+                                  bitmap=wx.Bitmap('view/icons/exec.png'))
+        csizer.Add(fig_bmp, pos=(0, 4),
+                   flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
+
+        #Texto Descriptivo que cambia
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font.SetPointSize(9)
+        self.name_alert = wx.StaticText(cpanel)
+        self.name_alert.SetFont(font)
+        self.fig_alet_bmp = wx.StaticBitmap(cpanel)
+        hbox1.Add(self.fig_alet_bmp, flag=wx.LEFT, border=2)
+        hbox1.Add(self.name_alert, flag=wx.LEFT, border=2)
+        csizer.Add(hbox1, pos=(0, 0), span=(0, 3), flag=wx.TOP |
+                            wx.LEFT | wx.BOTTOM, border=15)
+
+        #Linea estatica
+        line = wx.StaticLine(cpanel)
+        csizer.Add(line, pos=(1, 0), span=(1, 5),
+            flag=wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border=15)
 
         level_name_text = wx.StaticText(cpanel, label=_(C.RPD_NN))
-        csizer.Add(level_name_text, pos=(0, 0), flag=wx.LEFT | wx.TOP,
-                   border=20)
+        csizer.Add(level_name_text, pos=(2, 0), flag=wx.LEFT | wx.TOP,
+                   border=15)
         self.level_name_text = level_name_text
 
-        self.new_name_textctrl = wx.TextCtrl(cpanel, value=self.previous_name)
-        csizer.Add(self.new_name_textctrl, pos=(0, 1), span=(1, 4),
-                   flag=wx.BOTTOM | wx.TOP | wx.RIGHT | wx.EXPAND, border=16)
+        self.new_name = wx.TextCtrl(cpanel, value=self.previous_name)
+        csizer.Add(self.new_name, pos=(2, 1), span=(1, 4),
+                   flag=wx.BOTTOM | wx.TOP | wx.RIGHT | wx.EXPAND, border=15)
 
         self.ok_button = wx.Button(cpanel, label=_(C.RPD_OK))
-
-        csizer.Add(self.ok_button, pos=(3, 3),
-                   flag=wx.BOTTOM | wx.TOP | wx.RIGHT, border=16)
+        csizer.Add(self.ok_button, pos=(3, 4),
+                flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.TOP, border=15)
 
         self.cancel_button = wx.Button(cpanel, label=_(C.RPD_CAN))
-
-        csizer.Add(self.cancel_button, pos=(3, 4),
-                   flag=wx.BOTTOM | wx.TOP | wx.RIGHT, border=16)
+        csizer.Add(self.cancel_button, pos=(3, 3),
+                   flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border=15)
 
         csizer.AddGrowableCol(2)
         cpanel.SetSizer(csizer)
 
-        self.new_name_textctrl.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.new_name.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnOkRenameEvent)
         self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
 
+        self.ConfigEnableLabel()
+
     def OnKeyUp(self, e):
 
-        if self.presenter_re.IsNameValido(self.new_name_textctrl.Value):
-            self.ok_button.Enable(True)
-            self.ConfigEnableLabel()
-
+        if(self.presenter_re.IsNameValido(
+                                    self.new_name.Value, self.previous_name)):
             if wx.WXK_RETURN == e.GetKeyCode():
-                self.OnOkRename(self.new_name_textctrl.Value)
-        else:
-            if self.previous_name == self.new_name_textctrl.Value:
-                self.ConfigEnableLabel()
-            elif len(self.new_name_textctrl.Value) == 0:
-                self.ConfigDefaulLabel()
-            else:
-                self.ConfigDisableLabel()
-
-    def ConfigDefaulLabel(self):
-        self.ok_button.Disable()
-        self.new_name_textctrl.SetBackgroundColour((250, 250, 250))
+                self.presenter_re.OnUpDateName(self.new_name.Value)
 
     def ConfigEnableLabel(self):
-        self.new_name_textctrl.SetBackgroundColour((255, 255, 255))
+        self.name_alert.SetLabel('RenameProyect')
+        self.IconRename()
+        self.new_name.SetBackgroundColour((255, 255, 255))
 
-    def ConfigDisableLabel(self):
-        self.ok_button.Disable()
-        self.new_name_textctrl.SetBackgroundColour((237, 93, 93))
+    def ConfigProjectNameEmpty(self):
+        self.name_alert.SetLabel(_(C.NPD_PNE))
+        self.IconWarning()
+        self.new_name.SetBackgroundColour('#F9EDED')
+
+    def ConfigSlashProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNSI))
+        self.IconError()
+        self.SetNameErrorBackground()
+
+    def ConfigInitPointProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNPI))
+        self.IconError()
+        self.SetNameErrorBackground()
+
+    def ConfigInvalidLenProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNLI))
+        self.IconError()
+        self.SetNameErrorBackground()
+
+    def ConfigExistingProject(self):
+        self.name_alert.SetLabel(_(C.NPD_PAE))
+        self.IconError()
+        self.SetNameErrorBackground()
+
+    def SetNameErrorBackground(self):
+        self.new_name.SetBackgroundColour((237, 93, 93))
+
+    def IconError(self):
+        self.fig_alet_bmp.SetBitmap(
+                                wx.Bitmap('view/icons/errornewproject.png'))
+
+    def IconWarning(self):
+        self.fig_alet_bmp.SetBitmap(
+                                wx.Bitmap('view/icons/warningnewproject.png'))
+
+    def IconRename(self):
+        self.fig_alet_bmp.SetBitmap(
+                                wx.Bitmap('view/icons/renamenewproject.png'))
 
     def OnOkRenameEvent(self, event):
-        self.OnOkRename(self.new_name_textctrl.Value)
-
-    def OnOkRename(self, new_name):
-        if self.previous_name != self.new_name_textctrl.Value:
-            self.presenter_re.OnUpDateName(new_name, self.project)
-        self.Close(True)
+        self.presenter_re.OnUpDateName(self.new_name.Value)
 
     def OnCancel(self, e):
-        self.Close(True)
-
-    def OnClose(self):
         self.Close(True)
 
 

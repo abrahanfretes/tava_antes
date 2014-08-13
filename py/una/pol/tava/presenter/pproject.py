@@ -54,13 +54,43 @@ class RenameProjectDialogPresenter():
         self.iview = iview
         self.listNamesProject = self.GetNamesProject()
 
-    def IsNameValido(self, name):
-        return name not in self.listNamesProject and bool(name)
+    #def IsNameValido(self, name):
+        #return name not in self.listNamesProject and bool(name)
 
-    def OnUpDateName(self, new_name, project):
-        project.name = new_name
-        project = pro().upDate(project)
-        pub.sendMessage(T.PROJECT_RENAME_UP, project)
+    def IsNameValido(self, name, previus_name):
+
+        self.iview.ok_button.Disable()
+
+        if len(name) == 0:
+            self.iview.ConfigProjectNameEmpty()
+            return False
+        if '/' in name:
+            self.iview.ConfigSlashProjectName()
+            return False
+        if name[0] == '.':
+            self.iview.ConfigInitPointProjectName()
+            return False
+        if len(name.strip(' ')) == 0:
+            self.iview.ConfigProjectNameEmpty()
+            return False
+        if len(name) > 100:
+            self.iview.ConfigInvalidLenProjectName()
+            return False
+        if name.strip(' ') in self.listNamesProject and name != previus_name:
+            self.iview.ConfigExistingProject()
+            return False
+
+        #nombre correcto
+        self.iview.ok_button.Enable()
+        self.iview.ConfigEnableLabel()
+        return True
+
+    def OnUpDateName(self, new_name):
+        if self.iview.previous_name != new_name.strip(' '):
+            self.iview.project.name = new_name.strip(' ')
+            project = pro().upDate(self.iview.project)
+            pub.sendMessage(T.PROJECT_RENAME_UP, project)
+        self.iview.Close(True)
 
     def GetNamesProject(self):
         return pro().getNamesProject()
