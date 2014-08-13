@@ -28,7 +28,7 @@ class NewProjectDialog(wx.Dialog):
         panel_in = wx.Panel(self)
         sizer_in = wx.GridBagSizer(5, 5)
 
-        #titulo para Creacion de Proyecto
+        #titulo de Proyecto Tava
         font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font1.SetWeight(wx.BOLD)
         font1.SetPointSize(14)
@@ -72,6 +72,7 @@ class NewProjectDialog(wx.Dialog):
         sizer_in.Add(self.name, pos=(3, 1), span=(1, 4),
                      flag=wx.EXPAND | wx.RIGHT, border=15)
 
+        #Boton Ayuda
         help_button = wx.Button(panel_in, label=_(C.NPD_HELP))
         sizer_in.Add(help_button, pos=(5, 0), flag=wx.LEFT, border=15)
         self.help_button = help_button
@@ -81,12 +82,11 @@ class NewProjectDialog(wx.Dialog):
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         sizer_in.Add(cancel_button, pos=(5, 3),
                      flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
-        #cancel_button.SetDefault()
 
         #Boton OK
         self.ok_button = wx.Button(panel_in, label=_(C.NPD_OK))
         self.ok_button.Disable()
-        self.ok_button.Bind(wx.EVT_BUTTON, self.OnNew)
+        self.ok_button.Bind(wx.EVT_BUTTON, self.OnCreateProject)
         self.ok_button.Disable()
         sizer_in.Add(self.ok_button, pos=(5, 4),
                      flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT, border=15)
@@ -101,12 +101,11 @@ class NewProjectDialog(wx.Dialog):
 
         if(self.presenter.IsNameValido(self.name.Value)):
             if wx.WXK_RETURN == e.GetKeyCode():
-                self.OnCreate(self.name.Value)
+                self.presenter.CreateProject(self.name.Value)
 
     def ConfigEnableLabel(self):
         self.name_alert.SetLabel(_(C.NPD_ENP))
         self.IconCorrect()
-        self.name_alert.SetForegroundColour((0, 0, 0))
         self.name.SetBackgroundColour((255, 255, 255))
 
     def ConfigProjectNameEmpty(self):
@@ -117,25 +116,25 @@ class NewProjectDialog(wx.Dialog):
     def ConfigSlashProjectName(self):
         self.name_alert.SetLabel(_(C.NPD_PNSI))
         self.IconError()
-        self.name.SetBackgroundColour((237, 93, 93))
+        self.SetNameErrorBackground()
 
     def ConfigInitPointProjectName(self):
         self.name_alert.SetLabel(_(C.NPD_PNPI))
         self.IconError()
-        self.name.SetBackgroundColour((237, 93, 93))
+        self.SetNameErrorBackground()
 
     def ConfigInvalidLenProjectName(self):
         self.name_alert.SetLabel(_(C.NPD_PNLI))
         self.IconError()
-        self.name.SetBackgroundColour((237, 93, 93))
+        self.SetNameErrorBackground()
 
     def ConfigExistingProject(self):
         self.name_alert.SetLabel(_(C.NPD_PAE))
         self.IconError()
-        self.name.SetBackgroundColour((237, 93, 93))
+        self.SetNameErrorBackground()
 
-    def OnNew(self, e):
-        self.OnCreate(self.name.Value)
+    def OnCreateProject(self, e):
+        self.presenter.CreateProject(self.name.Value)
 
     def ContainsSlash(self):
         return '/' in self.name.Value
@@ -152,17 +151,13 @@ class NewProjectDialog(wx.Dialog):
         self.execute_bmp6.SetBitmap(
                                 wx.Bitmap('view/icons/execute.png'))
 
-    def OnCreate(self, name_project):
-        self.presenter.OnNew(self.CleanNameProject(name_project))
-        self.OnClose()
+    def SetNameErrorBackground(self):
+        self.name.SetBackgroundColour((237, 93, 93))
 
     def CleanNameProject(self, name_project):
         return name_project.strip(' ')
 
     def OnCancel(self, e):
-        self.Close(True)
-
-    def OnClose(self):
         self.Close(True)
 
 

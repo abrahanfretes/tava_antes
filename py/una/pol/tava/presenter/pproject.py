@@ -16,15 +16,16 @@ class NewProjectDialogPresenter():
     def GetNamesProject(self):
         return pro().getNamesProject()
 
-    def OnNew(self, name):
-        project = pro().add(name)
+    def CreateProject(self, name):
+        project = pro().add(name.strip(' '))
         pub.sendMessage(T.PROJECT_NEW, project)
+        self.iview.Close(True)
 
     def IsNameValido(self, name):
 
         self.iview.ok_button.Disable()
 
-        if len(name) == 0:
+        if len(name.strip(' ')) == 0:
             self.iview.ConfigProjectNameEmpty()
             return False
         if '/' in name:
@@ -36,14 +37,14 @@ class NewProjectDialogPresenter():
         if len(name.strip(' ')) == 0:
             self.iview.ConfigProjectNameEmpty()
             return False
-        if len(name) > 100:
+        if len(name.strip(' ')) > 100:
             self.iview.ConfigInvalidLenProjectName()
             return False
         if name in self.listNamesProject:
             self.iview.ConfigExistingProject()
             return False
 
-        #nombre correcto
+        #correct name
         self.iview.ok_button.Enable()
         self.iview.ConfigEnableLabel()
         return True
@@ -54,14 +55,11 @@ class RenameProjectDialogPresenter():
         self.iview = iview
         self.listNamesProject = self.GetNamesProject()
 
-    #def IsNameValido(self, name):
-        #return name not in self.listNamesProject and bool(name)
-
     def IsNameValido(self, name, previus_name):
 
         self.iview.ok_button.Disable()
 
-        if len(name) == 0:
+        if len(name.strip(' ')) == 0:
             self.iview.ConfigProjectNameEmpty()
             return False
         if '/' in name:
@@ -73,14 +71,14 @@ class RenameProjectDialogPresenter():
         if len(name.strip(' ')) == 0:
             self.iview.ConfigProjectNameEmpty()
             return False
-        if len(name) > 100:
+        if len(name.strip(' ')) > 100:
             self.iview.ConfigInvalidLenProjectName()
             return False
         if name.strip(' ') in self.listNamesProject and name != previus_name:
             self.iview.ConfigExistingProject()
             return False
 
-        #nombre correcto
+        #correct name
         self.iview.ok_button.Enable()
         self.iview.ConfigEnableLabel()
         return True
