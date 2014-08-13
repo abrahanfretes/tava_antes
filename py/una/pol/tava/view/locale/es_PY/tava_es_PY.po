@@ -92,6 +92,22 @@ msgstr "Cancelar"
 msgid "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
 msgstr "Ya existe el Proyecto"
 
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_TAVA"
+msgstr "Proyecto Tava"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_EMPTY"
+msgstr "Nombre de proyecto vacio"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_SLASH"
+msgstr "'/' caracter no valido para nombre de proyecto"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_POINT"
+msgstr "'.' caracter no permitido para inicio de nombre de proyecto"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_LONG"
+msgstr "La cantidad de caracteres '100' para el nombre de proyecto es superado"
+
 # ------------------------------- RenameProjectDialog -------------------------
 msgid "RENAME_PROJECT_DIALOG_RENAME"
 msgstr "Renombrar"

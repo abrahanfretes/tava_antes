@@ -16,8 +16,7 @@ import py.una.pol.tava.view.vi18n as C
 class NewProjectDialog(wx.Dialog):
 
     def __init__(self, parent):
-        super(NewProjectDialog, self).__init__(parent,
-            title=_(C.NPD_NEP), size=(621, 220))
+        super(NewProjectDialog, self).__init__(parent, size=(600, 250))
 
         self.presenter = NewProjectDialogPresenter(self)
 
@@ -26,100 +25,135 @@ class NewProjectDialog(wx.Dialog):
         self.Show()
 
     def InitUI(self):
-        container_panel = wx.Panel(self)
-        container_sizer = wx.GridBagSizer(5, 5)
+        panel_in = wx.Panel(self)
+        sizer_in = wx.GridBagSizer(5, 5)
 
-        new_project_text = wx.StaticText(container_panel,
-                                          label=_(C.NPD_CNP))
-        new_project_text_font = new_project_text.GetFont()
-        new_project_text_font.SetWeight(wx.BOLD)
-        new_project_text.SetFont(new_project_text_font)
-        container_sizer.Add(new_project_text, pos=(0, 0), flag=wx.TOP |
-                            wx.LEFT, border=15)
-        self.new_project_text = new_project_text
+        #titulo para Creacion de Proyecto
+        font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font1.SetWeight(wx.BOLD)
+        font1.SetPointSize(14)
+        title_h1 = wx.StaticText(panel_in, label=_(C.NPD_TP))
+        title_h1.SetFont(font1)
+        sizer_in.Add(title_h1, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
 
-        execute_bmp = wx.StaticBitmap(container_panel,
+        #Figura de tava
+        execute_bmp4 = wx.StaticBitmap(panel_in,
                                bitmap=wx.Bitmap('view/icons/exec.png'))
-        container_sizer.Add(execute_bmp, pos=(0, 4), flag=wx.RIGHT |
-                            wx.ALIGN_RIGHT, border=5)
+        sizer_in.Add(execute_bmp4, pos=(0, 4),
+                     flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
-        self.description_text = wx.StaticText(container_panel,
-                                             label=_(C.NPD_ENP))
-        container_sizer.Add(self.description_text, pos=(1, 0), flag=wx.TOP |
+        #Texto Descriptivo que cambia
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font.SetPointSize(9)
+        self.name_alert = wx.StaticText(panel_in,
+                                        label='Crear un nuevo Proyecto Tava')
+        self.name_alert.SetFont(font)
+        self.execute_bmp6 = wx.StaticBitmap(panel_in)
+        hbox1.Add(self.execute_bmp6, flag=wx.LEFT, border=2)
+        hbox1.Add(self.name_alert, flag=wx.LEFT, border=2)
+        sizer_in.Add(hbox1, pos=(1, 0), span=(1, 3), flag=wx.TOP |
                             wx.LEFT | wx.BOTTOM, border=15)
 
-        line = wx.StaticLine(container_panel)
-        container_sizer.Add(line, pos=(2, 0), span=(1, 5),
-            flag=wx.EXPAND | wx.BOTTOM, border=10)
+        #Linea estatica
+        line = wx.StaticLine(panel_in)
+        sizer_in.Add(line, pos=(2, 0), span=(1, 5),
+            flag=wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border=15)
 
-        name_project_text = wx.StaticText(container_panel,
-                                          label=_(C.NPD_NAP))
-        container_sizer.Add(name_project_text, pos=(3, 0), flag=wx.LEFT,
-                            border=10)
-        self.name_project_text = name_project_text
+        #Nombre del Proyecto
+        name_project_text = wx.StaticText(panel_in, label=_(C.NPD_NAP))
+        sizer_in.Add(name_project_text, pos=(3, 0),
+                     flag=wx.LEFT | wx.EXPAND | wx.RIGHT, border=15)
 
-        self.name_project_textctrl = wx.TextCtrl(container_panel)
-        self.name_project_textctrl.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.name_project_textctrl.SetFocus()
-        container_sizer.Add(self.name_project_textctrl, pos=(3, 1),
-                            span=(1, 3), flag=wx.TOP | wx.EXPAND)
+        #Campo para la entrada del nombre de proyecto
+        self.name = wx.TextCtrl(panel_in)
+        self.name.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.name.SetFocus()
+        sizer_in.Add(self.name, pos=(3, 1), span=(1, 4),
+                     flag=wx.EXPAND | wx.RIGHT, border=15)
 
-        help_button = wx.Button(container_panel, label=_(C.NPD_HELP))
-        container_sizer.Add(help_button, pos=(5, 0), flag=wx.LEFT, border=10)
-        self.help_button = help_button
-
-        self.ok_button = wx.Button(container_panel, label=_(C.NPD_OK))
-        self.ok_button.Bind(wx.EVT_BUTTON, self.OnNew)
-        container_sizer.Add(self.ok_button, pos=(5, 3))
-
-        cancel_button = wx.Button(container_panel, label=_(C.NPD_CAN))
+        #Boton Cancelar
+        cancel_button = wx.Button(panel_in, label=_(C.NPD_CAN))
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-        container_sizer.Add(cancel_button, pos=(5, 4), span=(1, 1),
-            flag=wx.BOTTOM | wx.RIGHT, border=5)
-        self.cancel_button = cancel_button
+        sizer_in.Add(cancel_button, pos=(5, 3),
+                     flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
+        #cancel_button.SetDefault()
 
-        container_sizer.AddGrowableCol(2)
-        container_panel.SetSizer(container_sizer)
+        #Boton OK
+        self.ok_button = wx.Button(panel_in, label=_(C.NPD_OK))
+        self.ok_button.Disable()
+        self.ok_button.Bind(wx.EVT_BUTTON, self.OnNew)
+        self.ok_button.Disable()
+        sizer_in.Add(self.ok_button, pos=(5, 4),
+                     flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT, border=15)
 
-        self.ConfigDefaulLabel()
+        #configuracion del sizer
+        sizer_in.AddGrowableCol(2)
+        panel_in.SetSizer(sizer_in)
+
+        self.ConfigEnableLabel()
 
     def OnKeyUp(self, e):
 
-        if self.presenter.IsNameValido(self.name_project_textctrl.Value):
-            self.ok_button.Enable(True)
-            self.ConfigEnableLabel()
-
+        if(self.presenter.IsNameValido(self.name.Value)):
             if wx.WXK_RETURN == e.GetKeyCode():
-                self.OnCreate(self.name_project_textctrl.Value)
-        else:
-            if len(self.name_project_textctrl.Value) == 0:
-                self.ConfigDefaulLabel()
-            else:
-                self.ConfigDisableLabel()
-
-    def ConfigDefaulLabel(self):
-        self.description_text.SetLabel(_(C.NPD_ENP))
-        self.ok_button.Disable()
-        self.description_text.SetForegroundColour((77, 77, 77))
-        self.name_project_textctrl.SetBackgroundColour((250, 250, 250))
+                self.OnCreate(self.name.Value)
 
     def ConfigEnableLabel(self):
-        self.description_text.SetLabel(_(C.NPD_ENP))
-        self.description_text.SetForegroundColour((0, 0, 0))
-        self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
+        self.name_alert.SetLabel(_(C.NPD_ENP))
+        self.IconCorrect()
+        self.name_alert.SetForegroundColour((0, 0, 0))
+        self.name.SetBackgroundColour((255, 255, 255))
 
-    def ConfigDisableLabel(self):
-        self.description_text.SetLabel(_(C.NPD_PAE))
-        self.ok_button.Disable()
-        self.description_text.SetForegroundColour(wx.RED)
-        self.name_project_textctrl.SetBackgroundColour((237, 93, 93))
+    def ConfigProjectNameEmpty(self):
+        self.name_alert.SetLabel(_(C.NPD_PNE))
+        self.IconWarning()
+        self.name.SetBackgroundColour('#F9EDED')
+
+    def ConfigSlashProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNSI))
+        self.IconError()
+        self.name.SetBackgroundColour((237, 93, 93))
+
+    def ConfigInitPointProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNPI))
+        self.IconError()
+        self.name.SetBackgroundColour((237, 93, 93))
+
+    def ConfigInvalidLenProjectName(self):
+        self.name_alert.SetLabel(_(C.NPD_PNLI))
+        self.IconError()
+        self.name.SetBackgroundColour((237, 93, 93))
+
+    def ConfigExistingProject(self):
+        self.name_alert.SetLabel(_(C.NPD_PAE))
+        self.IconError()
+        self.name.SetBackgroundColour((237, 93, 93))
 
     def OnNew(self, e):
-        self.OnCreate(self.name_project_textctrl.Value)
+        self.OnCreate(self.name.Value)
 
-    def OnCreate(self, nameProject):
-        self.presenter.OnNew(nameProject)
+    def ContainsSlash(self):
+        return '/' in self.name.Value
+
+    def IconError(self):
+        self.execute_bmp6.SetBitmap(
+                                wx.Bitmap('view/icons/errornewproject.png'))
+
+    def IconWarning(self):
+        self.execute_bmp6.SetBitmap(
+                                wx.Bitmap('view/icons/warningnewproject.png'))
+
+    def IconCorrect(self):
+        self.execute_bmp6.SetBitmap(
+                                wx.Bitmap('view/icons/execute.png'))
+
+    def OnCreate(self, name_project):
+        self.presenter.OnNew(self.CleanNameProject(name_project))
         self.OnClose()
+
+    def CleanNameProject(self, name_project):
+        return name_project.strip(' ')
 
     def OnCancel(self, e):
         self.Close(True)

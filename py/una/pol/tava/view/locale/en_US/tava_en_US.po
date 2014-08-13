@@ -93,6 +93,21 @@ msgid "NEW_PROJECT_DIALOG_PROJECT_ALREADY_EXIST"
 msgstr "Project already exists"
 
 
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_TAVA"
+msgstr "Tava Project"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_EMPTY"
+msgstr "Name empty project"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_SLASH"
+msgstr "'/' not valid character for project name"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_POINT"
+msgstr "'.' illegal character for start of project name"
+
+msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_LONG"
+msgstr "The number of characters "100" for the project name is overcome"
+
 # ------------------------------- RenameProjectDialog -------------------------
 msgid "RENAME_PROJECT_DIALOG_RENAME"
 msgstr "Rename"
