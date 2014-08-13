@@ -72,6 +72,10 @@ class NewProjectDialog(wx.Dialog):
         sizer_in.Add(self.name, pos=(3, 1), span=(1, 4),
                      flag=wx.EXPAND | wx.RIGHT, border=15)
 
+        help_button = wx.Button(panel_in, label=_(C.NPD_HELP))
+        sizer_in.Add(help_button, pos=(5, 0), flag=wx.LEFT, border=15)
+        self.help_button = help_button
+
         #Boton Cancelar
         cancel_button = wx.Button(panel_in, label=_(C.NPD_CAN))
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
