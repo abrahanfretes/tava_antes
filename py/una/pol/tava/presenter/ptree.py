@@ -34,6 +34,7 @@ class ProjectTreeCtrlPresenter:
         self.iview.OnInitializeTree(list_project)
 
     def OnSelectedProjectSend(self):
+        pub.sendMessage(t.PROJECT_SELECTED, self.GetProjectSelected())
         if self.GetProjectSelected().state == OPEN:
             pub.sendMessage(t.PROJECT_SELECTED_OPEN)
         else:

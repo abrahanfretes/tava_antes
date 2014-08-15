@@ -21,9 +21,14 @@ class MainMenuBarPresenter:
     def OnSelectSpanishLanguage(self):
         pub.sendMessage(T.SPANISH_SELECTED)
 
+    def ShowProperties(self):
+        pub.sendMessage(T.PROJECT_PROPERTIES)
+
     def OnUpdateLabels(self, message):
         self.iview.new_project_menu_item.SetText(_(C.MMB_NP))
         self.iview.open_menu_item.SetText(_(C.MMB_OP))
+        key_accelerator = '&' + _(C.MMB_PROP) + '\tAlt+Enter'
+        self.iview.properties_item.SetText(key_accelerator)
         self.iview.exit_menu_item.SetText(_(C.MMB_EXIT))
         self.iview.english_language_menu_item.SetText(_(C.MMB_EN_US_LA))
         self.iview.spanish_language_menu_item.SetText(_(C.MMB_ES_PY_LA))

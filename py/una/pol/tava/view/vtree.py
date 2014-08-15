@@ -116,6 +116,7 @@ class ProjectMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.CloseProject, closed_item)
         self.Bind(wx.EVT_MENU, self.DeleteProject, delete_item)
         self.Bind(wx.EVT_MENU, self.RenameProject, rename_item)
+        self.Bind(wx.EVT_MENU, self.PropertiesProject, properties_item)
 
     def RenameProject(self, event):
         self.presentermenu.OnRename(self.project)
@@ -128,3 +129,6 @@ class ProjectMenu(wx.Menu):
 
     def DeleteProject(self, event):
         self.presentermenu.OnDelete()
+
+    def PropertiesProject(self, event):
+        self.presentermenu.ShowProperties()

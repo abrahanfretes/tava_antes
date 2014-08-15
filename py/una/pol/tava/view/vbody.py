@@ -12,9 +12,6 @@ from py.una.pol.tava.presenter.pbody import ProjectTreeNotebookPresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
 
-import wx.propgrid as wxpg
-from wx.lib.pubsub import Publisher as pub
-
 
 class TreePanel(wx.Panel):
     def __init__(self, parent, main_frame):
@@ -77,21 +74,15 @@ class MainPanel(wx.Panel):
         # Creamos el panel derecho para el splitter
         right_panel = wx.Panel(self.splitter, -1)
 
-        rigth_splitter = wx.SplitterWindow(right_panel)
-
-        right_notebook = wx.Notebook(rigth_splitter, style=wx.SP_BORDER)
+        right_notebook = wx.Notebook(right_panel, style=wx.SP_BORDER)
         dpanel = wx.Panel(right_notebook, -1)
         right_notebook.AddPage(dpanel, "Tab 1")
 
         # lado derecho del área de trabajo
-        side_panel = PropertiesPanel(rigth_splitter)
-
-        rigth_splitter.SplitVertically(right_notebook, side_panel, 700)
-        rigth_splitter.SetMinimumPaneSize(1)
 
         # Creamos el sizer para el contenido del panel derecho
         right_panel_hsizer = wx.BoxSizer(wx.HORIZONTAL)
-        right_panel_hsizer.Add(rigth_splitter, 1, wx.EXPAND)
+        right_panel_hsizer.Add(right_notebook, 1, wx.EXPAND)
         right_panel.SetSizer(right_panel_hsizer)
 
         self.splitter.SplitVertically(left_panel, right_panel, 300)
@@ -113,45 +104,3 @@ class MainPanel(wx.Panel):
         if self.project_tree.root:
             self.project_tree.SortChildren(self.project_tree.root)
         return namesProjects
-
-
-class PropertiesPanel(wx.Panel):
-    def __init__(self, parent):
-        pub.subscribe(self.OnChange, "project.selected")
-        wx.Panel.__init__(self, parent)
-        topsizer = wx.BoxSizer(wx.VERTICAL)
-
-        # Difference between using PropertyGridManager vs PropertyGrid is that
-        # the manager supports multiple pages and a description box.
-        pg = wxpg.PropertyGrid(self, style=wxpg.PG_AUTO_SORT |
-                              wxpg.PG_TOOLBAR | wxpg.PG_SPLITTER_AUTO_CENTER)
-
-        # Show help as tooltips
-        pg.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
-
-        pg.Append(wxpg.PropertyCategory("Project Properties"))
-        name = pg.Append(wxpg.StringProperty("Name", value=""))
-        pg.SetPropertyValue(name, "Proyecto1")
-        pg.DisableProperty(name)
-        date = pg.Append(wxpg.DateProperty("Date", value=wx.DateTime_Now()))
-        pg.DisableProperty(date)
-
-        p = wx.Panel(self, wx.ID_ANY)
-        text = wx.StaticText(p, label="Properties")
-        text.SetForegroundColour(wx.BLACK)
-        bsizer = wx.BoxSizer(wx.VERTICAL)
-        bsizer.Add(text, 1, wx.ALL | wx.EXPAND)
-        p.SetSizer(bsizer)
-        p.SetBackgroundColour("#F07746")
-
-        topsizer.Add(p, 0, wx.EXPAND | wx.ALL)
-
-        topsizer.Add(pg, 1, wx.EXPAND | wx.ALL)
-
-        self.SetSizer(topsizer)
-        topsizer.SetSizeHints(self)
-
-    def OnChange(self, message):
-        print("esto tiene data")
-        print message.data
-        print("esto tiene data")

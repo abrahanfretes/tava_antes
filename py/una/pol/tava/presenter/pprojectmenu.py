@@ -22,3 +22,6 @@ class ProjectMenuPresenter:
 
     def OnRename(self, project):
         pub.sendMessage(t.PROJECT_RENAME, project)
+
+    def ShowProperties(self):
+        pub.sendMessage(t.PROJECT_PROPERTIES)

@@ -38,6 +38,12 @@ class MainMenuBar(wx.MenuBar):
         file_menu.AppendItem(open_menu_item)
         self.open_menu_item = open_menu_item
 
+        key_accelerator = '&' + _(C.MMB_PROP) + '\tAlt+Enter'
+        properties_item = wx.MenuItem(file_menu, wx.ID_PROPERTIES,
+                                      key_accelerator)
+        file_menu.AppendItem(properties_item)
+        self.properties_item = properties_item
+
         exit_menu_item = wx.MenuItem(file_menu, wx.ID_EXIT, _(C.MMB_EXIT),
                                      '&Quit\tCtrl+Q')
         file_menu.AppendItem(exit_menu_item)
@@ -69,6 +75,8 @@ class MainMenuBar(wx.MenuBar):
         self.Append(help_menu, _(C.MMB_HELP))
 
         parent.Bind(wx.EVT_MENU, parent.OnNewProject, id=wx.ID_NEW)
+        file_menu.Bind(wx.EVT_MENU, self.OnShowProperties,
+                  self.properties_item)
         parent.Bind(wx.EVT_MENU, parent.OnExitAplication, id=wx.ID_EXIT)
         parent.Bind(wx.EVT_MENU, self.OnAboutBox, id=wx.ID_ABOUT)
         language_menu.Bind(wx.EVT_MENU, self.OnSelectEnglishLanguage,
@@ -81,6 +89,9 @@ class MainMenuBar(wx.MenuBar):
 
     def OnSelectSpanishLanguage(self, e):
         self.presenter.OnSelectSpanishLanguage()
+
+    def OnShowProperties(self, e):
+        self.presenter.ShowProperties()
 
     def OnAboutBox(self, e):
         '''

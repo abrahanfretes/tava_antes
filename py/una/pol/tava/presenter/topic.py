@@ -36,6 +36,10 @@ PROJECT_SELECTED_OPEN = 'PROJECT.SELECTEDOPEN'
 # Subscribe = ptoolbar
 PROJECT_SELECTED_CLOSE = 'PROJECT.SELECTEDCLOSE'
 
+# Send = ptree
+# Subscribe = pframe
+PROJECT_SELECTED = 'PROJECT.SELECTED'
+
 # Send = pproject
 # Subscribe = ptree
 PROJECT_NEW = 'PROJECT.NEW'
@@ -43,6 +47,10 @@ PROJECT_NEW = 'PROJECT.NEW'
 # Send = pprojectmenu
 # Subscribe =pframe
 PROJECT_RENAME = 'PROJECT.RENAME'
+
+# Send = pprojectmenu, pmenu
+# Subscribe =pframe
+PROJECT_PROPERTIES = 'PROJECT.PROPERTIES'
 
 #Asi no funciona
 #==============================================================================

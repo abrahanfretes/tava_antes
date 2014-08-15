@@ -14,6 +14,7 @@ from py.una.pol.tava.view.vi18n import I18nLocale
 from py.una.pol.tava.view.vproject import NewProjectDialog
 from py.una.pol.tava.view.vproject import RenameProjectDialog
 from py.una.pol.tava.view.vproject import DeleteProjectDialog
+from py.una.pol.tava.view.vproject import PropertiesProjectDialog
 from py.una.pol.tava.presenter.pframe import FramePresenter
 
 
@@ -84,10 +85,13 @@ class MainFrame(wx.Frame):
         result = wx.MessageBox("Desea salir de la aplicación",
                                style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
         if result == wx.YES:
-            self.Close()
+            self.Close(True)
 
     def OnBarNewProject(self):
         NewProjectDialog(self)
+
+    def OnShowProjectProperties(self, message):
+        PropertiesProjectDialog(self, message)
 
     def OnRenameProject(self, message):
         RenameProjectDialog(self, message)

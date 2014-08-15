@@ -22,7 +22,7 @@ class NewProjectDialog(wx.Dialog):
 
         self.InitUI()
         self.Centre()
-        self.Show()
+        self.ShowModal()
 
     def InitUI(self):
         panel_in = wx.Panel(self)
@@ -298,3 +298,71 @@ class DeleteProjectDialog():
                       style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
         if result == wx.YES:
             self.presenter_re1.OnDeleteOk()
+
+
+class PropertiesProjectDialog(wx.Dialog):
+
+    def __init__(self, parent, project):
+        super(PropertiesProjectDialog, self).__init__(parent,
+                            title=_(C.PPD_PF), size=(450, 200))
+
+        self.project = project
+        self.InitUI()
+        self.Centre()
+        self.ShowModal()
+
+    def InitUI(self):
+
+        panel = wx.Panel(self)
+
+        sizer = wx.GridBagSizer(5, 5)
+
+        font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font1.SetWeight(wx.BOLD)
+        font1.SetPointSize(14)
+        title_h1 = wx.StaticText(panel, label=_(C.NPD_TP))
+        title_h1.SetFont(font1)
+        sizer.Add(title_h1, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
+                  border=15)
+
+        top_line = wx.StaticLine(panel)
+        sizer.Add(top_line, pos=(1, 0), span=(1, 5),
+            flag=wx.EXPAND | wx.BOTTOM, border=10)
+
+        name_text = wx.StaticText(panel, label=_(C.PPD_NA))
+        sizer.Add(name_text, pos=(2, 0), flag=wx.LEFT, border=10)
+
+        name_value_text = wx.StaticText(panel, label=self.project.name)
+        name_value_text.Disable()
+        sizer.Add(name_value_text, pos=(2, 1), span=(1, 4), flag=wx.RIGHT |
+                  wx.EXPAND)
+
+        creation_date_text = wx.StaticText(panel, label=_(C.PPD_CD))
+        sizer.Add(creation_date_text, pos=(3, 0), flag=wx.LEFT, border=10)
+
+        creation_date_value_text = wx.StaticText(panel,
+                                        label=str(self.project.creation_date))
+        creation_date_value_text.Disable()
+        sizer.Add(creation_date_value_text, pos=(3, 1), span=(1, 4),
+                  flag=wx.RIGHT | wx.EXPAND)
+
+        bottom_line = wx.StaticLine(panel)
+        sizer.Add(bottom_line, pos=(5, 0), span=(1, 5),
+            flag=wx.EXPAND | wx.BOTTOM, border=10)
+
+        cancel_button = wx.Button(panel, label=_(C.PPD_CAN))
+        sizer.Add(cancel_button, pos=(6, 3),
+            flag=wx.BOTTOM | wx.RIGHT, border=5)
+
+        ok_button = wx.Button(panel, label=_(C.PPD_OK))
+        ok_button.SetFocus()
+        ok_button.Bind(wx.EVT_BUTTON, self.OnClose)
+        sizer.Add(ok_button, pos=(6, 4), flag=wx.ALIGN_RIGHT
+                  | wx.LEFT, border=5)
+
+        sizer.AddGrowableCol(2)
+
+        panel.SetSizer(sizer)
+
+    def OnClose(self, e):
+        self.Close(True)

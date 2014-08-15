@@ -20,6 +20,9 @@ msgstr "Nuevo Proyecto"
 msgid "MAIN_MENU_BAR_OPEN_PROJECT"
 msgstr "Abrir Proyecto"
 
+msgid "MAIN_MENU_BAR_PROPERTIES"
+msgstr "Propiedades"
+
 msgid "MAIN_MENU_BAR_EXIT"
 msgstr "Salir"
 
@@ -148,3 +151,19 @@ msgstr "Está seguro que desea eliminar este Proyecto?"
 
 msgid "PROJECT_MENU_DELETE_PROJECT"
 msgstr "Eliminar Proyecto"
+
+# ------------------------------- PropertiesProjectDialog ---------------------
+msgid "PROPERTIES_PROJECT_PROPERTIES_FOR"
+msgstr "Propiedades para"
+
+msgid "PROPERTIES_PROJECT_NAME"
+msgstr "Nombre:"
+
+msgid "PROPERTIES_PROJECT_CREATION_DATE"
+msgstr "Fecha de creación:"
+
+msgid "PROPERTIES_PROJECT_OK"
+msgstr "OK"
+
+msgid "PROPERTIES_PROJECT_CANCEL"
+msgstr "Cancelar"
