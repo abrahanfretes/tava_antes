@@ -15,7 +15,8 @@ def main():
     '''
     base.createDb()
     ex = wx.App()
-    MainFrame(None)
+    frame = MainFrame(None)
+    frame.Centre()
     ex.MainLoop()
 
 if __name__ == '__main__':
