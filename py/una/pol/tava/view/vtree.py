@@ -61,8 +61,19 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
             self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
         else:
             self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
+
+        #compelmentos prueba
         self.GetFiles(project_item)
-        self.SortChildren(self.root)
+
+        #ordenamiento personalizado
+        self.SortItemChildren(self.root)
+
+    def SortItemChildren(self, item_parent):
+        self.SortChildren(item_parent)
+
+    #se reesscribe este metodo
+    def OnCompareItems(self, item1, item2):
+        return cmp(item1.GetData().state, item2.GetData().state)
 
     def OnInitializeTree(self, list_project):
         for project in list_project:
