@@ -47,6 +47,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         #menu del contexto de Proyecto
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnTreeContextMenu)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectedItemTree)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.OnItemTreeExpanded)
 
     def OnSelectedItemTree(self, event):
         item = self.GetSelection()
@@ -56,14 +57,15 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
     def AddProjectNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
         self.SetItemPyData(project_item, project)
-        if project.state == OPEN:
-            self.SetItemImage(project_item, 0, wx.TreeItemIcon_Normal)
-            self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
-        else:
-            self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
+        self.SetItemImage(project_item, 0, wx.TreeItemIcon_Normal)
+        self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
 
-        #compelmentos prueba
-        self.GetFiles(project_item)
+        if project.state == CLOSED:
+            self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
+            self.SetItemTextColour(project_item, '#BFBFBF')
+        else:
+            #compelmentos prueba
+            self.GetFiles(project_item)
 
         #ordenamiento personalizado
         self.SortItemChildren(self.root)
@@ -111,6 +113,16 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
             self.SetItemImage(item, 3, CT.TreeItemIcon_Normal)
             if z == 1:
                 self.AppendSeparator(parent)
+
+    def OnItemTreeExpanded(self, e):
+        item = self.GetSelection()
+        date_item = self.GetItemPyData(item)
+
+        if date_item == None:
+            return
+
+        if date_item.state == 1:
+            self.Collapse(item)
 
 
 class ProjectMenu(wx.Menu):
