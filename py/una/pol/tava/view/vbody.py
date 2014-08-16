@@ -18,7 +18,7 @@ class TreePanel(wx.Panel):
         super(TreePanel, self).__init__(parent)
 
         # Creamos el arbol de Proyectos
-        self.project_tree = ProjectTreeCtrl(self, main_frame)
+        self.project_tree = ProjectTreeCtrl(self)
 
         # Creamos un boxSizer para el arbol de Proyectos
         project_tree_vsizer = wx.BoxSizer(wx.VERTICAL)

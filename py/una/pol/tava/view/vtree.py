@@ -12,19 +12,22 @@ from py.una.pol.tava.base.entity import OPEN
 from py.una.pol.tava.base.entity import CLOSED
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
+import wx.lib.agw.customtreectrl as CT
 
 
-class ProjectTreeCtrl(wx.TreeCtrl):
+class ProjectTreeCtrl(CT.CustomTreeCtrl):
     '''
     classdocs
     '''
 
-    def __init__(self, parent, main_frame):
+    def __init__(self, parent):
         '''
         Constructor
         '''
         super(ProjectTreeCtrl, self).__init__(parent,
-                                style=wx.TR_DEFAULT_STYLE | wx.TR_HIDE_ROOT)
+                                agwStyle=CT.TR_HAS_BUTTONS | CT.TR_HIDE_ROOT)
+
+        self.SetBackgroundColour('#D9F0F8')
 
         il = wx.ImageList(16, 16)
         self.folder_bmp = il.Add(bitmap=wx.Bitmap('view/icons/folder.png'))
@@ -54,13 +57,11 @@ class ProjectTreeCtrl(wx.TreeCtrl):
         project_item = self.AppendItem(self.root, project.name)
         self.SetItemPyData(project_item, project)
         if project.state == OPEN:
-            self.SetItemImage(project_item, self.folder_bmp,
-                              wx.TreeItemIcon_Normal)
-            self.SetItemImage(project_item, self.folder_open_bmp,
-                              wx.TreeItemIcon_Expanded)
+            self.SetItemImage(project_item, 0, wx.TreeItemIcon_Normal)
+            self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
         else:
-            self.SetItemImage(project_item, self.folder_closed_bmp,
-                              wx.TreeItemIcon_Normal)
+            self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
+        self.GetFiles(project_item)
         self.SortChildren(self.root)
 
     def OnInitializeTree(self, list_project):
@@ -69,12 +70,36 @@ class ProjectTreeCtrl(wx.TreeCtrl):
 
     def OnTreeContextMenu(self, event):
         item = self.GetSelection()
-        project = self.GetItemPyData(item)
-        project_menu = ProjectMenu(self, project)
-        self.PopupMenu(project_menu)
+        date_item = self.GetItemPyData(item)
+        parent_item = self.GetItemParent(item)
+
+        #verificar si el padre es root
+        if(parent_item == self.root):
+            menu = ProjectMenu(self, date_item)
+        else:
+            #si su padre no es root
+            menu = ResultMenu(self, date_item)
+
+        self.PopupMenu(menu)
 
     def OnDeleteItem(self, item):
         self.Delete(item)
+
+    def GetFiles(self, parent):
+        for z in range(3):
+            if z == 0:
+                item = self.AppendItem(parent,  "item %d" % z)
+                self.SetItemHyperText(item, True)
+
+            elif z == 1:
+                item = self.AppendItem(parent,  "item %d" % z, ct_type=2)
+            elif z == 2:
+                item = self.AppendItem(parent,  "item %d" % z, ct_type=1)
+
+            self.SetPyData(item, None)
+            self.SetItemImage(item, 3, CT.TreeItemIcon_Normal)
+            if z == 1:
+                self.AppendSeparator(parent)
 
 
 class ProjectMenu(wx.Menu):
@@ -132,3 +157,33 @@ class ProjectMenu(wx.Menu):
 
     def PropertiesProject(self, event):
         self.presentermenu.ShowProperties()
+
+
+class ResultMenu(wx.Menu):
+    def __init__(self, parent, result):
+        super(ResultMenu, self).__init__()
+
+        self.result = result
+        #self.presentermenu = ProjectMenuPresenter(self)
+
+        graficar = wx.MenuItem(self, wx.ID_ANY, 'Graficar')
+        ver = wx.MenuItem(self, wx.ID_ANY, 'Ver archivo')
+        rename = wx.MenuItem(self, wx.ID_ANY, 'Renombrar')
+        delete = wx.MenuItem(self, wx.ID_DELETE, 'Eliminar')
+        properties = wx.MenuItem(self, wx.ID_ANY, 'Propiedades')
+
+        self.AppendItem(graficar)
+
+        self.AppendSeparator()
+        self.AppendItem(ver)
+        self.AppendItem(rename)
+        self.AppendItem(delete)
+
+        self.AppendSeparator()
+        self.AppendItem(properties)
+
+        graficar.Enable(False)
+        ver.Enable(False)
+        rename.Enable(False)
+        delete.Enable(False)
+        properties.Enable(False)
