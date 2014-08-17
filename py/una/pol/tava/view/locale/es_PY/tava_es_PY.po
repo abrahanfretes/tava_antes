@@ -66,6 +66,12 @@ msgstr "Cerrar Proyecto"
 msgid "MAIN_TOOLBAR_DELETE_PROJECT"
 msgstr "Eliminar Proyecto"
 
+msgid "MAIN_TOOLBAR_HIDE_PROJECT"
+msgstr "Ocultar Proyecto"
+
+msgid "MAIN_TOOLBAR_UNHIDE_PROJECT"
+msgstr "Desocultar Proyecto"
+
 # ------------------------------- MainPanel -----------------------------------
 msgid "MAIN_PANEL_PROJECT_EXPLORER"
 msgstr "Explorador de Proyectos"
@@ -111,6 +117,9 @@ msgstr "'.' caracter no permitido para inicio de nombre de proyecto"
 msgid "NEW_PROJECT_DIALOG_PROJECT_PROJECT_NAME_LONG"
 msgstr "La cantidad de caracteres '100' para el nombre de proyecto es superado"
 
+msgid "NEW_PROJECT_DIALOG_HIDE_PROJECT_ALREADY_EXIST"
+msgstr "Ya existe el Proyecto, pero esta 'oculto'"
+
 # ------------------------------- RenameProjectDialog -------------------------
 msgid "RENAME_PROJECT_DIALOG_RENAME"
 msgstr "Renombrar"
@@ -151,6 +160,9 @@ msgstr "Está seguro que desea eliminar este Proyecto?"
 
 msgid "PROJECT_MENU_DELETE_PROJECT"
 msgstr "Eliminar Proyecto"
+
+msgid "PROJECT_MENU_HIDE"
+msgstr "Ocultar"
 
 # ------------------------------- PropertiesProjectDialog ---------------------
 msgid "PROPERTIES_PROJECT_PROPERTIES_FOR"
