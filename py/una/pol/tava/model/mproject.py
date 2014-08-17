@@ -79,3 +79,10 @@ class ProjectModel():
             listNames.append(list(name).pop())
 
         return listNames
+
+    def getNamesHideProject(self):
+        listNames = []
+        for name in dproject.getAllNamesHideProject():
+            listNames.append(list(name).pop())
+
+        return listNames

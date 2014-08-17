@@ -7,7 +7,8 @@ Created on 26/07/2014
 from py.una.pol.tava.base import base, abm
 from py.una.pol.tava.base.entity import Project
 from sqlalchemy.orm import subqueryload
-
+from sqlalchemy import or_
+from py.una.pol.tava.base.entity import OPEN, CLOSED, HIDDEN
 session = base.getSession()
 
 
@@ -46,8 +47,14 @@ def upDate(project):
 
 
 def getAllProject():
-    return session.query(Project).order_by(Project.creation_date,
-                                           Project.state)
+    return session.query(Project).\
+        filter(or_(Project.state == OPEN, Project.state == CLOSED)).\
+        order_by(Project.state)
+
+
+def getAllHideProject():
+    return session.query(Project).filter_by(state=HIDDEN).\
+        order_by(Project.state)
 
 
 def getAllProjectWithResults():
@@ -68,5 +75,12 @@ def getProjectByResult(result):
     return session.query(Project).filter_by(id=result.proyecto_id).first()
 
 
+def getAllNamesHideProject():
+    return session.query(Project.name).filter_by(state=HIDDEN).\
+        order_by(Project.name).all()
+
+
 def getAllNamesProject():
-    return session.query(Project.name).order_by(Project.name).all()
+    return session.query(Project.name).\
+        filter(or_(Project.state == OPEN, Project.state == CLOSED)).\
+        order_by(Project.state)
