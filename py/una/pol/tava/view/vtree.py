@@ -137,6 +137,7 @@ class ProjectMenu(wx.Menu):
         open_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_OPEN))
         closed_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_CLOSE))
         delete_item = wx.MenuItem(self, wx.ID_DELETE, _(C.PM_DEL))
+        hide_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_HIDE))
 
         rename_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_REN))
         properties_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_PROP))
@@ -147,6 +148,7 @@ class ProjectMenu(wx.Menu):
         self.AppendItem(open_item)
         self.AppendItem(closed_item)
         self.AppendItem(delete_item)
+        self.AppendItem(hide_item)
 
         self.AppendSeparator()
         self.AppendItem(rename_item)
@@ -154,6 +156,7 @@ class ProjectMenu(wx.Menu):
 
         if self.project.state == OPEN:
             open_item.Enable(False)
+            hide_item.Enable(False)
 
         if self.project.state == CLOSED:
             closed_item.Enable(False)
@@ -163,6 +166,7 @@ class ProjectMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.OpenProject, open_item)
         self.Bind(wx.EVT_MENU, self.CloseProject, closed_item)
         self.Bind(wx.EVT_MENU, self.DeleteProject, delete_item)
+        self.Bind(wx.EVT_MENU, self.HideProject, hide_item)
         self.Bind(wx.EVT_MENU, self.RenameProject, rename_item)
         self.Bind(wx.EVT_MENU, self.PropertiesProject, properties_item)
 
@@ -180,6 +184,9 @@ class ProjectMenu(wx.Menu):
 
     def PropertiesProject(self, event):
         self.presentermenu.ShowProperties()
+
+    def HideProject(self, event):
+        self.presentermenu.Hide()
 
 
 class ResultMenu(wx.Menu):

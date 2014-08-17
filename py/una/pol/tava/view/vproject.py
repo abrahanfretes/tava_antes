@@ -133,6 +133,11 @@ class NewProjectDialog(wx.Dialog):
         self.IconError()
         self.SetNameErrorBackground()
 
+    def ConfigExistingHideProject(self):
+        self.name_alert.SetLabel(_(C.NPD_HPAE))
+        self.IconError()
+        self.SetNameErrorBackground()
+
     def OnCreateProject(self, e):
         self.presenter.CreateProject(self.name.Value)
 
@@ -264,6 +269,11 @@ class RenameProjectDialog(wx.Dialog):
 
     def ConfigExistingProject(self):
         self.name_alert.SetLabel(_(C.NPD_PAE))
+        self.IconError()
+        self.SetNameErrorBackground()
+
+    def ConfigExistingHideProject(self):
+        self.name_alert.SetLabel(_(C.NPD_HPAE))
         self.IconError()
         self.SetNameErrorBackground()
 
