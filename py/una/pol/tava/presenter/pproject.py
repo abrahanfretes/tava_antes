@@ -12,9 +12,13 @@ class NewProjectDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
         self.listNamesProject = self.GetNamesProject()
+        self.listNamesHideProject = self.GetNamesHideProject()
 
     def GetNamesProject(self):
         return pro().getNamesProject()
+
+    def GetNamesHideProject(self):
+        return pro().getNamesHideProject()
 
     def CreateProject(self, name):
         project = pro().add(name.strip(' '))
@@ -43,6 +47,9 @@ class NewProjectDialogPresenter():
         if name in self.listNamesProject:
             self.iview.ConfigExistingProject()
             return False
+        if name in self.listNamesHideProject:
+            self.iview.ConfigExistingHideProject()
+            return False
 
         #correct name
         self.iview.ok_button.Enable()
@@ -54,6 +61,7 @@ class RenameProjectDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
         self.listNamesProject = self.GetNamesProject()
+        self.listNamesHideProject = self.GetNamesHideProject()
 
     def IsNameValido(self, name, previus_name):
 
@@ -77,6 +85,9 @@ class RenameProjectDialogPresenter():
         if name.strip(' ') in self.listNamesProject and name != previus_name:
             self.iview.ConfigExistingProject()
             return False
+        if name in self.listNamesHideProject:
+            self.iview.ConfigExistingHideProject()
+            return False
 
         #correct name
         self.iview.ok_button.Enable()
@@ -92,6 +103,9 @@ class RenameProjectDialogPresenter():
 
     def GetNamesProject(self):
         return pro().getNamesProject()
+
+    def GetNamesHideProject(self):
+        return pro().getNamesHideProject()
 
 
 class DeleteProjectDialogPresenter():

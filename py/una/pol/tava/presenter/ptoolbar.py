@@ -18,6 +18,8 @@ class ToolBarPresenter:
 
         pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_CLOSE)
         pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_OPEN)
+        pub.subscribe(self.OnDisableIcomProjectAllPub, T.PROJECT_DELETE_OK)
+        pub.subscribe(self.OnDisableIcomProjectAllPub, 'PROJECT.HIDE')
         pub.subscribe(self.OnUpdateLabels, T.LANGUAGE_CHANGED)
 
     def OnDisableIcomProjectAll(self):
@@ -35,6 +37,9 @@ class ToolBarPresenter:
     def OnDeleteProject(self):
         pub.sendMessage(T.PROJECT_DELETE_CLICK)
 
+    def OnHideProject(self):
+        pub.sendMessage('PROJECT.HIDE')
+
     def OnDisableOpenPub(self, message):
         self.iview.OnOpenDisable()
 
@@ -51,3 +56,5 @@ class ToolBarPresenter:
         self.iview.SetToolShortHelp(self.iview.ID_DEL_PRO, _(C.MTB_DP))
         self.iview.SetToolShortHelp(self.iview.ID_BLOG_PRO, _(C.MTB_BP))
         self.iview.SetToolShortHelp(self.iview.ID_EXIT_PRO, _(C.MTB_EX))
+        self.iview.SetToolShortHelp(self.iview.ID_HIDE_PRO, _(C.MTB_HP))
+        self.iview.SetToolShortHelp(self.iview.ID_UNHIDE_PRO, _(C.MTB_UHP))

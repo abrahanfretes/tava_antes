@@ -25,3 +25,6 @@ class ProjectMenuPresenter:
 
     def ShowProperties(self):
         pub.sendMessage(t.PROJECT_PROPERTIES)
+
+    def Hide(self):
+        pub.sendMessage('PROJECT.HIDE')

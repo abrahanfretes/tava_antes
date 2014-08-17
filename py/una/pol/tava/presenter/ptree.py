@@ -5,8 +5,7 @@ Created on 28/07/2014
 '''
 from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
-from py.una.pol.tava.base.entity import CLOSED
-from py.una.pol.tava.base.entity import OPEN
+from py.una.pol.tava.base.entity import OPEN, CLOSED, HIDDEN
 import topic as t
 
 
@@ -22,6 +21,7 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.OnClosedPub, t.PROJECT_CLOSE)
         pub.subscribe(self.OnOpenPub, t.PROJECT_OPEN)
         pub.subscribe(self.OnRenameUpPub, t.PROJECT_RENAME_UP)
+        pub.subscribe(self.OnHidePub, 'PROJECT.HIDE')
 
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)
@@ -84,3 +84,9 @@ class ProjectTreeCtrlPresenter:
     def GetProjectSelected(self):
         item_selected = self.iview.GetSelection()
         return self.iview.GetItemPyData(item_selected)
+
+    def OnHidePub(self, message):
+        project = self.GetProjectSelected()
+        project.state = HIDDEN
+        project = ProjectModel().upDate(project)
+        self.OnDelete()
