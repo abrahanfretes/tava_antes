@@ -40,6 +40,9 @@ class ToolBarPresenter:
     def OnHideProject(self):
         pub.sendMessage('PROJECT.HIDE')
 
+    def OnUnHideProject(self):
+        pub.sendMessage('PROJECT.UNHIDE')
+
     def OnDisableOpenPub(self, message):
         self.iview.OnOpenDisable()
 
