@@ -47,7 +47,8 @@ class MainToolBar(wx.ToolBar):
         blog_bmp = wx.Bitmap('view/icons/blog.png')
 
         self.AddLabelTool(ID_NEW_PRO, '', new_bmp, shortHelp=_(C.MTB_NP))
-        self.AddLabelTool(ID_UNHIDE_PRO, '', unhide_bmp, shortHelp=_(C.MTB_UHP))
+        self.AddLabelTool(ID_UNHIDE_PRO, '',
+                          unhide_bmp, shortHelp=_(C.MTB_UHP))
 
         self.AddSeparator()
 
@@ -70,6 +71,7 @@ class MainToolBar(wx.ToolBar):
         self.Bind(wx.EVT_TOOL, self.OnOpenProjectView, id=ID_OPEN_PRO)
         self.Bind(wx.EVT_TOOL, self.OnDeleteProjectView, id=ID_DEL_PRO)
         self.Bind(wx.EVT_TOOL, self.OnHideProjectView, id=ID_HIDE_PRO)
+        self.Bind(wx.EVT_TOOL, self.OnUnHideProjectView, id=ID_UNHIDE_PRO)
 
         self.AddSeparator()
 
@@ -129,3 +131,6 @@ class MainToolBar(wx.ToolBar):
 
     def OnHideProjectView(self, event):
         self.presenter.OnHideProject()
+
+    def OnUnHideProjectView(self, event):
+        self.presenter.OnUnHideProject()

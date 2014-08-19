@@ -376,3 +376,133 @@ class PropertiesProjectDialog(wx.Dialog):
 
     def OnClose(self, e):
         self.Close(True)
+
+
+import sys
+
+
+from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
+
+packages = [('abiword', '5.8M', 'base'),
+            ('adie', '145k', 'base'),
+            ('airsnort', '71k', 'base'),
+            ('ara', '717k', 'base'),
+            ('arc', '139k', 'base'),
+            ('asc', '5.8M', 'base'),
+            ('ascii', '74k', 'base'),
+            ('ash', '74k', 'base')]
+
+
+class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
+    def __init__(self, parent):
+        wx.ListCtrl.__init__(self, parent, -1,
+                             style=wx.LC_REPORT | wx.SUNKEN_BORDER)
+        CheckListCtrlMixin.__init__(self)
+        ListCtrlAutoWidthMixin.__init__(self)
+
+    def OnCheckItem(self, index, flag):
+        print 'hola'
+
+
+class UnHideProjectDialog(wx.Dialog):
+    def __init__(self, parent, message):
+        super(UnHideProjectDialog, self).__init__(parent,
+                                title='Proyectos Ocultos', size=(600, 500))
+
+        self.InitUI()
+        self.Centre()
+        self.ShowModal()
+
+    def InitUI(self):
+
+        panel = wx.Panel(self, -1)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+
+        #parte cabecera
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font.SetWeight(wx.BOLD)
+        font.SetPointSize(9)
+        description = wx.StaticText(panel,
+                            label='Marque la casilla para desocultar proyecto')
+        description.SetFont(font)
+        bmp = wx.StaticBitmap(panel)
+        bmp.SetBitmap(wx.Bitmap('view/icons/hide-left.png'))
+        bmp1 = wx.StaticBitmap(panel, bitmap=wx.Bitmap('view/icons/exec.png'))
+        hbox1.Add(bmp, 1, wx.RIGHT, 10)
+        hbox1.Add(description, wx.RIGHT, 10)
+        hbox1.Add(bmp1, 1, wx.LEFT, 220)
+        vbox.Add(hbox1, 1, wx.ALIGN_LEFT | wx.ALL, 10)
+
+        #parte del checList
+        self.list = CheckListCtrl(panel)
+        self.list.InsertColumn(0, 'Nombre', width=300)
+        self.list.InsertColumn(1, 'Fecha de Creacion', width=175)
+        self.list.InsertColumn(2, 'Estado', width=105)
+
+        for i in packages:
+            index = self.list.InsertStringItem(sys.maxint, i[0])
+            self.list.SetStringItem(index, 1, i[1])
+            self.list.SetStringItem(index, 2, i[2])
+
+        vbox.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+
+        # parte de los botones
+        sb = wx.StaticBox(panel, label='Marcacion Rapida')
+        boxsizer = wx.StaticBoxSizer(sb, wx.HORIZONTAL)
+        sel = wx.Button(panel, -1, 'Select All')
+        des = wx.Button(panel, -1, 'Deselect All')
+        hboxl = wx.BoxSizer(wx.HORIZONTAL)
+        hboxl.Add(sel, 1, wx.ALL, 10)
+        hboxl.Add(des, 1, wx.ALL, 10)
+        boxsizer.Add(hboxl, 1,  wx.EXPAND | wx.RIGHT, 350)
+        vbox.Add(boxsizer, 1,
+                wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        apply_change = wx.Button(panel, -1, 'Apply')
+        cancel = wx.Button(panel, -1, 'Cancel')
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        hbox.Add(cancel, 1, wx.RIGHT, 10)
+        hbox.Add(apply_change)
+
+        vbox.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        panel.SetSizer(vbox)
+
+        #Eventos
+        self.Bind(wx.EVT_BUTTON, self.OnSelectAll, id=sel.GetId())
+        self.Bind(wx.EVT_BUTTON, self.OnDeselectAll, id=des.GetId())
+        self.Bind(wx.EVT_BUTTON, self.OnApply, id=apply_change.GetId())
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel.GetId())
+
+        #disable bottom al inicio
+        apply_change.Enable(False)
+
+        self.Centre()
+        self.Show(True)
+
+    def OnCheckItem(self, index, flag):
+        print 'hola'
+
+    def OnCheckbox(self, event):
+        print 'Se chequeo'
+
+    def OnSelectAll(self, event):
+        num = self.list.GetItemCount()
+        for i in range(num):
+            self.list.CheckItem(i)
+
+    def OnDeselectAll(self, event):
+        num = self.list.GetItemCount()
+        for i in range(num):
+            self.list.CheckItem(i, False)
+
+    def OnApply(self, event):
+        num = self.list.GetItemCount()
+        for i in range(num):
+            print'hola'
+            #if i == 0: self.log.Clear()
+            if self.list.IsChecked(i):
+                print'hola'
+                #self.log.AppendText(self.list.GetItemText(i) + '\n')
+
+    def OnCancel(self, event):
+        self.Close()

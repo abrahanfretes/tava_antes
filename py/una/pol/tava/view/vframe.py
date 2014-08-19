@@ -15,6 +15,7 @@ from py.una.pol.tava.view.vproject import NewProjectDialog
 from py.una.pol.tava.view.vproject import RenameProjectDialog
 from py.una.pol.tava.view.vproject import DeleteProjectDialog
 from py.una.pol.tava.view.vproject import PropertiesProjectDialog
+from py.una.pol.tava.view.vproject import UnHideProjectDialog
 from py.una.pol.tava.presenter.pframe import FramePresenter
 
 
@@ -98,3 +99,6 @@ class MainFrame(wx.Frame):
 
     def OnDeleteSelectedProject(self, message):
         DeleteProjectDialog(self, message)
+
+    def UnHideProject(self, message):
+        UnHideProjectDialog(self, message)
