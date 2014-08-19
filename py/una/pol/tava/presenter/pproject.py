@@ -114,3 +114,52 @@ class DeleteProjectDialogPresenter():
 
     def OnDeleteOk(self):
         pub.sendMessage(T.PROJECT_DELETE_OK)
+
+
+class CheckListCtrlPresenter():
+    def __init__(self, iview):
+        self.iview = iview
+
+    def OnClickCheckbox(self):
+        return pub.sendMessage('PROJECT.CLICKCHECKBOXLIST')
+
+
+class UnHideProjectDialogPresenter():
+    def __init__(self, iview):
+        self.iview = iview
+        pub.subscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
+
+    def GetHideProject(self):
+        return pro().getHideProject()
+
+    def ClickCheckboxPub(self, message):
+        self.iview.apply_change.Enable(False)
+        num = self.iview.list.GetItemCount()
+        for i in range(num):
+            if self.iview.list.IsChecked(i):
+                self.iview.apply_change.Enable(True)
+
+    def ExitDialog(self):
+        pub.unsubscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
+        self.iview.Close()
+
+    def Restore(self):
+
+        num = self.iview.list.GetItemCount()
+        for i in range(num):
+            if self.iview.list.IsChecked(i):
+                print self.iview.list.GetItemText(i)
+                print self.iview.list.Get
+
+        self.ExitDialog()
+
+    def SelectAll(self):
+        num = self.iview.list.GetItemCount()
+        for i in range(num):
+            self.iview.list.CheckItem(i)
+
+    def DeselectAll(self):
+        num = self.iview.list.GetItemCount()
+        for i in range(num):
+            self.iview.list.CheckItem(i, False)
+            self.iview.list.GetItem

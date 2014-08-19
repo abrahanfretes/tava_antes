@@ -10,6 +10,8 @@ from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import RenameProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import DeleteProjectDialogPresenter
+from py.una.pol.tava.presenter.pproject import UnHideProjectDialogPresenter
+from py.una.pol.tava.presenter.pproject import CheckListCtrlPresenter
 import py.una.pol.tava.view.vi18n as C
 
 
@@ -379,18 +381,7 @@ class PropertiesProjectDialog(wx.Dialog):
 
 
 import sys
-
-
 from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
-
-packages = [('abiword', '5.8M', 'base'),
-            ('adie', '145k', 'base'),
-            ('airsnort', '71k', 'base'),
-            ('ara', '717k', 'base'),
-            ('arc', '139k', 'base'),
-            ('asc', '5.8M', 'base'),
-            ('ascii', '74k', 'base'),
-            ('ash', '74k', 'base')]
 
 
 class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
@@ -400,8 +391,10 @@ class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
         CheckListCtrlMixin.__init__(self)
         ListCtrlAutoWidthMixin.__init__(self)
 
+        self.presenter_List = CheckListCtrlPresenter(self)
+
     def OnCheckItem(self, index, flag):
-        print 'hola'
+        self.presenter_List.OnClickCheckbox()
 
 
 class UnHideProjectDialog(wx.Dialog):
@@ -409,6 +402,7 @@ class UnHideProjectDialog(wx.Dialog):
         super(UnHideProjectDialog, self).__init__(parent,
                                 title='Proyectos Ocultos', size=(600, 500))
 
+        self.presenter_hide = UnHideProjectDialogPresenter(self)
         self.InitUI()
         self.Centre()
         self.ShowModal()
@@ -440,10 +434,10 @@ class UnHideProjectDialog(wx.Dialog):
         self.list.InsertColumn(1, 'Fecha de Creacion', width=175)
         self.list.InsertColumn(2, 'Estado', width=105)
 
-        for i in packages:
-            index = self.list.InsertStringItem(sys.maxint, i[0])
-            self.list.SetStringItem(index, 1, i[1])
-            self.list.SetStringItem(index, 2, i[2])
+        for p in self.presenter_hide.GetHideProject():
+            index = self.list.InsertStringItem(sys.maxint, p.name)
+            self.list.SetStringItem(index, 1, str(p.creation_date))
+            self.list.SetStringItem(index, 2, 'Oculto')
 
         vbox.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
@@ -458,11 +452,11 @@ class UnHideProjectDialog(wx.Dialog):
         boxsizer.Add(hboxl, 1,  wx.EXPAND | wx.RIGHT, 350)
         vbox.Add(boxsizer, 1,
                 wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        apply_change = wx.Button(panel, -1, 'Apply')
+        self.apply_change = wx.Button(panel, -1, 'Restaurar')
         cancel = wx.Button(panel, -1, 'Cancel')
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add(cancel, 1, wx.RIGHT, 10)
-        hbox.Add(apply_change)
+        hbox.Add(self.apply_change)
 
         vbox.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
         panel.SetSizer(vbox)
@@ -470,39 +464,23 @@ class UnHideProjectDialog(wx.Dialog):
         #Eventos
         self.Bind(wx.EVT_BUTTON, self.OnSelectAll, id=sel.GetId())
         self.Bind(wx.EVT_BUTTON, self.OnDeselectAll, id=des.GetId())
-        self.Bind(wx.EVT_BUTTON, self.OnApply, id=apply_change.GetId())
+        self.Bind(wx.EVT_BUTTON, self.OnApply, id=self.apply_change.GetId())
         self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel.GetId())
 
         #disable bottom al inicio
-        apply_change.Enable(False)
+        self.apply_change.Enable(False)
 
         self.Centre()
         self.Show(True)
 
-    def OnCheckItem(self, index, flag):
-        print 'hola'
-
-    def OnCheckbox(self, event):
-        print 'Se chequeo'
-
     def OnSelectAll(self, event):
-        num = self.list.GetItemCount()
-        for i in range(num):
-            self.list.CheckItem(i)
+        self.presenter_hide.SelectAll()
 
     def OnDeselectAll(self, event):
-        num = self.list.GetItemCount()
-        for i in range(num):
-            self.list.CheckItem(i, False)
+        self.presenter_hide.DeselectAll()
 
     def OnApply(self, event):
-        num = self.list.GetItemCount()
-        for i in range(num):
-            print'hola'
-            #if i == 0: self.log.Clear()
-            if self.list.IsChecked(i):
-                print'hola'
-                #self.log.AppendText(self.list.GetItemText(i) + '\n')
+        self.presenter_hide.Restore()
 
     def OnCancel(self, event):
-        self.Close()
+        self.presenter_hide.ExitDialog()
