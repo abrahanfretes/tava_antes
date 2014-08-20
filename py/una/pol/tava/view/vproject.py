@@ -417,14 +417,14 @@ class UnHideProjectDialog(wx.Dialog):
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetWeight(wx.BOLD)
         font.SetPointSize(9)
-        description = wx.StaticText(panel,
+        self.description = wx.StaticText(panel,
                             label='Marque la casilla para desocultar proyecto')
-        description.SetFont(font)
-        bmp = wx.StaticBitmap(panel)
-        bmp.SetBitmap(wx.Bitmap('view/icons/hide-left.png'))
+        self.description.SetFont(font)
+        self.bmp = wx.StaticBitmap(panel)
+        self.bmp.SetBitmap(wx.Bitmap('view/icons/hide-left.png'))
         bmp1 = wx.StaticBitmap(panel, bitmap=wx.Bitmap('view/icons/exec.png'))
-        hbox1.Add(bmp, 1, wx.RIGHT, 10)
-        hbox1.Add(description, wx.RIGHT, 10)
+        hbox1.Add(self.bmp, 1, wx.RIGHT, 10)
+        hbox1.Add(self.description, wx.RIGHT, 10)
         hbox1.Add(bmp1, 1, wx.LEFT, 220)
         vbox.Add(hbox1, 1, wx.ALIGN_LEFT | wx.ALL, 10)
 
@@ -434,12 +434,17 @@ class UnHideProjectDialog(wx.Dialog):
         self.list.InsertColumn(1, 'Fecha de Creacion', width=175)
         self.list.InsertColumn(2, 'Estado', width=105)
 
+        is_empty = True
         for p in self.presenter_hide.GetHideProject():
+            is_empty = False
             index = self.list.InsertStringItem(sys.maxint, p.name)
             self.list.SetStringItem(index, 1, str(p.creation_date))
             self.list.SetStringItem(index, 2, 'Oculto')
 
         vbox.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+
+        if(is_empty):
+            self.IsEmptyList()
 
         # parte de los botones
         sb = wx.StaticBox(panel, label='Marcacion Rapida')
@@ -484,3 +489,7 @@ class UnHideProjectDialog(wx.Dialog):
 
     def OnCancel(self, event):
         self.presenter_hide.ExitDialog()
+
+    def IsEmptyList(self):
+        self.description.SetLabel('No tiene proyectos ocultos')
+        self.bmp.SetBitmap(wx.Bitmap('view/icons/warningnewproject.png'))

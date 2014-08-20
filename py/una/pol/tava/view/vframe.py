@@ -29,7 +29,7 @@ class MainFrame(wx.Frame):
         :param parent: referencia a la clase padre del Frame Principal.
         '''
         super(MainFrame, self).__init__(parent, title='TAVA',
-                                             size=wx.Size(1200, 800),
+                                             size=wx.Size(800, 400),
                                              style=wx.DEFAULT_FRAME_STYLE |
                                              wx.TAB_TRAVERSAL)
         #se agrega el presenter

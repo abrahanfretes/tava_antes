@@ -19,7 +19,6 @@ class FramePresenter:
         pub.subscribe(self.EnglishLanguageSelected, t.ENGLISH_SELECTED)
         pub.subscribe(self.SpanishLanguageSelected, t.SPANISH_SELECTED)
         pub.subscribe(self.ProjectSelected, t.PROJECT_SELECTED)
-        pub.subscribe(self.HideProjectPub, 'PROJECT.HIDE')
         pub.subscribe(self.UnHideProjectPub, 'PROJECT.UNHIDE')
 
     def OnNewProjectBarPub(self, message):
@@ -45,9 +44,6 @@ class FramePresenter:
 
     def ProjectSelected(self, message):
         self.project_selected = message.data
-
-    def HideProjectPub(self, message):
-        self.iview.OnHideProject(message)
 
     def UnHideProjectPub(self, message):
         self.iview.UnHideProject(message)

@@ -144,13 +144,12 @@ class UnHideProjectDialogPresenter():
         self.iview.Close()
 
     def Restore(self):
-
+        list_checked = []
         num = self.iview.list.GetItemCount()
         for i in range(num):
             if self.iview.list.IsChecked(i):
-                print self.iview.list.GetItemText(i)
-                print self.iview.list.Get
-
+                list_checked.append(self.iview.list.GetItemText(i))
+        pub.sendMessage('PROJECT.LISTRESTORE', tuple(list_checked))
         self.ExitDialog()
 
     def SelectAll(self):

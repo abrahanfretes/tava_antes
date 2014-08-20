@@ -22,6 +22,18 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.OnOpenPub, t.PROJECT_OPEN)
         pub.subscribe(self.OnRenameUpPub, t.PROJECT_RENAME_UP)
         pub.subscribe(self.OnHidePub, 'PROJECT.HIDE')
+        pub.subscribe(self.OnUnHidePub, 'PROJECT.LISTRESTORE')
+
+    def OnUnHidePub(self, message):
+        list_names = message.data
+        for name in list_names:
+            project = self.UpDateOpenForHideProject(name)
+            self.OnAddNode(project)
+
+    def UpDateOpenForHideProject(self, name_project):
+        project = ProjectModel().getProjectForName(name_project)
+        project.state = OPEN
+        return ProjectModel().upDate(project)
 
     def OnAddNode(self, project):
         self.iview.AddProjectNode(project)

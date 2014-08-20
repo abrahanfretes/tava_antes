@@ -84,3 +84,7 @@ def getAllNamesProject():
     return session.query(Project.name).\
         filter(or_(Project.state == OPEN, Project.state == CLOSED)).\
         order_by(Project.state)
+
+
+def getProjectByName(name_project):
+    return session.query(Project).filter_by(name=name_project).first()
