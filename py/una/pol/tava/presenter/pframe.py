@@ -22,17 +22,17 @@ class FramePresenter:
         pub.subscribe(self.UnHideProjectPub, 'PROJECT.UNHIDE')
 
     def OnNewProjectBarPub(self, message):
-        self.iview.OnBarNewProject()
+        self.iview.ShowNewProjectDialog()
 
     def OnRenameProjectPub(self, message):
-        self.iview.OnRenameProject(message)
+        self.iview.ShowRenameProjectDialog(message.data)
 
     def OnDeleteSelectProjectPub(self, message):
-        self.iview.OnDeleteSelectedProject(message)
+        self.iview.ShowDeleteProjectDialog()
 
     def ShowProjectProperties(self, message):
         if self.project_selected is not None:
-            self.iview.OnShowProjectProperties(self.project_selected)
+            self.iview.ShowProjectProperties(self.project_selected)
 
     def EnglishLanguageSelected(self, message):
         self.iview.i18n.EnglishLanguageSelected()
@@ -46,4 +46,4 @@ class FramePresenter:
         self.project_selected = message.data
 
     def UnHideProjectPub(self, message):
-        self.iview.UnHideProject(message)
+        self.iview.ShowUnHideProjectDialog()

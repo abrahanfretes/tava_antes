@@ -17,6 +17,8 @@ from py.una.pol.tava.view.vproject import DeleteProjectDialog
 from py.una.pol.tava.view.vproject import PropertiesProjectDialog
 from py.una.pol.tava.view.vproject import UnHideProjectDialog
 from py.una.pol.tava.presenter.pframe import FramePresenter
+from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
 
 
 class MainFrame(wx.Frame):
@@ -35,14 +37,14 @@ class MainFrame(wx.Frame):
         #se agrega el presenter
         self.presenter = FramePresenter(self)
 
-        self.setI18n()
+        self.SetI18n()
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.InitUI()
         self.Centre(wx.BOTH)
 #         self.Maximize()
         self.Show(True)
 
-    def setI18n(self):
+    def SetI18n(self):
         self.i18n = I18nLocale()
 
     def InitUI(self):
@@ -72,33 +74,33 @@ class MainFrame(wx.Frame):
         '''
         Creación de la clase vbody como parte del Frame Principal.
         '''
-        self.main_panel = MainPanel(self)
+        MainPanel(self)
 
-    def OnNewProject(self, e):
+    def OnProjectNew(self, e):
         '''
         Método que inicializa la clase de creación de un Nuevo Proyecto.
         :param e: evento de selección de Menú.
         '''
+        self.ShowNewProjectDialog()
+
+    def ShowNewProjectDialog(self):
         NewProjectDialog(self)
 
-    def OnExitAplication(self, e):
+    def ShowProjectProperties(self, project):
+        PropertiesProjectDialog(self, project)
 
-        result = wx.MessageBox("Desea salir de la aplicación",
-                               style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
+    def ShowRenameProjectDialog(self, project):
+        RenameProjectDialog(self, project)
+
+    def ShowDeleteProjectDialog(self):
+        DeleteProjectDialog()
+
+    def ShowUnHideProjectDialog(self):
+        UnHideProjectDialog(self)
+
+    def OnApplicationExit(self, e):
+
+        result = wx.MessageBox(_(C.MF_EAM), _(C.MF_EAT),
+                               style=wx.CENTER | wx.ICON_QUESTION | wx.YES_NO)
         if result == wx.YES:
             self.Close(True)
-
-    def OnBarNewProject(self):
-        NewProjectDialog(self)
-
-    def OnShowProjectProperties(self, message):
-        PropertiesProjectDialog(self, message)
-
-    def OnRenameProject(self, message):
-        RenameProjectDialog(self, message)
-
-    def OnDeleteSelectedProject(self, message):
-        DeleteProjectDialog(self, message)
-
-    def UnHideProject(self, message):
-        UnHideProjectDialog(self, message)
