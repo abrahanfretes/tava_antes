@@ -183,6 +183,10 @@ class I18nLocale(wx.Locale):
         return languageDict
 
 # ------------------------------- Constants -----------------------------------
+# ------------------------------- MainFrame -----------------------------------
+MF_EAM = "MAIN_FRAME_EXIT_APPLICATION_MESSAGE"
+MF_EAT = "MAIN_FRAME_EXIT_APPLICATION_TITLE"
+
 # ------------------------------- MainMenuBar ---------------------------------
 MMB_NP = "MAIN_MENU_BAR_NEW_PROJECT"
 MMB_OP = "MAIN_MENU_BAR_OPEN_PROJECT"

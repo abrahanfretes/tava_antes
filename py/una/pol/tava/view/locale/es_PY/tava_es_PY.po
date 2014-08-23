@@ -13,6 +13,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
+# ------------------------------- MainFrame -----------------------------------
+msgid "MAIN_FRAME_EXIT_APPLICATION_MESSAGE"
+msgstr "Desea salir de la aplicación?"
+
+msgid "MAIN_FRAME_EXIT_APPLICATION_TITLE"
+msgstr "Confirmar salida"
+
 # ------------------------------- MainMenuBar ---------------------------------
 msgid "MAIN_MENU_BAR_NEW_PROJECT"
 msgstr "Nuevo Proyecto"
