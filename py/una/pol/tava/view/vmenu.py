@@ -74,10 +74,10 @@ class MainMenuBar(wx.MenuBar):
         self.Append(language_menu, _(C.MMB_LANGUAGE))
         self.Append(help_menu, _(C.MMB_HELP))
 
-        parent.Bind(wx.EVT_MENU, parent.OnNewProject, id=wx.ID_NEW)
+        parent.Bind(wx.EVT_MENU, parent.OnProjectNew, id=wx.ID_NEW)
         file_menu.Bind(wx.EVT_MENU, self.OnShowProperties,
                   self.properties_item)
-        parent.Bind(wx.EVT_MENU, parent.OnExitAplication, id=wx.ID_EXIT)
+        parent.Bind(wx.EVT_MENU, parent.OnApplicationExit, id=wx.ID_EXIT)
         parent.Bind(wx.EVT_MENU, self.OnAboutBox, id=wx.ID_ABOUT)
         language_menu.Bind(wx.EVT_MENU, self.OnSelectEnglishLanguage,
                   english_language_menu_item)
