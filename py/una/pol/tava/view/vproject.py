@@ -169,11 +169,11 @@ class NewProjectDialog(wx.Dialog):
 
 class RenameProjectDialog(wx.Dialog):
 
-    def __init__(self, parent, message):
+    def __init__(self, parent, project):
         super(RenameProjectDialog, self).__init__(parent,
             title=_(C.RPD_RN), size=(550, 220))
 
-        self.project = message.data
+        self.project = project
         self.previous_name = self.project.name
 
         self.presenter_re = RenameProjectDialogPresenter(self)
@@ -301,7 +301,7 @@ class RenameProjectDialog(wx.Dialog):
 
 
 class DeleteProjectDialog():
-    def __init__(self, parent, message):
+    def __init__(self):
 
         self.presenter_re1 = DeleteProjectDialogPresenter(self)
 
@@ -397,7 +397,7 @@ class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
 
 
 class UnHideProjectDialog(wx.Dialog):
-    def __init__(self, parent, message):
+    def __init__(self, parent):
         super(UnHideProjectDialog, self).__init__(parent,
                                 title=_(C.UHPD_T), size=(600, 500))
         _(C.PPD_CD)
