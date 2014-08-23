@@ -136,6 +136,43 @@ msgstr "Cancel"
 msgid "RENAME_PROJECT_DIALOG_NEW_NAME_ALERT"
 msgstr "Rename project"
 
+# ------------------------------- UnHideProjectDialog -------------------------
+msgid "UNHIDE_PROJECT_DIALOG_TITLE"
+msgstr "Hidden projects"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_TEXT_DESCRIPTION"
+msgstr "Check the box to unhide project"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_NAME"
+msgstr "Name"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_DATE"
+msgstr "Date of Creation"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_STATE"
+msgstr "State"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_CONTENT_STATE"
+msgstr "Hidden"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_BOX_LABEL"
+msgstr "Quick Check"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_SELECT_ALL_LABEL"
+msgstr "Select All"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_DESELECT_ALL_LABEL"
+msgstr "Deselect All"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON__RESTORE_LABEL"
+msgstr "Restore"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_CANCEL_LABEL"
+msgstr "Cancel"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_TEXT_DESCRIPTION_EMPTY"
+msgstr "No hidden projects"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "New"

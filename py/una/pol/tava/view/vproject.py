@@ -48,8 +48,7 @@ class NewProjectDialog(wx.Dialog):
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(9)
-        self.name_alert = wx.StaticText(panel_in,
-                                        label='Crear un nuevo Proyecto Tava')
+        self.name_alert = wx.StaticText(panel_in)
         self.name_alert.SetFont(font)
         self.execute_bmp6 = wx.StaticBitmap(panel_in)
         hbox1.Add(self.execute_bmp6, flag=wx.LEFT, border=2)
@@ -400,7 +399,8 @@ class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
 class UnHideProjectDialog(wx.Dialog):
     def __init__(self, parent, message):
         super(UnHideProjectDialog, self).__init__(parent,
-                                title='Proyectos Ocultos', size=(600, 500))
+                                title=_(C.UHPD_T), size=(600, 500))
+        _(C.PPD_CD)
 
         self.presenter_hide = UnHideProjectDialogPresenter(self)
         self.InitUI()
@@ -418,7 +418,7 @@ class UnHideProjectDialog(wx.Dialog):
         font.SetWeight(wx.BOLD)
         font.SetPointSize(9)
         self.description = wx.StaticText(panel,
-                            label='Marque la casilla para desocultar proyecto')
+                            label=_(C.UHPD_STD))
         self.description.SetFont(font)
         self.bmp = wx.StaticBitmap(panel)
         self.bmp.SetBitmap(wx.Bitmap('view/icons/hide-left.png'))
@@ -430,16 +430,16 @@ class UnHideProjectDialog(wx.Dialog):
 
         #parte del checList
         self.list = CheckListCtrl(panel)
-        self.list.InsertColumn(0, 'Nombre', width=300)
-        self.list.InsertColumn(1, 'Fecha de Creacion', width=175)
-        self.list.InsertColumn(2, 'Estado', width=105)
+        self.list.InsertColumn(0, _(C.UHPD_CLN), width=300)
+        self.list.InsertColumn(1, _(C.UHPD_CLD), width=175)
+        self.list.InsertColumn(2, _(C.UHPD_CLS), width=105)
 
         is_empty = True
         for p in self.presenter_hide.GetHideProject():
             is_empty = False
             index = self.list.InsertStringItem(sys.maxint, p.name)
             self.list.SetStringItem(index, 1, str(p.creation_date))
-            self.list.SetStringItem(index, 2, 'Oculto')
+            self.list.SetStringItem(index, 2, _(C.UHPD_CLCS))
 
         vbox.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
@@ -447,18 +447,18 @@ class UnHideProjectDialog(wx.Dialog):
             self.IsEmptyList()
 
         # parte de los botones
-        sb = wx.StaticBox(panel, label='Marcacion Rapida')
+        sb = wx.StaticBox(panel, label=_(C.UHPD_SBL))
         boxsizer = wx.StaticBoxSizer(sb, wx.HORIZONTAL)
-        sel = wx.Button(panel, -1, 'Select All')
-        des = wx.Button(panel, -1, 'Deselect All')
+        sel = wx.Button(panel, -1, _(C.UHPD_BSAL))
+        des = wx.Button(panel, -1, _(C.UHPD_BDSAL))
         hboxl = wx.BoxSizer(wx.HORIZONTAL)
         hboxl.Add(sel, 1, wx.ALL, 10)
         hboxl.Add(des, 1, wx.ALL, 10)
         boxsizer.Add(hboxl, 1,  wx.EXPAND | wx.RIGHT, 350)
         vbox.Add(boxsizer, 1,
                 wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        self.apply_change = wx.Button(panel, -1, 'Restaurar')
-        cancel = wx.Button(panel, -1, 'Cancel')
+        self.apply_change = wx.Button(panel, -1, _(C.UHPD_BRL))
+        cancel = wx.Button(panel, -1, _(C.UHPD_BCL))
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add(cancel, 1, wx.RIGHT, 10)
         hbox.Add(self.apply_change)
@@ -491,5 +491,5 @@ class UnHideProjectDialog(wx.Dialog):
         self.presenter_hide.ExitDialog()
 
     def IsEmptyList(self):
-        self.description.SetLabel('No tiene proyectos ocultos')
+        self.description.SetLabel(_(C.UHPD_STDE))
         self.bmp.SetBitmap(wx.Bitmap('view/icons/warningnewproject.png'))

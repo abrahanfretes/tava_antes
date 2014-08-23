@@ -136,6 +136,43 @@ msgstr "Cancelar"
 msgid "RENAME_PROJECT_DIALOG_NEW_NAME_ALERT"
 msgstr "Renombrar proyecto"
 
+# ------------------------------- UnHideProjectDialog -------------------------
+msgid "UNHIDE_PROJECT_DIALOG_TITLE"
+msgstr "Proyectos Ocultos"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_TEXT_DESCRIPTION"
+msgstr "Marque la casilla para desocultar proyecto"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_NAME"
+msgstr "Nombre"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_DATE"
+msgstr "Fecha de Creacion"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_STATE"
+msgstr "Estado"
+
+msgid "UNHIDE_PROJECT_DIALOG_CHECK_LIST_CONTENT_STATE"
+msgstr "Oculto"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_BOX_LABEL"
+msgstr "Marcación Rápida"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_SELECT_ALL_LABEL"
+msgstr "Seleccionar todo"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_DESELECT_ALL_LABEL"
+msgstr "Deseleccionar todo"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON__RESTORE_LABEL"
+msgstr "Restaurar"
+
+msgid "UNHIDE_PROJECT_DIALOG_BUTTON_CANCEL_LABEL"
+msgstr "Cancelar"
+
+msgid "UNHIDE_PROJECT_DIALOG_STATIC_TEXT_DESCRIPTION_EMPTY"
+msgstr "No tiene proyectos ocultos"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "Nuevo"
