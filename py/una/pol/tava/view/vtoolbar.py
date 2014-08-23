@@ -80,7 +80,7 @@ class MainToolBar(wx.ToolBar):
 
         self.AddLabelTool(ID_EXIT_PRO, '', exit_bmp, shortHelp=_(C.MTB_EX))
 
-        self.Bind(wx.EVT_TOOL, parent.OnExitAplication, id=ID_EXIT_PRO)
+        self.Bind(wx.EVT_TOOL, parent.OnApplicationExit, id=ID_EXIT_PRO)
 
         self.SetReferences()
 
@@ -127,7 +127,7 @@ class MainToolBar(wx.ToolBar):
         self.presenter.OnDeleteProject()
 
     def OnNewProjectView(self, event):
-        self.presenter.OnNewProject()
+        self.presenter.NewProject()
 
     def OnHideProjectView(self, event):
         self.presenter.OnHideProject()

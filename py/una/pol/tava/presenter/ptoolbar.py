@@ -28,7 +28,7 @@ class ToolBarPresenter:
     def OnCloseProjectSend(self):
         pub.sendMessage(T.PROJECT_CLOSE)
 
-    def OnNewProject(self):
+    def NewProject(self):
         pub.sendMessage(T.BAR_PROJECT_NEW)
 
     def OnOpenProject(self):
