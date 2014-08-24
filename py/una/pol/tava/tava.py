@@ -6,7 +6,6 @@ Created on 27/06/2014
 '''
 import wx
 from py.una.pol.tava.base import base
-from py.una.pol.tava.view.vframe import MainFrame
 
 
 def main():
@@ -15,6 +14,7 @@ def main():
     '''
     base.createDb()
     ex = wx.App()
+    from py.una.pol.tava.view.vframe import MainFrame
     frame = MainFrame(None)
     frame.Centre()
     ex.MainLoop()
