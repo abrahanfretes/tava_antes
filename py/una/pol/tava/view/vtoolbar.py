@@ -9,15 +9,7 @@ import wx
 from py.una.pol.tava.presenter.ptoolbar import ToolBarPresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
-
-ID_NEW_PRO = wx.NewId()
-ID_UNHIDE_PRO = wx.NewId()
-ID_HIDE_PRO = wx.NewId()
-ID_OPEN_PRO = wx.NewId()
-ID_CLOSE_PRO = wx.NewId()
-ID_DEL_PRO = wx.NewId()
-ID_BLOG_PRO = wx.NewId()
-ID_EXIT_PRO = wx.NewId()
+import py.una.pol.tava.view.vimages as I
 
 
 class MainToolBar(wx.ToolBar):
@@ -33,104 +25,120 @@ class MainToolBar(wx.ToolBar):
         '''
         super(MainToolBar, self).__init__(parent, wx.TB_HORIZONTAL)
 
-        #El Presenter
+        # Creacion del Presenter
         self.presenter = ToolBarPresenter(self)
 
-        # iconos para los proyectos
+        # Creacion de los ids de los diferentes tools
+        self.SetIdReferences()
+
+        self.SetToolBitmapSize((16, 16))
+
+        # Nuevo Proyecto
         new_bmp = wx.ArtProvider.GetBitmap(wx.ART_NEW)
-        unhide_bmp = wx.Bitmap('view/icons/hide-left.png')
+        self.AddLabelTool(self.ID_NEW_PRO, '', new_bmp)
+        self.EnableTool(self.ID_NEW_PRO, True)
+        self.Bind(wx.EVT_TOOL, self.OnProjectNew, id=self.ID_NEW_PRO)
 
+        # Abrir Proyecto
         open_bmp = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN)
-        close_bmp = wx.Bitmap('view/icons/close.png')
-        delete_bmp = wx.Bitmap('view/icons/delete.png')
-        hide_bmp = wx.Bitmap('view/icons/hide-right.png')
-        blog_bmp = wx.Bitmap('view/icons/blog.png')
+        self.AddLabelTool(self.ID_OPEN_PRO, '', open_bmp)
+        self.EnableTool(self.ID_OPEN_PRO, False)
+        self.Bind(wx.EVT_TOOL, self.OnProjectOpen, id=self.ID_OPEN_PRO)
 
-        self.AddLabelTool(ID_NEW_PRO, '', new_bmp, shortHelp=_(C.MTB_NP))
-        self.AddLabelTool(ID_UNHIDE_PRO, '',
-                          unhide_bmp, shortHelp=_(C.MTB_UHP))
+        # Cerrar Proyecto
+        self.AddLabelTool(self.ID_CLOSE_PRO, '', I.close_png)
+        self.EnableTool(self.ID_CLOSE_PRO, False)
+        self.Bind(wx.EVT_TOOL, self.OnProjectClose, id=self.ID_CLOSE_PRO)
 
-        self.AddSeparator()
+        # Eliminar Proyecto
+        self.AddLabelTool(self.ID_DEL_PRO, '', I.delete_png)
+        self.EnableTool(self.ID_DEL_PRO, False)
+        self.Bind(wx.EVT_TOOL, self.OnProjectDelete, id=self.ID_DEL_PRO)
 
-        self.AddLabelTool(ID_BLOG_PRO, '', blog_bmp, shortHelp=_(C.MTB_BP))
-        self.AddLabelTool(ID_CLOSE_PRO, '', close_bmp, shortHelp=_(C.MTB_CP))
-        self.AddLabelTool(ID_DEL_PRO, '', delete_bmp, shortHelp=_(C.MTB_DP))
-        self.AddLabelTool(ID_OPEN_PRO, '', open_bmp, shortHelp=_(C.MTB_OP))
-        self.AddLabelTool(ID_HIDE_PRO, '', hide_bmp, shortHelp=_(C.MTB_HP))
-
-        self.EnableTool(ID_NEW_PRO, True)
-        self.EnableTool(ID_UNHIDE_PRO, True)
-        self.EnableTool(ID_OPEN_PRO, False)
-        self.EnableTool(ID_CLOSE_PRO, False)
-        self.EnableTool(ID_DEL_PRO, False)
-        self.EnableTool(ID_BLOG_PRO, False)
-        self.EnableTool(ID_HIDE_PRO, False)
-
-        self.Bind(wx.EVT_TOOL, self.OnNewProjectView, id=ID_NEW_PRO)
-        self.Bind(wx.EVT_TOOL, self.OnCloseProjectView, id=ID_CLOSE_PRO)
-        self.Bind(wx.EVT_TOOL, self.OnOpenProjectView, id=ID_OPEN_PRO)
-        self.Bind(wx.EVT_TOOL, self.OnDeleteProjectView, id=ID_DEL_PRO)
-        self.Bind(wx.EVT_TOOL, self.OnHideProjectView, id=ID_HIDE_PRO)
-        self.Bind(wx.EVT_TOOL, self.OnUnHideProjectView, id=ID_UNHIDE_PRO)
+        # Blog de Proyecto
+        self.AddLabelTool(self.ID_BLOG_PRO, '', I.blog_png)
+        self.EnableTool(self.ID_BLOG_PRO, False)
 
         self.AddSeparator()
 
-        # iconos para el sistema
+        # Desocultar Proyecto
+        self.AddLabelTool(self.ID_UNHIDE_PRO, '', I.hide_left_png)
+        self.EnableTool(self.ID_UNHIDE_PRO, True)
+        self.Bind(wx.EVT_TOOL, self.OnProjectUnHide, id=self.ID_UNHIDE_PRO)
+
+        # Ocultar Proyecto
+        self.AddLabelTool(self.ID_HIDE_PRO, '', I.hide_right_png)
+        self.EnableTool(self.ID_HIDE_PRO, False)
+        self.Bind(wx.EVT_TOOL, self.OnProjectHide, id=self.ID_HIDE_PRO)
+
+        self.AddSeparator()
+
+        # Salir Aplicacion
         exit_bmp = wx.ArtProvider.GetBitmap(wx.ART_QUIT)
+        self.AddLabelTool(self.ID_EXIT_PRO, '', exit_bmp)
+        self.Bind(wx.EVT_TOOL, parent.OnApplicationExit, id=self.ID_EXIT_PRO)
 
-        self.AddLabelTool(ID_EXIT_PRO, '', exit_bmp, shortHelp=_(C.MTB_EX))
+        # Establecemos los labels
+        self.SetLabels()
 
-        self.Bind(wx.EVT_TOOL, parent.OnApplicationExit, id=ID_EXIT_PRO)
-
-        self.SetReferences()
-
+        # Finalizando la creacion del toolbar
         self.Realize()
 
-    def SetReferences(self):
-        self.ID_NEW_PRO = ID_NEW_PRO
-        self.ID_OPEN_PRO = ID_OPEN_PRO
-        self.ID_CLOSE_PRO = ID_CLOSE_PRO
-        self.ID_DEL_PRO = ID_DEL_PRO
-        self.ID_BLOG_PRO = ID_BLOG_PRO
-        self.ID_EXIT_PRO = ID_EXIT_PRO
-        self.ID_HIDE_PRO = ID_HIDE_PRO
-        self.ID_UNHIDE_PRO = ID_UNHIDE_PRO
+    def SetIdReferences(self):
+        self.ID_NEW_PRO = wx.NewId()
+        self.ID_OPEN_PRO = wx.NewId()
+        self.ID_CLOSE_PRO = wx.NewId()
+        self.ID_DEL_PRO = wx.NewId()
+        self.ID_BLOG_PRO = wx.NewId()
+        self.ID_EXIT_PRO = wx.NewId()
+        self.ID_HIDE_PRO = wx.NewId()
+        self.ID_UNHIDE_PRO = wx.NewId()
 
-    def OnOpenDisable(self):
-        self.EnableTool(ID_DEL_PRO, True)
-        self.EnableTool(ID_CLOSE_PRO, True)
-        self.EnableTool(ID_BLOG_PRO, True)
-        self.EnableTool(ID_OPEN_PRO, False)
-        self.EnableTool(ID_HIDE_PRO, False)
+    def EnableDisableOpenProject(self):
+        self.EnableTool(self.ID_DEL_PRO, True)
+        self.EnableTool(self.ID_CLOSE_PRO, True)
+        self.EnableTool(self.ID_BLOG_PRO, True)
+        self.EnableTool(self.ID_OPEN_PRO, False)
+        self.EnableTool(self.ID_HIDE_PRO, False)
 
-    def OnCloseDisable(self):
-        self.EnableTool(ID_DEL_PRO, True)
-        self.EnableTool(ID_OPEN_PRO, True)
-        self.EnableTool(ID_CLOSE_PRO, False)
-        self.EnableTool(ID_BLOG_PRO, False)
-        self.EnableTool(ID_HIDE_PRO, True)
+    def EnableDisableCloseProject(self):
+        self.EnableTool(self.ID_DEL_PRO, True)
+        self.EnableTool(self.ID_OPEN_PRO, True)
+        self.EnableTool(self.ID_CLOSE_PRO, False)
+        self.EnableTool(self.ID_BLOG_PRO, False)
+        self.EnableTool(self.ID_HIDE_PRO, True)
 
-    def OnAllDisable(self):
-        self.EnableTool(ID_DEL_PRO, False)
-        self.EnableTool(ID_CLOSE_PRO, False)
-        self.EnableTool(ID_BLOG_PRO, False)
-        self.EnableTool(ID_OPEN_PRO, False)
-        self.EnableTool(ID_HIDE_PRO, False)
+    def DisableAllProject(self):
+        self.EnableTool(self.ID_DEL_PRO, False)
+        self.EnableTool(self.ID_CLOSE_PRO, False)
+        self.EnableTool(self.ID_BLOG_PRO, False)
+        self.EnableTool(self.ID_OPEN_PRO, False)
+        self.EnableTool(self.ID_HIDE_PRO, False)
 
-    def OnCloseProjectView(self, event):
-        self.presenter.OnCloseProjectSend()
+    def OnProjectClose(self, event):
+        self.presenter.CloseProject()
 
-    def OnOpenProjectView(self, event):
-        self.presenter.OnOpenProject()
+    def OnProjectOpen(self, event):
+        self.presenter.OpenProject()
 
-    def OnDeleteProjectView(self, event):
-        self.presenter.OnDeleteProject()
+    def OnProjectDelete(self, event):
+        self.presenter.DeleteProject()
 
-    def OnNewProjectView(self, event):
+    def OnProjectNew(self, event):
         self.presenter.NewProject()
 
-    def OnHideProjectView(self, event):
-        self.presenter.OnHideProject()
+    def OnProjectHide(self, event):
+        self.presenter.HideProject()
 
-    def OnUnHideProjectView(self, event):
-        self.presenter.OnUnHideProject()
+    def OnProjectUnHide(self, event):
+        self.presenter.UnHideProject()
+
+    def SetLabels(self):
+        self.SetToolShortHelp(self.ID_NEW_PRO, _(C.MTB_NP))
+        self.SetToolShortHelp(self.ID_OPEN_PRO, _(C.MTB_OP))
+        self.SetToolShortHelp(self.ID_CLOSE_PRO, _(C.MTB_CP))
+        self.SetToolShortHelp(self.ID_DEL_PRO, _(C.MTB_DP))
+        self.SetToolShortHelp(self.ID_BLOG_PRO, _(C.MTB_BP))
+        self.SetToolShortHelp(self.ID_EXIT_PRO, _(C.MTB_EX))
+        self.SetToolShortHelp(self.ID_HIDE_PRO, _(C.MTB_HP))
+        self.SetToolShortHelp(self.ID_UNHIDE_PRO, _(C.MTB_UHP))
