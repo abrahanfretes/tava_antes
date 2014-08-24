@@ -11,6 +11,7 @@ from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from py.una.pol.tava.presenter.pbody import ProjectTreeNotebookPresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
+import py.una.pol.tava.view.vimages as I
 
 
 class TreePanel(wx.Panel):
@@ -38,8 +39,7 @@ class ProjectTreeNotebook(wx.Notebook):
         # Se configura la pestaña de navegación de proyectos.
         il = wx.ImageList(16, 16)
         self.SetImageList(il)
-        tree_explorer_bmp = il.Add(wx.Bitmap("view/icons/tree_explorer.gif",
-                                             wx.BITMAP_TYPE_GIF))
+        tree_explorer_bmp = il.Add(I.tree_explorer_gif)
         self.SetPageImage(0, tree_explorer_bmp)
         self.SetBackgroundColour(self.GetThemeBackgroundColour())
 
