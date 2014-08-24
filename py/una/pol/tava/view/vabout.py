@@ -6,6 +6,7 @@ Created on 28/05/2014
 '''
 
 import wx
+import py.una.pol.tava.view.vimages as I
 
 
 class AboutDialog(wx.AboutDialogInfo):
@@ -31,8 +32,7 @@ class AboutDialog(wx.AboutDialogInfo):
         Licencia, o (a su elección) cualquier versión posterior.
         """
 
-        self.SetIcon(wx.Icon('view/icons/logoTVAA.jpg',
-                             wx.BITMAP_TYPE_JPEG))
+        self.SetIcon(I.logoTVAA_jpg)
         self.SetName('TAVA')
         self.SetVersion('1.0')
         self.SetDescription(description)
