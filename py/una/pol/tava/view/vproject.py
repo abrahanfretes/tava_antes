@@ -13,6 +13,7 @@ from py.una.pol.tava.presenter.pproject import DeleteProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import UnHideProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import CheckListCtrlPresenter
 import py.una.pol.tava.view.vi18n as C
+import py.una.pol.tava.view.vimages as I
 
 
 class NewProjectDialog(wx.Dialog):
@@ -39,8 +40,7 @@ class NewProjectDialog(wx.Dialog):
         sizer_in.Add(title_h1, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
 
         #Figura de tava
-        execute_bmp4 = wx.StaticBitmap(panel_in,
-                               bitmap=wx.Bitmap('view/icons/exec.png'))
+        execute_bmp4 = wx.StaticBitmap(panel_in, bitmap=I.exec_png)
         sizer_in.Add(execute_bmp4, pos=(0, 4),
                      flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
@@ -146,16 +146,13 @@ class NewProjectDialog(wx.Dialog):
         return '/' in self.name.Value
 
     def IconError(self):
-        self.execute_bmp6.SetBitmap(
-                                wx.Bitmap('view/icons/errornewproject.png'))
+        self.execute_bmp6.SetBitmap(I.errornewproject_png)
 
     def IconWarning(self):
-        self.execute_bmp6.SetBitmap(
-                                wx.Bitmap('view/icons/warningnewproject.png'))
+        self.execute_bmp6.SetBitmap(I.warningnewproject_png)
 
     def IconCorrect(self):
-        self.execute_bmp6.SetBitmap(
-                                wx.Bitmap('view/icons/execute.png'))
+        self.execute_bmp6.SetBitmap(I.execute_png)
 
     def SetNameErrorBackground(self):
         self.name.SetBackgroundColour((237, 93, 93))
@@ -188,8 +185,7 @@ class RenameProjectDialog(wx.Dialog):
         csizer = wx.GridBagSizer(3, 4)
 
         #Figura de tava
-        fig_bmp = wx.StaticBitmap(cpanel,
-                                  bitmap=wx.Bitmap('view/icons/exec.png'))
+        fig_bmp = wx.StaticBitmap(cpanel, bitmap=I.exec_png)
         csizer.Add(fig_bmp, pos=(0, 4),
                    flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
@@ -282,16 +278,13 @@ class RenameProjectDialog(wx.Dialog):
         self.new_name.SetBackgroundColour((237, 93, 93))
 
     def IconError(self):
-        self.fig_alet_bmp.SetBitmap(
-                                wx.Bitmap('view/icons/errornewproject.png'))
+        self.fig_alet_bmp.SetBitmap(I.errornewproject_png)
 
     def IconWarning(self):
-        self.fig_alet_bmp.SetBitmap(
-                                wx.Bitmap('view/icons/warningnewproject.png'))
+        self.fig_alet_bmp.SetBitmap(I.warningnewproject_png)
 
     def IconRename(self):
-        self.fig_alet_bmp.SetBitmap(
-                                wx.Bitmap('view/icons/renamenewproject.png'))
+        self.fig_alet_bmp.SetBitmap(I.renamenewproject_png)
 
     def OnOkRenameEvent(self, event):
         self.presenter_re.OnUpDateName(self.new_name.Value)
@@ -421,8 +414,8 @@ class UnHideProjectDialog(wx.Dialog):
                             label=_(C.UHPD_STD))
         self.description.SetFont(font)
         self.bmp = wx.StaticBitmap(panel)
-        self.bmp.SetBitmap(wx.Bitmap('view/icons/hide-left.png'))
-        bmp1 = wx.StaticBitmap(panel, bitmap=wx.Bitmap('view/icons/exec.png'))
+        self.bmp.SetBitmap(I.hide_left_png)
+        bmp1 = wx.StaticBitmap(panel, bitmap=I.exec_png)
         hbox1.Add(self.bmp, 1, wx.RIGHT, 10)
         hbox1.Add(self.description, wx.RIGHT, 10)
         hbox1.Add(bmp1, 1, wx.LEFT, 220)
@@ -492,4 +485,4 @@ class UnHideProjectDialog(wx.Dialog):
 
     def IsEmptyList(self):
         self.description.SetLabel(_(C.UHPD_STDE))
-        self.bmp.SetBitmap(wx.Bitmap('view/icons/warningnewproject.png'))
+        self.bmp.SetBitmap(I.warningnewproject_png)
