@@ -13,6 +13,7 @@ from py.una.pol.tava.base.entity import CLOSED
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
 import wx.lib.agw.customtreectrl as CT
+import py.una.pol.tava.view.vimages as I
 
 
 class ProjectTreeCtrl(CT.CustomTreeCtrl):
@@ -30,12 +31,10 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetBackgroundColour('#D9F0F8')
 
         il = wx.ImageList(16, 16)
-        self.folder_bmp = il.Add(bitmap=wx.Bitmap('view/icons/folder.png'))
-        self.folder_open_bmp = il.Add(
-                            bitmap=wx.Bitmap('view/icons/folderOpen.png'))
-        self.folder_closed_bmp = il.\
-        Add(bitmap=wx.Bitmap('view/icons/folderClosed.png'))
-        self.file_bmp = il.Add(bitmap=wx.Bitmap('view/icons/result.png'))
+        self.folder_bmp = il.Add(I.folder_png)
+        self.folder_open_bmp = il.Add(I.folderOpen_png)
+        self.folder_closed_bmp = il.Add(I.folderClosed_png)
+        self.file_bmp = il.Add(I.result_png)
         self.AssignImageList(il)
 
         self.root = self.AddRoot("Proyectos")
