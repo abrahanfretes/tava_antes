@@ -16,7 +16,7 @@ def main():
     ex = wx.App()
     from py.una.pol.tava.view.vframe import MainFrame
     frame = MainFrame(None)
-    frame.Centre()
+    frame.Centre(wx.BOTH)
     ex.MainLoop()
 
 if __name__ == '__main__':
