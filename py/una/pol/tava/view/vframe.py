@@ -101,6 +101,7 @@ class MainFrame(wx.Frame):
     def OnApplicationExit(self, e):
 
         result = wx.MessageBox(_(C.MF_EAM), _(C.MF_EAT),
-                               style=wx.CENTER | wx.ICON_QUESTION | wx.YES_NO)
+                               style=wx.YES_NO | wx.NO_DEFAULT | wx.CENTER |
+                               wx.ICON_QUESTION)
         if result == wx.YES:
             self.Close(True)
