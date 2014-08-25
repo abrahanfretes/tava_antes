@@ -92,6 +92,8 @@ class NewProjectDialog(wx.Dialog):
         sizer_in.Add(self.ok_button, pos=(5, 4),
                      flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT, border=15)
 
+        panel_in.Bind(wx.EVT_CHAR, self.OnKeyDown)
+
         #configuracion del sizer
         sizer_in.AddGrowableCol(2)
         panel_in.SetSizer(sizer_in)
@@ -163,6 +165,11 @@ class NewProjectDialog(wx.Dialog):
     def OnCancel(self, e):
         self.Close(True)
 
+    def OnKeyDown(self, e):
+        key = e.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
+
 
 class RenameProjectDialog(wx.Dialog):
 
@@ -177,7 +184,7 @@ class RenameProjectDialog(wx.Dialog):
 
         self.InitUI()
         self.Centre()
-        self.Show()
+        self.ShowModal()()
 
     def InitUI(self):
 
@@ -222,6 +229,8 @@ class RenameProjectDialog(wx.Dialog):
         self.cancel_button = wx.Button(cpanel, label=_(C.RPD_CAN))
         csizer.Add(self.cancel_button, pos=(3, 3),
                    flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border=15)
+
+        cpanel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
         csizer.AddGrowableCol(2)
         cpanel.SetSizer(csizer)
@@ -291,6 +300,11 @@ class RenameProjectDialog(wx.Dialog):
 
     def OnCancel(self, e):
         self.Close(True)
+
+    def OnKeyDown(self, e):
+        key = e.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
 
 
 class DeleteProjectDialog():
@@ -364,12 +378,19 @@ class PropertiesProjectDialog(wx.Dialog):
         sizer.Add(ok_button, pos=(6, 4), flag=wx.ALIGN_RIGHT
                   | wx.LEFT, border=5)
 
+        panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
+
         sizer.AddGrowableCol(2)
 
         panel.SetSizer(sizer)
 
     def OnClose(self, e):
         self.Close(True)
+
+    def OnKeyDown(self, e):
+        key = e.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
 
 
 import sys
@@ -468,6 +489,8 @@ class UnHideProjectDialog(wx.Dialog):
         #disable bottom al inicio
         self.apply_change.Enable(False)
 
+        panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
+
         self.Centre()
         self.Show(True)
 
@@ -486,3 +509,8 @@ class UnHideProjectDialog(wx.Dialog):
     def IsEmptyList(self):
         self.description.SetLabel(_(C.UHPD_STDE))
         self.bmp.SetBitmap(I.warningnewproject_png)
+
+    def OnKeyDown(self, e):
+        key = e.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
