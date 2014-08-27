@@ -162,12 +162,16 @@ class ProjectMenu(wx.Menu):
             rename_item.Enable(False)
             properties_item.Enable(False)
 
+        self.Bind(wx.EVT_MENU, self.OnAddFileInProject, new)
         self.Bind(wx.EVT_MENU, self.OpenProject, open_item)
         self.Bind(wx.EVT_MENU, self.CloseProject, closed_item)
         self.Bind(wx.EVT_MENU, self.DeleteProject, delete_item)
         self.Bind(wx.EVT_MENU, self.HideProject, hide_item)
         self.Bind(wx.EVT_MENU, self.RenameProject, rename_item)
         self.Bind(wx.EVT_MENU, self.PropertiesProject, properties_item)
+
+    def OnAddFileInProject(self, event):
+        self.presentermenu.AddFileInProject(self.project)
 
     def RenameProject(self, event):
         self.presentermenu.OnRename(self.project)

@@ -11,6 +11,9 @@ class ProjectMenuPresenter:
     def __init__(self, iview):
         self.iview = iview
 
+    def AddFileInProject(self, project):
+        pub.sendMessage('PROJECT.ADDFILE', project)
+
     def OnOpen(self):
         pub.sendMessage(t.PROJECT_OPEN)
 
