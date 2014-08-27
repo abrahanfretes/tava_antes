@@ -11,21 +11,33 @@ class I18nLocale(wx.Locale):
     def __init__(self):
         super(I18nLocale, self).__init__(language=wx.LANGUAGE_DEFAULT)
 
-        self.MakeMO(os.getcwd(), applicationDomain="tava")
+        self.VerifyPath()
+        self.MakeMO(os.getcwd(), applicationDomain="tava",
+                    targetDir=self.targetDir)
         self.SpanishLanguageSelected()
 
     def SetCatalog(self, catalog):
         self.AddCatalog(catalog)
 
     def EnglishLanguageSelected(self):
-        self.AddCatalogLookupPathPrefix('./view/locale/en_US/')
+        self.AddCatalogLookupPathPrefix(self.lookup_path_en_us)
         self.AddCatalog('tava_en_US')
 
     def SpanishLanguageSelected(self):
-        self.AddCatalogLookupPathPrefix('./view/locale/es_PY/')
+        self.AddCatalogLookupPathPrefix(self.lookup_path_es_py)
         self.AddCatalog('tava_es_PY')
 
-    def MakeMO(self, applicationDirectoryPath, targetDir='./view/locale',
+    def VerifyPath(self):
+        if os.path.exists('./view/locale'):
+            self.targetDir = './view/locale'
+            self.lookup_path_en_us = './view/locale/en_US/'
+            self.lookup_path_es_py = './view/locale/es_PY/'
+        else:
+            self.targetDir = './locale'
+            self.lookup_path_en_us = './locale/en_US/'
+            self.lookup_path_es_py = './locale/es_PY/'
+
+    def MakeMO(self, applicationDirectoryPath, targetDir,
                applicationDomain=None, verbose=0):
         '''
         MakeMO converts all translated language-specific PO files located
