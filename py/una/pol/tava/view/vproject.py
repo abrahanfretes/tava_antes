@@ -6,6 +6,8 @@ Created on 28/05/2014
 '''
 
 import wx
+import sys
+from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
 from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import RenameProjectDialogPresenter
@@ -18,150 +20,195 @@ import py.una.pol.tava.view.vimages as I
 
 
 class NewProjectDialog(wx.Dialog):
+    '''
+    Clase Dialog que define la ventana de creación de un nuevo proyecto.
+    '''
 
     def __init__(self, parent):
         super(NewProjectDialog, self).__init__(parent, size=(600, 250))
 
+        # Definicion del presenter de la clase
         self.presenter = NewProjectDialogPresenter(self)
 
+        # Inicializacion de los componentes de la clase
         self.InitUI()
+
         self.Centre()
         self.ShowModal()
 
     def InitUI(self):
-        panel_in = wx.Panel(self)
-        sizer_in = wx.GridBagSizer(5, 5)
+        '''
+        Metodo de inicializacion de componentes de la clase
+        '''
 
-        #titulo de Proyecto Tava
-        font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font1.SetWeight(wx.BOLD)
-        font1.SetPointSize(14)
-        title_h1 = wx.StaticText(panel_in, label=_(C.NPD_TP))
-        title_h1.SetFont(font1)
-        sizer_in.Add(title_h1, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
+        # Definicion del panel contenedor principal
+        panel = wx.Panel(self)
 
-        #Figura de tava
-        execute_bmp4 = wx.StaticBitmap(panel_in, bitmap=I.exec_png)
-        sizer_in.Add(execute_bmp4, pos=(0, 4),
+        # Definicion del sizer principal de la clase
+        sizer = wx.GridBagSizer(5, 5)
+
+        # Titulo de Proyecto Tava
+        # Fuente para el titulo
+        font_title = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font_title.SetWeight(wx.BOLD)
+        font_title.SetPointSize(14)
+
+        # Definicion del componente texto para el titulo
+        title_text = wx.StaticText(panel, label=_(C.NPD_TP))
+        title_text.SetFont(font_title)
+
+        # Asociamos el titulo al sizer de la clase
+        sizer.Add(title_text, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
+
+        # Icono de ejecucion
+        exec_bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
+
+        # Asociamos el icono de ejecucion al sizer
+        sizer.Add(exec_bmp, pos=(0, 4),
                      flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
-        #Texto Descriptivo que cambia
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font.SetPointSize(9)
-        self.name_alert = wx.StaticText(panel_in)
-        self.name_alert.SetFont(font)
-        self.execute_bmp6 = wx.StaticBitmap(panel_in)
-        hbox1.Add(self.execute_bmp6, flag=wx.LEFT, border=2)
-        hbox1.Add(self.name_alert, flag=wx.LEFT, border=2)
-        sizer_in.Add(hbox1, pos=(1, 0), span=(1, 3), flag=wx.TOP |
+        # Texto Descriptivo que cambia
+        # Sizer horizontal para el componente texto para las descripciones
+        hbox_description = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Definicion de la fuente para el texto de descripcion
+        font_description = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font_description.SetPointSize(9)
+
+        # Definicion del componente texto para las descripciones
+        self.description_text = wx.StaticText(panel)
+        self.description_text.SetFont(font_description)
+
+        # Definicion del icono de ejecucion
+        self.execute_bmp = wx.StaticBitmap(panel)
+
+        # Asociamos el icono con el sizer de las descripciones
+        hbox_description.Add(self.execute_bmp, flag=wx.LEFT, border=2)
+
+        # Asociamos el texto con el sizer de las descripciones
+        hbox_description.Add(self.description_text, flag=wx.LEFT, border=2)
+
+        # Agregamos el sizer de descripciones al sizer principal de la clase
+        sizer.Add(hbox_description, pos=(1, 0), span=(1, 3), flag=wx.TOP |
                             wx.LEFT | wx.BOTTOM, border=15)
 
-        #Linea estatica
-        line = wx.StaticLine(panel_in)
-        sizer_in.Add(line, pos=(2, 0), span=(1, 5),
+        # Componente Linea estatica
+        line = wx.StaticLine(panel)
+
+        # Asociamos la linea con el sizer principal de la clase
+        sizer.Add(line, pos=(2, 0), span=(1, 5),
             flag=wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border=15)
 
-        #Nombre del Proyecto
-        name_project_text = wx.StaticText(panel_in, label=_(C.NPD_NAP))
-        sizer_in.Add(name_project_text, pos=(3, 0),
+        # Definicion del componente texto estático para nombre de proyecto
+        name_project_text = wx.StaticText(panel, label=_(C.NPD_NAP))
+
+        # Asociamos el texto con el sizer principal de la clase
+        sizer.Add(name_project_text, pos=(3, 0),
                      flag=wx.LEFT | wx.EXPAND | wx.RIGHT, border=15)
 
-        #Campo para la entrada del nombre de proyecto
-        self.name = wx.TextCtrl(panel_in)
-        self.name.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.name.SetFocus()
-        sizer_in.Add(self.name, pos=(3, 1), span=(1, 4),
+        # Definicion del TextCtrl para el nombre de proyecto
+        self.name_project_textctrl = wx.TextCtrl(panel)
+
+        # Enlazamos la gestion de los eventos lanzados por teclado al
+        # componente textCtrl
+        self.name_project_textctrl.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+
+        # Establecemos el foco para el textCtrl
+        self.name_project_textctrl.SetFocus()
+
+        # Asociamos el textCtrl con el sizer principal de la clase
+        sizer.Add(self.name_project_textctrl, pos=(3, 1), span=(1, 4),
                      flag=wx.EXPAND | wx.RIGHT, border=15)
 
-        #Boton Ayuda
-        help_button = wx.Button(panel_in, label=_(C.NPD_HELP))
-        sizer_in.Add(help_button, pos=(5, 0), flag=wx.LEFT, border=15)
-        self.help_button = help_button
+        # Definicion del Boton Ayuda
+        self.help_button = wx.Button(panel, label=_(C.NPD_HELP))
 
-        #Boton Cancelar
-        cancel_button = wx.Button(panel_in, label=_(C.NPD_CAN))
+        # Asociamos el boton ayuda con el sizer principal de la clase
+        sizer.Add(self.help_button, pos=(5, 0), flag=wx.LEFT, border=15)
+
+        # Definicion del Boton Cancelar
+        cancel_button = wx.Button(panel, label=_(C.NPD_CAN))
+
+        # Enlazamos el evento de boton al metodo OnCancel
         cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-        sizer_in.Add(cancel_button, pos=(5, 3),
+
+        # Asociamos el boton ayuda con el sizer principal de la clase
+        sizer.Add(cancel_button, pos=(5, 3),
                      flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
-        #Boton OK
-        self.ok_button = wx.Button(panel_in, label=_(C.NPD_OK))
-        self.ok_button.Disable()
+        # Definicion del Boton OK
+        self.ok_button = wx.Button(panel, label=_(C.NPD_OK))
+
+        # Enlazamos el evento de boton al metodo OnCreateProject
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnCreateProject)
+
+        # Desabilitamos el boton ok
         self.ok_button.Disable()
-        sizer_in.Add(self.ok_button, pos=(5, 4),
+
+        # Asociamos el boton ok con el sizer principal de la clase
+        sizer.Add(self.ok_button, pos=(5, 4),
                      flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT, border=15)
 
-        panel_in.Bind(wx.EVT_CHAR, self.OnKeyDown)
+        # Manejo de evento cuando se oprima la tecla Esc
+        panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
-        #configuracion del sizer
-        sizer_in.AddGrowableCol(2)
-        panel_in.SetSizer(sizer_in)
+        # Configuracion del sizer principal
+        sizer.AddGrowableCol(2)
 
+        # Asociamos el sizer al panel principal
+        panel.SetSizer(sizer)
+
+        # Invocamos al metodo de configuracion inicial de label
         self.ConfigEnableLabel()
 
     def OnKeyUp(self, e):
-
-        if(self.presenter.IsNameValido(self.name.Value)):
+        if(self.presenter.IsValidName(self.name_project_textctrl.Value)):
             if wx.WXK_RETURN == e.GetKeyCode():
-                self.presenter.CreateProject(self.name.Value)
+                self.presenter.CreateProject(self.name_project_textctrl.Value)
 
     def ConfigEnableLabel(self):
-        self.name_alert.SetLabel(_(C.NPD_ENP))
-        self.IconCorrect()
-        self.name.SetBackgroundColour((255, 255, 255))
+        self.description_text.SetLabel(_(C.NPD_ENP))
+        self.execute_bmp.SetBitmap(I.execute_png)
+        self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
 
-    def ConfigProjectNameEmpty(self):
-        self.name_alert.SetLabel(_(C.NPD_PNE))
-        self.IconWarning()
-        self.name.SetBackgroundColour('#F9EDED')
+    def ConfigEmptyNameProject(self):
+        self.description_text.SetLabel(_(C.NPD_PNE))
+        self.execute_bmp.SetBitmap(I.warningnewproject_png)
+        self.name_project_textctrl.SetBackgroundColour('#F9EDED')
 
-    def ConfigSlashProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNSI))
+    def ConfigNameProjectWithSlash(self):
+        self.description_text.SetLabel(_(C.NPD_PNSI))
         self.IconError()
         self.SetNameErrorBackground()
 
-    def ConfigInitPointProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNPI))
+    def ConfigNameProjectStartWithPoint(self):
+        self.description_text.SetLabel(_(C.NPD_PNPI))
         self.IconError()
         self.SetNameErrorBackground()
 
-    def ConfigInvalidLenProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNLI))
+    def ConfigNameProjectInvalidLength(self):
+        self.description_text.SetLabel(_(C.NPD_PNLI))
         self.IconError()
         self.SetNameErrorBackground()
 
     def ConfigExistingProject(self):
-        self.name_alert.SetLabel(_(C.NPD_PAE))
+        self.description_text.SetLabel(_(C.NPD_PAE))
         self.IconError()
         self.SetNameErrorBackground()
 
     def ConfigExistingHideProject(self):
-        self.name_alert.SetLabel(_(C.NPD_HPAE))
+        self.description_text.SetLabel(_(C.NPD_HPAE))
         self.IconError()
         self.SetNameErrorBackground()
 
     def OnCreateProject(self, e):
-        self.presenter.CreateProject(self.name.Value)
-
-    def ContainsSlash(self):
-        return '/' in self.name.Value
+        self.presenter.CreateProject(self.name_project_textctrl.Value)
 
     def IconError(self):
-        self.execute_bmp6.SetBitmap(I.errornewproject_png)
-
-    def IconWarning(self):
-        self.execute_bmp6.SetBitmap(I.warningnewproject_png)
-
-    def IconCorrect(self):
-        self.execute_bmp6.SetBitmap(I.execute_png)
+        self.execute_bmp.SetBitmap(I.errornewproject_png)
 
     def SetNameErrorBackground(self):
-        self.name.SetBackgroundColour((237, 93, 93))
-
-    def CleanNameProject(self, name_project):
-        return name_project.strip(' ')
+        self.name_project_textctrl.SetBackgroundColour((237, 93, 93))
 
     def OnCancel(self, e):
         self.Close(True)
@@ -173,131 +220,175 @@ class NewProjectDialog(wx.Dialog):
 
 
 class RenameProjectDialog(wx.Dialog):
+    '''
+    Clase Dialog que define la ventana de renombre de un proyecto.
+    '''
 
     def __init__(self, parent, project):
         super(RenameProjectDialog, self).__init__(parent,
             title=_(C.RPD_RN), size=(550, 220))
 
+        # Creacion de referencia al proyecto pasado como parametro
         self.project = project
+
+        # Referencia al nombre original del nombre pasado como parametro
         self.previous_name = self.project.name
 
-        self.presenter_re = RenameProjectDialogPresenter(self)
+        # Definicion del presenter de la clase
+        self.presenter = RenameProjectDialogPresenter(self)
 
+        # Inicializacion de los componentes de la clase
         self.InitUI()
+
         self.Centre()
-        self.ShowModal()()
+        self.ShowModal()
 
     def InitUI(self):
 
-        cpanel = wx.Panel(self)
-        csizer = wx.GridBagSizer(3, 4)
+        # Definicion del panel contenedor principal
+        panel = wx.Panel(self)
 
-        #Figura de tava
-        fig_bmp = wx.StaticBitmap(cpanel, bitmap=I.exec_png)
-        csizer.Add(fig_bmp, pos=(0, 4),
+        # Definicion del sizer principal de la clase
+        sizer = wx.GridBagSizer(3, 4)
+
+        # Definicion del icono de execucion
+        exec_bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
+
+        # Insertamos el icono en el sizer principal
+        sizer.Add(exec_bmp, pos=(0, 4),
                    flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
 
         #Texto Descriptivo que cambia
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        # Sizer horizontal para el componente texto para las descripciones
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Definicion de la fuente para el texto de descripcion
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(9)
-        self.name_alert = wx.StaticText(cpanel)
-        self.name_alert.SetFont(font)
-        self.fig_alet_bmp = wx.StaticBitmap(cpanel)
-        hbox1.Add(self.fig_alet_bmp, flag=wx.LEFT, border=2)
-        hbox1.Add(self.name_alert, flag=wx.LEFT, border=2)
-        csizer.Add(hbox1, pos=(0, 0), span=(0, 3), flag=wx.TOP |
+
+        # Definicion del componente texto para las descripciones
+        self.description_text = wx.StaticText(panel)
+        self.description_text.SetFont(font)
+
+        # Definicion del icono de ejecucion
+        self.fig_alet_bmp = wx.StaticBitmap(panel)
+
+        # Asociamos el icono con el sizer de las descripciones
+        hbox.Add(self.fig_alet_bmp, flag=wx.LEFT, border=2)
+
+        # Asociamos el texto con el sizer de las descripciones
+        hbox.Add(self.description_text, flag=wx.LEFT, border=2)
+
+        # Agregamos el sizer de descripciones al sizer principal de la clase
+        sizer.Add(hbox, pos=(0, 0), span=(0, 3), flag=wx.TOP |
                             wx.LEFT | wx.BOTTOM, border=15)
 
-        #Linea estatica
-        line = wx.StaticLine(cpanel)
-        csizer.Add(line, pos=(1, 0), span=(1, 5),
+        # Componente Linea estatica
+        line = wx.StaticLine(panel)
+
+        # Asociamos la linea con el sizer principal de la clase
+        sizer.Add(line, pos=(1, 0), span=(1, 5),
             flag=wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border=15)
 
-        level_name_text = wx.StaticText(cpanel, label=_(C.RPD_NN))
-        csizer.Add(level_name_text, pos=(2, 0), flag=wx.LEFT | wx.TOP,
-                   border=15)
-        self.level_name_text = level_name_text
+        # Definicion del componente texto para nuevo nombre de proyecto
+        new_name_project_text = wx.StaticText(panel, label=_(C.RPD_NN))
 
-        self.new_name = wx.TextCtrl(cpanel, value=self.previous_name)
-        csizer.Add(self.new_name, pos=(2, 1), span=(1, 4),
+        # Asociamos el texto con el sizer principal de la clase
+        sizer.Add(new_name_project_text, pos=(2, 0), flag=wx.LEFT | wx.TOP,
+                   border=15)
+
+        # Definicion del TextCtrl para el nuevo nombre de proyecto
+        self.new_name_textctrl = wx.TextCtrl(panel, value=self.previous_name)
+
+        # Enlazamos la gestion de los eventos lanzados por teclado al
+        # componente textCtrl
+        self.new_name_textctrl.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+
+        # Asociamos el textCtrl con el sizer principal de la clase
+        sizer.Add(self.new_name_textctrl, pos=(2, 1), span=(1, 4),
                    flag=wx.BOTTOM | wx.TOP | wx.RIGHT | wx.EXPAND, border=15)
 
-        self.ok_button = wx.Button(cpanel, label=_(C.RPD_OK))
-        csizer.Add(self.ok_button, pos=(3, 4),
+        # Definicion del Boton OK
+        self.ok_button = wx.Button(panel, label=_(C.RPD_OK))
+
+        # Enlazamos el evento de boton al metodo OnProjectRename
+        self.ok_button.Bind(wx.EVT_BUTTON, self.OnProjectRename)
+
+        # Asociamos el boton ok con el sizer principal de la clase
+        sizer.Add(self.ok_button, pos=(3, 4),
                 flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.TOP, border=15)
 
-        self.cancel_button = wx.Button(cpanel, label=_(C.RPD_CAN))
-        csizer.Add(self.cancel_button, pos=(3, 3),
-                   flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border=15)
+        # Definicion del Boton Cancelar
+        self.cancel_button = wx.Button(panel, label=_(C.RPD_CAN))
 
-        cpanel.Bind(wx.EVT_CHAR, self.OnKeyDown)
-
-        csizer.AddGrowableCol(2)
-        cpanel.SetSizer(csizer)
-
-        self.new_name.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.ok_button.Bind(wx.EVT_BUTTON, self.OnOkRenameEvent)
+        # Enlazamos el evento de boton al metodo OnCancel
         self.cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
 
+        # Asociamos el boton ayuda con el sizer principal de la clase
+        sizer.Add(self.cancel_button, pos=(3, 3),
+                   flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border=15)
+
+        # Manejo de evento cuando se oprima la tecla Esc
+        panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
+
+        # Configuracion del sizer principal
+        sizer.AddGrowableCol(2)
+
+        # Asociamos el sizer al panel principal
+        panel.SetSizer(sizer)
+
+        # Invocamos al metodo de configuracion inicial de label
         self.ConfigEnableLabel()
 
     def OnKeyUp(self, e):
-
-        if(self.presenter_re.IsNameValido(
-                                    self.new_name.Value, self.previous_name)):
+        if(self.presenter.IsValidName(self.new_name_textctrl.Value,
+                                         self.previous_name)):
             if wx.WXK_RETURN == e.GetKeyCode():
-                self.presenter_re.OnUpDateName(self.new_name.Value)
+                self.presenter.UpdateName(self.new_name_textctrl.Value)
 
     def ConfigEnableLabel(self):
-        self.name_alert.SetLabel('RenameProyect')
-        self.IconRename()
-        self.new_name.SetBackgroundColour((255, 255, 255))
+        self.description_text.SetLabel('RenameProyect')
+        self.fig_alet_bmp.SetBitmap(I.renamenewproject_png)
+        self.new_name_textctrl.SetBackgroundColour((255, 255, 255))
 
-    def ConfigProjectNameEmpty(self):
-        self.name_alert.SetLabel(_(C.NPD_PNE))
-        self.IconWarning()
-        self.new_name.SetBackgroundColour('#F9EDED')
+    def ConfigEmptyNameProject(self):
+        self.description_text.SetLabel(_(C.NPD_PNE))
+        self.fig_alet_bmp.SetBitmap(I.warningnewproject_png)
+        self.new_name_textctrl.SetBackgroundColour('#F9EDED')
 
-    def ConfigSlashProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNSI))
+    def ConfigNameProjectWithSlash(self):
+        self.description_text.SetLabel(_(C.NPD_PNSI))
         self.IconError()
         self.SetNameErrorBackground()
 
-    def ConfigInitPointProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNPI))
+    def ConfigNameProjectStartWithPoint(self):
+        self.description_text.SetLabel(_(C.NPD_PNPI))
         self.IconError()
         self.SetNameErrorBackground()
 
-    def ConfigInvalidLenProjectName(self):
-        self.name_alert.SetLabel(_(C.NPD_PNLI))
+    def ConfigNameProjectInvalidLength(self):
+        self.description_text.SetLabel(_(C.NPD_PNLI))
         self.IconError()
         self.SetNameErrorBackground()
 
     def ConfigExistingProject(self):
-        self.name_alert.SetLabel(_(C.NPD_PAE))
+        self.description_text.SetLabel(_(C.NPD_PAE))
         self.IconError()
         self.SetNameErrorBackground()
 
     def ConfigExistingHideProject(self):
-        self.name_alert.SetLabel(_(C.NPD_HPAE))
+        self.description_text.SetLabel(_(C.NPD_HPAE))
         self.IconError()
         self.SetNameErrorBackground()
 
     def SetNameErrorBackground(self):
-        self.new_name.SetBackgroundColour((237, 93, 93))
+        self.new_name_textctrl.SetBackgroundColour((237, 93, 93))
 
     def IconError(self):
         self.fig_alet_bmp.SetBitmap(I.errornewproject_png)
 
-    def IconWarning(self):
-        self.fig_alet_bmp.SetBitmap(I.warningnewproject_png)
-
-    def IconRename(self):
-        self.fig_alet_bmp.SetBitmap(I.renamenewproject_png)
-
-    def OnOkRenameEvent(self, event):
-        self.presenter_re.OnUpDateName(self.new_name.Value)
+    def OnProjectRename(self, event):
+        self.presenter.UpdateName(self.new_name_textctrl.Value)
 
     def OnCancel(self, e):
         self.Close(True)
@@ -309,80 +400,137 @@ class RenameProjectDialog(wx.Dialog):
 
 
 class DeleteProjectDialog():
+    '''
+    Clase que despliega un MessageBox ofreciendo la opcion de eliminacion
+    de un proyecto.
+    '''
     def __init__(self):
 
-        self.presenter_re1 = DeleteProjectDialogPresenter(self)
+        # Definicion del presenter de la clase
+        self.presenter = DeleteProjectDialogPresenter(self)
 
+        # Se despliega el MessageBox de confirmacion de eliminacion de un
+        # proyecto
         result = wx.MessageBox(_(C.PM_DEL_MESS), _(C.PM_DEL_PRO),
                       style=wx.CENTER | wx.ICON_WARNING | wx.YES_NO)
         if result == wx.YES:
-            self.presenter_re1.OnDeleteOk()
+            # Si la opcion fue SI se procede a eliminar el proyecto
+            self.presenter.DeleteProject()
 
 
 class PropertiesProjectDialog(wx.Dialog):
+    '''
+    Clase dialog que despliega las propiedades de un proyecto seleccionado.
+    '''
 
     def __init__(self, parent, project):
         super(PropertiesProjectDialog, self).__init__(parent,
                             title=_(C.PPD_PF), size=(450, 200))
 
+        # Creacion de referencia al proyecto pasado como parametro
         self.project = project
+
+        # Inicializacion de los componentes de la clase
         self.InitUI()
+
         self.Centre()
         self.ShowModal()
 
     def InitUI(self):
 
+        # Definicion del panel contenedor principal
         panel = wx.Panel(self)
 
+        # Definicion del sizer principal de la clase
         sizer = wx.GridBagSizer(5, 5)
 
-        font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font1.SetWeight(wx.BOLD)
-        font1.SetPointSize(14)
-        title_h1 = wx.StaticText(panel, label=_(C.NPD_TP))
-        title_h1.SetFont(font1)
-        sizer.Add(title_h1, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
+        # Definicion de la fuente para el texto del titulo
+        font_title = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        font_title.SetWeight(wx.BOLD)
+        font_title.SetPointSize(14)
+
+        # Definicion del componente texto para el titulo
+        title_text = wx.StaticText(panel, label=_(C.NPD_TP))
+        title_text.SetFont(font_title)
+
+        # Agregamos el texto al sizer principal
+        sizer.Add(title_text, pos=(0, 0), flag=wx.TOP | wx.LEFT | wx.BOTTOM,
                   border=15)
 
+        # Definimos el componente StaticLine superior
         top_line = wx.StaticLine(panel)
+
+        # Agregamos la linea superior al sizer principal
         sizer.Add(top_line, pos=(1, 0), span=(1, 5),
             flag=wx.EXPAND | wx.BOTTOM, border=10)
 
+        # Definicion del text para el label de nombre de proyecto
         name_text = wx.StaticText(panel, label=_(C.PPD_NA))
+
+        # Agregamos el text al sizer principal
         sizer.Add(name_text, pos=(2, 0), flag=wx.LEFT, border=10)
 
+        # Definicion del text para el valor del nombre de proyecto
         name_value_text = wx.StaticText(panel, label=self.project.name)
+
+        # Desabilitamos el componente text
         name_value_text.Disable()
+
+        # Agregamos el componente text al sizer principal
         sizer.Add(name_value_text, pos=(2, 1), span=(1, 4), flag=wx.RIGHT |
                   wx.EXPAND)
 
+        # Definicion del text para el label de la fecha de creacion del project
         creation_date_text = wx.StaticText(panel, label=_(C.PPD_CD))
+
+        # Agregamos el componente label fecha al sizer principal
         sizer.Add(creation_date_text, pos=(3, 0), flag=wx.LEFT, border=10)
 
+        # Definicion del text para el valor de la fecha de creacion del project
         creation_date_value_text = wx.StaticText(panel,
                                         label=str(self.project.creation_date))
+
+        # Desabilitamos el componente text
         creation_date_value_text.Disable()
+
+        # Agregamos el componente text al sizer principal
         sizer.Add(creation_date_value_text, pos=(3, 1), span=(1, 4),
                   flag=wx.RIGHT | wx.EXPAND)
 
+        # Definimos el componente StaticLine inferior
         bottom_line = wx.StaticLine(panel)
+
+        # Agregamos la linea al sizer principal
         sizer.Add(bottom_line, pos=(5, 0), span=(1, 5),
             flag=wx.EXPAND | wx.BOTTOM, border=10)
 
+        # Definicion del boton Cancel
         cancel_button = wx.Button(panel, label=_(C.PPD_CAN))
+
+        # Agregamos el boton cancel al sizer principal
         sizer.Add(cancel_button, pos=(6, 3),
             flag=wx.BOTTOM | wx.RIGHT, border=5)
 
+        # Definicion del boton ok
         ok_button = wx.Button(panel, label=_(C.PPD_OK))
+
+        # Establecemos el foco para el boton ok
         ok_button.SetFocus()
+
+        # Enlazamos el boton ok al metodo OnClose
         ok_button.Bind(wx.EVT_BUTTON, self.OnClose)
+
+        # Agregamos el boton ok al sizer principal
         sizer.Add(ok_button, pos=(6, 4), flag=wx.ALIGN_RIGHT
                   | wx.LEFT, border=5)
 
+        # Manejo de evento cuando se oprima la tecla Esc
         panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
+        # Configuracion del sizer principal
         sizer.AddGrowableCol(2)
 
+        # Asociamos el sizer al panel principal
         panel.SetSizer(sizer)
 
     def OnClose(self, e):
@@ -394,10 +542,6 @@ class PropertiesProjectDialog(wx.Dialog):
             self.Close()
 
 
-import sys
-from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
-
-
 class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
     def __init__(self, parent):
         wx.ListCtrl.__init__(self, parent, -1,
@@ -405,110 +549,177 @@ class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin, ListCtrlAutoWidthMixin):
         CheckListCtrlMixin.__init__(self)
         ListCtrlAutoWidthMixin.__init__(self)
 
-        self.presenter_List = CheckListCtrlPresenter(self)
+        # Definicion del presenter para la clase
+        self.presenter = CheckListCtrlPresenter(self)
 
     def OnCheckItem(self, index, flag):
-        self.presenter_List.OnClickCheckbox()
+        self.presenter.OnClickCheckbox()
 
 
 class UnHideProjectDialog(wx.Dialog):
     def __init__(self, parent):
         super(UnHideProjectDialog, self).__init__(parent,
                                 title=_(C.UHPD_T), size=(600, 500))
-        _(C.PPD_CD)
 
-        self.presenter_hide = UnHideProjectDialogPresenter(self)
+        # Definicion del presenter para la clase
+        self.presenter = UnHideProjectDialogPresenter(self)
+
+        # Inicializacion de los componentes de la clase
         self.InitUI()
+
         self.Centre()
         self.ShowModal()
 
     def InitUI(self):
 
+        # Definicion del panel contenedor principal
         panel = wx.Panel(self, -1)
-        vbox = wx.BoxSizer(wx.VERTICAL)
 
-        #parte cabecera
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        # Definicion del sizer principal de la clase
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # Definicion del sizer para la cabecera del listado
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Definicion de la fuente para la descripcion
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetWeight(wx.BOLD)
         font.SetPointSize(9)
-        self.description = wx.StaticText(panel,
-                            label=_(C.UHPD_STD))
-        self.description.SetFont(font)
-        self.bmp = wx.StaticBitmap(panel)
-        self.bmp.SetBitmap(I.hide_left_png)
-        bmp1 = wx.StaticBitmap(panel, bitmap=I.exec_png)
-        hbox1.Add(self.bmp, 1, wx.RIGHT, 10)
-        hbox1.Add(self.description, wx.RIGHT, 10)
-        hbox1.Add(bmp1, 1, wx.LEFT, 220)
-        vbox.Add(hbox1, 1, wx.ALIGN_LEFT | wx.ALL, 10)
 
-        #parte del checList
+        # Definicion de un staticBitmap
+        self.hide_left_bmp = wx.StaticBitmap(panel)
+        self.hide_left_bmp.SetBitmap(I.hide_left_png)
+
+        # Agregamos el icono en el sizer de la cabecera
+        hbox.Add(self.hide_left_bmp, 1, wx.RIGHT, 10)
+
+        # Definicion del componente text para desplegar descripciones
+        self.description_text = wx.StaticText(panel, label=_(C.UHPD_STD))
+        self.description_text.SetFont(font)
+
+        # Insertamos el text de descripcion en el sizer de la cabecera
+        hbox.Add(self.description_text, wx.RIGHT, 10)
+
+        # Definicion del icono de ejecucion
+        exec_bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
+
+        # Agregamos el icono de ejecucion en el sizer de la cabecera
+        hbox.Add(exec_bmp, 1, wx.LEFT, 220)
+
+        # Agregamos el sizer de la cabecera al sizer principal
+        sizer.Add(hbox, 1, wx.ALIGN_LEFT | wx.ALL, 10)
+
+        # Definicion del CheckListCtrl
         self.list = CheckListCtrl(panel)
+
+        # Establecemos las columnas con sus respectivos labels
         self.list.InsertColumn(0, _(C.UHPD_CLN), width=300)
         self.list.InsertColumn(1, _(C.UHPD_CLD), width=175)
         self.list.InsertColumn(2, _(C.UHPD_CLS), width=105)
 
-        is_empty = True
-        for p in self.presenter_hide.GetHideProject():
-            is_empty = False
-            index = self.list.InsertStringItem(sys.maxint, p.name)
-            self.list.SetStringItem(index, 1, str(p.creation_date))
-            self.list.SetStringItem(index, 2, _(C.UHPD_CLCS))
+        # Cargamos los proyectos ocultos en la lista
+        self.LoadHidesProjects()
 
-        vbox.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        # Agregamos la lista en el sizer principal
+        sizer.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
 
-        if(is_empty):
-            self.IsEmptyList()
-
-        # parte de los botones
+        # Definicion del agrupador
         sb = wx.StaticBox(panel, label=_(C.UHPD_SBL))
+
+        # Definicion del sizer para el staticBox
         boxsizer = wx.StaticBoxSizer(sb, wx.HORIZONTAL)
-        sel = wx.Button(panel, -1, _(C.UHPD_BSAL))
-        des = wx.Button(panel, -1, _(C.UHPD_BDSAL))
-        hboxl = wx.BoxSizer(wx.HORIZONTAL)
-        hboxl.Add(sel, 1, wx.ALL, 10)
-        hboxl.Add(des, 1, wx.ALL, 10)
-        boxsizer.Add(hboxl, 1,  wx.EXPAND | wx.RIGHT, 350)
-        vbox.Add(boxsizer, 1,
-                wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        self.apply_change = wx.Button(panel, -1, _(C.UHPD_BRL))
-        cancel = wx.Button(panel, -1, _(C.UHPD_BCL))
+
+        # Definicion del boxSizer para los siguientes botones
         hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add(cancel, 1, wx.RIGHT, 10)
-        hbox.Add(self.apply_change)
 
-        vbox.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        panel.SetSizer(vbox)
+        # Definicion del boton select_all
+        select_all_btn = wx.Button(panel, -1, _(C.UHPD_BSAL))
 
-        #Eventos
-        self.Bind(wx.EVT_BUTTON, self.OnSelectAll, id=sel.GetId())
-        self.Bind(wx.EVT_BUTTON, self.OnDeselectAll, id=des.GetId())
-        self.Bind(wx.EVT_BUTTON, self.OnApply, id=self.apply_change.GetId())
-        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel.GetId())
+        # Asociamos el evento de boton al metodo OnSelectAll
+        self.Bind(wx.EVT_BUTTON, self.OnSelectAll, id=select_all_btn.GetId())
 
-        #disable bottom al inicio
-        self.apply_change.Enable(False)
+        # Agregamos el boton al hbox
+        hbox.Add(select_all_btn, 1, wx.ALL, 10)
 
+        # Definicion del boton deselect_all
+        deselect_all_btn = wx.Button(panel, -1, _(C.UHPD_BDSAL))
+
+        # Asociamos el evento de boton al metodo OnDeselectAll
+        self.Bind(wx.EVT_BUTTON, self.OnDeselectAll,
+                  id=deselect_all_btn.GetId())
+
+        # Agregamos el boton al hbox
+        hbox.Add(deselect_all_btn, 1, wx.ALL, 10)
+
+        # Agregamos hbox al sizer del agrupador
+        boxsizer.Add(hbox, 1,  wx.EXPAND | wx.RIGHT, 350)
+
+        # Agregamos boxsizer al sizer principal
+        sizer.Add(boxsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT
+                  | wx.BOTTOM, 10)
+
+        # Definicion del sizer para los siguientes botones
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Definicion del boton apply_changes
+        self.apply_change_btn = wx.Button(panel, -1, _(C.UHPD_BRL))
+
+        # Deshabilitamos el boton
+        self.apply_change_btn.Enable(False)
+
+        # Enlazamos el evento de boton al metodo OnApply
+        self.Bind(wx.EVT_BUTTON, self.OnApply,
+                  id=self.apply_change_btn.GetId())
+
+        # Agregamos el boton al sizer hbox
+        hbox.Add(self.apply_change_btn)
+
+        # Definicion del boton cancel
+        cancel_btn = wx.Button(panel, -1, _(C.UHPD_BCL))
+
+        # Enlazamos el evento de boton al metodo OnCancel
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel_btn.GetId())
+
+        # Agregamos el boton al sizer hbox
+        hbox.Add(cancel_btn, 1, wx.RIGHT, 10)
+
+        # Agregamos hbox al sizer principal
+        sizer.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+
+        # Establecemos el sizer al panel principal
+        panel.SetSizer(sizer)
+
+        # Manejo de evento cuando se oprima la tecla Esc
         panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
         self.Centre()
         self.Show(True)
 
+    def LoadHidesProjects(self):
+        hides_projects = self.presenter.GetHideProjects()
+
+        if not hides_projects:
+            self.IsEmptyList()
+
+        for pro in hides_projects:
+            index = self.list.InsertStringItem(sys.maxint, pro.name)
+            self.list.SetStringItem(index, 1, str(pro.creation_date))
+            self.list.SetStringItem(index, 2, _(C.UHPD_CLCS))
+
     def OnSelectAll(self, event):
-        self.presenter_hide.SelectAll()
+        self.presenter.SelectAll()
 
     def OnDeselectAll(self, event):
-        self.presenter_hide.DeselectAll()
+        self.presenter.DeselectAll()
 
     def OnApply(self, event):
-        self.presenter_hide.Restore()
+        self.presenter.Restore()
 
     def OnCancel(self, event):
-        self.presenter_hide.ExitDialog()
+        self.presenter.ExitDialog()
 
     def IsEmptyList(self):
-        self.description.SetLabel(_(C.UHPD_STDE))
+        self.description_text.SetLabel(_(C.UHPD_STDE))
         self.bmp.SetBitmap(I.warningnewproject_png)
 
     def OnKeyDown(self, e):

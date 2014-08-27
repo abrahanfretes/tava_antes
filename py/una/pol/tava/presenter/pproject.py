@@ -25,21 +25,21 @@ class NewProjectDialogPresenter():
         pub.sendMessage(T.PROJECT_NEW, project)
         self.iview.Close(True)
 
-    def IsNameValido(self, name):
+    def IsValidName(self, name):
 
         self.iview.ok_button.Disable()
 
         if len(name.strip(' ')) == 0:
-            self.iview.ConfigProjectNameEmpty()
+            self.iview.ConfigEmptyNameProject()
             return False
         if '/' in name:
-            self.iview.ConfigSlashProjectName()
+            self.iview.ConfigNameProjectWithSlash()
             return False
         if name[0] == '.':
-            self.iview.ConfigInitPointProjectName()
+            self.iview.ConfigNameProjectInvalidLength()
             return False
         if len(name.strip(' ')) == 0:
-            self.iview.ConfigProjectNameEmpty()
+            self.iview.ConfigEmptyNameProject()
             return False
         if len(name.strip(' ')) > 100:
             self.iview.ConfigInvalidLenProjectName()
@@ -63,24 +63,24 @@ class RenameProjectDialogPresenter():
         self.listNamesProject = self.GetNamesProject()
         self.listNamesHideProject = self.GetNamesHideProject()
 
-    def IsNameValido(self, name, previus_name):
+    def IsValidName(self, name, previus_name):
 
         self.iview.ok_button.Disable()
 
         if len(name.strip(' ')) == 0:
-            self.iview.ConfigProjectNameEmpty()
+            self.iview.ConfigEmptyNameProject()
             return False
         if '/' in name:
-            self.iview.ConfigSlashProjectName()
+            self.iview.ConfigNameProjectWithSlash()
             return False
         if name[0] == '.':
-            self.iview.ConfigInitPointProjectName()
+            self.iview.ConfigNameProjectStartWithPoint()
             return False
         if len(name.strip(' ')) == 0:
-            self.iview.ConfigProjectNameEmpty()
+            self.iview.ConfigEmptyNameProject()
             return False
         if len(name.strip(' ')) > 100:
-            self.iview.ConfigInvalidLenProjectName()
+            self.iview.ConfigNameProjectInvalidLength()
             return False
         if name.strip(' ') in self.listNamesProject and name != previus_name:
             self.iview.ConfigExistingProject()
@@ -94,7 +94,7 @@ class RenameProjectDialogPresenter():
         self.iview.ConfigEnableLabel()
         return True
 
-    def OnUpDateName(self, new_name):
+    def UpdateName(self, new_name):
         if self.iview.previous_name != new_name.strip(' '):
             self.iview.project.name = new_name.strip(' ')
             project = pro().upDate(self.iview.project)
@@ -112,7 +112,7 @@ class DeleteProjectDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
 
-    def OnDeleteOk(self):
+    def DeleteProject(self):
         pub.sendMessage(T.PROJECT_DELETE_OK)
 
 
@@ -129,15 +129,15 @@ class UnHideProjectDialogPresenter():
         self.iview = iview
         pub.subscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
 
-    def GetHideProject(self):
+    def GetHideProjects(self):
         return pro().getHideProject()
 
     def ClickCheckboxPub(self, message):
-        self.iview.apply_change.Enable(False)
+        self.iview.apply_change_btn.Enable(False)
         num = self.iview.list.GetItemCount()
         for i in range(num):
             if self.iview.list.IsChecked(i):
-                self.iview.apply_change.Enable(True)
+                self.iview.apply_change_btn.Enable(True)
 
     def ExitDialog(self):
         pub.unsubscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
