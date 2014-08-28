@@ -4,7 +4,7 @@ Created on 29/07/2014
 @author: afretes
 '''
 from wx.lib.pubsub import Publisher as pub
-import topic as t
+import topic as T
 
 
 class ProjectMenuPresenter:
@@ -14,20 +14,20 @@ class ProjectMenuPresenter:
     def AddFileInProject(self, project):
         pub.sendMessage('PROJECT.ADDFILE', project)
 
-    def OnOpen(self):
-        pub.sendMessage(t.PROJECT_OPEN)
+    def OpenProject(self):
+        pub.sendMessage(T.PROJECT_OPEN)
 
-    def OnClose(self):
-        pub.sendMessage(t.PROJECT_CLOSE)
+    def CloseProject(self):
+        pub.sendMessage(T.PROJECT_CLOSE)
 
-    def OnDelete(self):
-        pub.sendMessage(t.PROJECT_DELETE_CLICK)
+    def DeleteProject(self):
+        pub.sendMessage(T.PROJECT_DELETE_CLICK)
 
-    def OnRename(self, project):
-        pub.sendMessage(t.PROJECT_RENAME, project)
+    def RenameProject(self, project):
+        pub.sendMessage(T.PROJECT_RENAME, project)
 
     def ShowProperties(self):
-        pub.sendMessage(t.PROJECT_PROPERTIES)
+        pub.sendMessage(T.PROJECT_PROPERTIES)
 
-    def Hide(self):
+    def HideProject(self):
         pub.sendMessage('PROJECT.HIDE')
