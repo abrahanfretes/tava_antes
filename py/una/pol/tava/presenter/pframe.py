@@ -4,7 +4,7 @@ Created on 04/08/2014
 @author: afretes
 '''
 from wx.lib.pubsub import Publisher as pub
-import topic as t
+import topic as T
 
 
 class FramePresenter:
@@ -12,23 +12,23 @@ class FramePresenter:
         self.iview = iview
         self.project_selected = None
 
-        pub.subscribe(self.OnNewProjectBarPub, t.BAR_PROJECT_NEW)
-        pub.subscribe(self.OnRenameProjectPub, t.PROJECT_RENAME)
-        pub.subscribe(self.OnDeleteSelectProjectPub, t.PROJECT_DELETE_SELECT)
-        pub.subscribe(self.ShowProjectProperties, t.PROJECT_PROPERTIES)
-        pub.subscribe(self.EnglishLanguageSelected, t.ENGLISH_SELECTED)
-        pub.subscribe(self.SpanishLanguageSelected, t.SPANISH_SELECTED)
-        pub.subscribe(self.ProjectSelected, t.PROJECT_SELECTED)
+        pub.subscribe(self.ShowNewProjectDialogPub, T.BAR_PROJECT_NEW)
+        pub.subscribe(self.ShowRenameProjectDialogPub, T.PROJECT_RENAME)
+        pub.subscribe(self.ShowDeleteProjectDialogPub, T.PROJECT_DELETE_SELECT)
+        pub.subscribe(self.ShowProjectProperties, T.PROJECT_PROPERTIES)
+        pub.subscribe(self.EnglishLanguageSelected, T.ENGLISH_SELECTED)
+        pub.subscribe(self.SpanishLanguageSelected, T.SPANISH_SELECTED)
+        pub.subscribe(self.ProjectSelected, T.PROJECT_SELECTED)
         pub.subscribe(self.UnHideProjectPub, 'PROJECT.UNHIDE')
         pub.subscribe(self.AddFileInProjectPub, 'PROJECT.ADDFILE')
 
-    def OnNewProjectBarPub(self, message):
+    def ShowNewProjectDialogPub(self, message):
         self.iview.ShowNewProjectDialog()
 
-    def OnRenameProjectPub(self, message):
+    def ShowRenameProjectDialogPub(self, message):
         self.iview.ShowRenameProjectDialog(message.data)
 
-    def OnDeleteSelectProjectPub(self, message):
+    def ShowDeleteProjectDialogPub(self, message):
         self.iview.ShowDeleteProjectDialog()
 
     def ShowProjectProperties(self, message):
@@ -37,11 +37,11 @@ class FramePresenter:
 
     def EnglishLanguageSelected(self, message):
         self.iview.i18n.EnglishLanguageSelected()
-        pub.sendMessage(t.LANGUAGE_CHANGED)
+        pub.sendMessage(T.LANGUAGE_CHANGED)
 
     def SpanishLanguageSelected(self, message):
         self.iview.i18n.SpanishLanguageSelected()
-        pub.sendMessage(t.LANGUAGE_CHANGED)
+        pub.sendMessage(T.LANGUAGE_CHANGED)
 
     def ProjectSelected(self, message):
         self.project_selected = message.data
