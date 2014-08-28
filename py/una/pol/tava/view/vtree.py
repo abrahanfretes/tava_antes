@@ -18,7 +18,7 @@ import py.una.pol.tava.view.vimages as I
 
 class ProjectTreeCtrl(CT.CustomTreeCtrl):
     '''
-    classdocs
+    Clase Arbol que contendra los projectos representados como hijos del arbol
     '''
 
     def __init__(self, parent):
@@ -28,8 +28,13 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         super(ProjectTreeCtrl, self).__init__(parent,
                                 agwStyle=CT.TR_HAS_BUTTONS | CT.TR_HIDE_ROOT)
 
-        self.SetBackgroundColour('#D9F0F8')
+        # Definicion del presenter de la clase
+        self.presenter = ProjectTreeCtrlPresenter(self)
 
+        # Establecemos el color del fondo del arbol a Blanco
+        self.SetBackgroundColour('#FFFFFF')
+
+        # Definicion del listado de imagenes empleadas por el arbol
         il = wx.ImageList(16, 16)
         self.folder_bmp = il.Add(I.folder_png)
         self.folder_open_bmp = il.Add(I.folderOpen_png)
@@ -37,21 +42,25 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.file_bmp = il.Add(I.result_png)
         self.AssignImageList(il)
 
-        self.root = self.AddRoot("Proyectos")
+        # Definicion del nodo raiz del arbol
+        self.root = self.AddRoot("Projects")
 
-        #defino el presenter que manejara a la vista
-        self.presenter = ProjectTreeCtrlPresenter(self)
-        self.presenter.OnInitializeTree()
+        # Inicializacion del arbol de proyectos
+        self.presenter.InitializeTree()
 
-        #menu del contexto de Proyecto
+        # Enlace del evento Context a la entidad de Proyecto
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnTreeContextMenu)
+
+        # Enlace del evento de seleccion al metodo OnSelectedItemTree
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectedItemTree)
+
+        # Enlace del evento de expansion de item al metodo OnItemTreeExpanded
         self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.OnItemTreeExpanded)
 
     def OnSelectedItemTree(self, event):
         item = self.GetSelection()
         if self.GetItemPyData(item) is not None:
-            self.presenter.OnSelectedProjectSend()
+            self.presenter.SendSelectedProject()
 
     def AddProjectNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
@@ -63,20 +72,17 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
             self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
             self.SetItemTextColour(project_item, '#BFBFBF')
         else:
-            #compelmentos prueba
+            # Complementos prueba
             self.GetFiles(project_item)
 
-        #ordenamiento personalizado
-        self.SortItemChildren(self.root)
+        # Ordenamiento de nodos
+        self.SortChildren(self.root)
 
-    def SortItemChildren(self, item_parent):
-        self.SortChildren(item_parent)
-
-    #se reesscribe este metodo
+    # Se reesscribe este metodo
     def OnCompareItems(self, item1, item2):
         return cmp(item1.GetData().state, item2.GetData().state)
 
-    def OnInitializeTree(self, list_project):
+    def LoadProjectsInTree(self, list_project):
         for project in list_project:
             self.AddProjectNode(project)
 
@@ -85,16 +91,16 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         date_item = self.GetItemPyData(item)
         parent_item = self.GetItemParent(item)
 
-        #verificar si el padre es root
+        # Verificar si el padre es root
         if(parent_item == self.root):
             menu = ProjectMenu(self, date_item)
         else:
-            #si su padre no es root
+            # Si su padre no es root
             menu = ResultMenu(self, date_item)
 
         self.PopupMenu(menu)
 
-    def OnDeleteItem(self, item):
+    def DeleteProjectItem(self, item):
         self.Delete(item)
 
     def GetFiles(self, parent):
@@ -113,7 +119,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
             if z == 1:
                 self.AppendSeparator(parent)
 
-    def OnItemTreeExpanded(self, e):
+    def OnItemTreeExpanded(self, event):
         item = self.GetSelection()
         date_item = self.GetItemPyData(item)
 
@@ -125,71 +131,118 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
 
 
 class ProjectMenu(wx.Menu):
+    '''
+    Clase Menu que estará contenida en un contextMenu de la entidad proyecto
+    '''
     def __init__(self, parent, project):
         super(ProjectMenu, self).__init__()
 
+        # Establecemos la referencia al proyecto pasado como parametro
         self.project = project
+
+        # Definicion del presenter de la clase
         self.presentermenu = ProjectMenuPresenter(self)
 
+        # Opcion de menu Nuevo
         new = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
 
+        # Enlazamos el evento de menu al metodo OnAddFileInProject
+        self.Bind(wx.EVT_MENU, self.OnAddFileInProject, new)
+
+        # Agregamos la opcion al arbol
+        self.AppendItem(new)
+        # Insertamos un separador
+        self.AppendSeparator()
+
+        # Opcion de menu Abrir
         open_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_OPEN))
+
+        # Enlazamos el evento de menu al metodo OnProjectOpen
+        self.Bind(wx.EVT_MENU, self.OnProjectOpen, open_item)
+
+        # Agregamos la opcion al arbol
+        self.AppendItem(open_item)
+
+        # Opcion de menu Cerrar
         closed_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_CLOSE))
+
+        # Enlazamos el evento de menu al metodo OnProjectClose
+        self.Bind(wx.EVT_MENU, self.OnProjectClose, closed_item)
+
+        # Agregamos la opcion al arbol
+        self.AppendItem(closed_item)
+
+        # Opcion de menu Eliminar
         delete_item = wx.MenuItem(self, wx.ID_DELETE, _(C.PM_DEL))
+
+        # Enlazamos el evento de menu al metodo OnProjectDelete
+        self.Bind(wx.EVT_MENU, self.OnProjectDelete, delete_item)
+
+        # Agregamos la opcion al arbol
+        self.AppendItem(delete_item)
+
+        # Opcion de menu Esconder
         hide_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_HIDE))
 
+        # Enlazamos el evento de menu al metodo OnProjectHide
+        self.Bind(wx.EVT_MENU, self.OnProjectHide, hide_item)
+
+        # Agregamos la opcion al arbol
+        self.AppendItem(hide_item)
+        # Insertamos un separador
+        self.AppendSeparator()
+
+        # Opcion de menu Renombrar
         rename_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_REN))
+
+        # Enlazamos el evento de menu al metodo OnProjectRename
+        self.Bind(wx.EVT_MENU, self.OnProjectRename, rename_item)
+
+        # Insertamos un separador
+        self.AppendItem(rename_item)
+
+        # Opcion de menu Propiedades
         properties_item = wx.MenuItem(self, wx.ID_ANY, _(C.PM_PROP))
 
-        self.AppendItem(new)
+        # Enlazamos el evento de menu al metodo OnProjectProperties
+        self.Bind(wx.EVT_MENU, self.OnProjectProperties, properties_item)
 
-        self.AppendSeparator()
-        self.AppendItem(open_item)
-        self.AppendItem(closed_item)
-        self.AppendItem(delete_item)
-        self.AppendItem(hide_item)
-
-        self.AppendSeparator()
-        self.AppendItem(rename_item)
+        # Insertamos un separador
         self.AppendItem(properties_item)
 
+        # Si el estado del proyecto es Abierto, se desabilitan las sgtes
+        # opciones
         if self.project.state == OPEN:
             open_item.Enable(False)
             hide_item.Enable(False)
 
+        # Si el estado del proyecto es Cerrado, se desabilitan las sgtes
+        # opciones
         if self.project.state == CLOSED:
             closed_item.Enable(False)
             rename_item.Enable(False)
             properties_item.Enable(False)
 
-        self.Bind(wx.EVT_MENU, self.OnAddFileInProject, new)
-        self.Bind(wx.EVT_MENU, self.OpenProject, open_item)
-        self.Bind(wx.EVT_MENU, self.CloseProject, closed_item)
-        self.Bind(wx.EVT_MENU, self.DeleteProject, delete_item)
-        self.Bind(wx.EVT_MENU, self.HideProject, hide_item)
-        self.Bind(wx.EVT_MENU, self.RenameProject, rename_item)
-        self.Bind(wx.EVT_MENU, self.PropertiesProject, properties_item)
-
     def OnAddFileInProject(self, event):
         self.presentermenu.AddFileInProject(self.project)
 
-    def RenameProject(self, event):
-        self.presentermenu.OnRename(self.project)
+    def OnProjectRename(self, event):
+        self.presentermenu.RenameProject(self.project)
 
-    def OpenProject(self, event):
-        self.presentermenu.OnOpen()
+    def OnProjectOpen(self, event):
+        self.presentermenu.OpenProject()
 
-    def CloseProject(self, event):
-        self.presentermenu.OnClose()
+    def OnProjectClose(self, event):
+        self.presentermenu.CloseProject()
 
-    def DeleteProject(self, event):
-        self.presentermenu.OnDelete()
+    def OnProjectDelete(self, event):
+        self.presentermenu.DeleteProject()
 
-    def PropertiesProject(self, event):
+    def OnProjectProperties(self, event):
         self.presentermenu.ShowProperties()
 
-    def HideProject(self, event):
-        self.presentermenu.Hide()
+    def OnProjectHide(self, event):
+        self.presentermenu.HideProject()
 
 
 class ResultMenu(wx.Menu):
@@ -197,26 +250,44 @@ class ResultMenu(wx.Menu):
         super(ResultMenu, self).__init__()
 
         self.result = result
-        #self.presentermenu = ProjectMenuPresenter(self)
 
+        # Definicion de la opcion Graficar
         graficar = wx.MenuItem(self, wx.ID_ANY, 'Graficar')
-        ver = wx.MenuItem(self, wx.ID_ANY, 'Ver archivo')
-        rename = wx.MenuItem(self, wx.ID_ANY, 'Renombrar')
-        delete = wx.MenuItem(self, wx.ID_DELETE, 'Eliminar')
-        properties = wx.MenuItem(self, wx.ID_ANY, 'Propiedades')
-
+        # Agregamos la opcion al menu
         self.AppendItem(graficar)
-
-        self.AppendSeparator()
-        self.AppendItem(ver)
-        self.AppendItem(rename)
-        self.AppendItem(delete)
-
-        self.AppendSeparator()
-        self.AppendItem(properties)
-
+        # Desabilitamos la opcion de menu
         graficar.Enable(False)
+
+        # Agregamos un separador
+        self.AppendSeparator()
+
+        # Definicion de la opcion Ver archivo
+        ver = wx.MenuItem(self, wx.ID_ANY, 'Ver archivo')
+        # Agregamos la opcion al menu
+        self.AppendItem(ver)
+        # Desabilitamos la opcion de menu
         ver.Enable(False)
+
+        # Definicion de la opcion Renombrar
+        rename = wx.MenuItem(self, wx.ID_ANY, 'Renombrar')
+        # Agregamos la opcion al menu
+        self.AppendItem(rename)
+        # Desabilitamos la opcion de menu
         rename.Enable(False)
+
+        # Definicion de la opcion Eliminar
+        delete = wx.MenuItem(self, wx.ID_DELETE, 'Eliminar')
+        # Agregamos la opcion al menu
+        self.AppendItem(delete)
+        # Desabilitamos la opcion de menu
         delete.Enable(False)
+
+        # Agregamos un separador
+        self.AppendSeparator()
+
+        # Definicion de la opcion Propiedades
+        properties = wx.MenuItem(self, wx.ID_ANY, 'Propiedades')
+        # Agregamos la opcion al menu
+        self.AppendItem(properties)
+        # Desabilitamos la opcion de menu
         properties.Enable(False)
