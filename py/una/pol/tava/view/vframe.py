@@ -100,7 +100,7 @@ class MainFrame(wx.Frame):
         UnHideProjectDialog(self)
 
     def ShowAddFileInProjectDialog(self, project):
-        AddFileDialog(self)
+        AddFileDialog(self, project)
 
     def OnApplicationExit(self, e):
 

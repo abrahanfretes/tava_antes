@@ -10,24 +10,27 @@ import wx.dataview as dv
 from py.una.pol.tava.presenter.presult import AddFileDialogPresenter
 import py.una.pol.tava.view.vimages as I
 from wx import GetTranslation as _
+from py.una.pol.tava.base.tavac import vonlucken
 import py.una.pol.tava.view.vi18n as C
 
+
 #-------------------------- list style existing -------------------------------
-styleNameList = ['Von Lucken', 'otro']
+styleNameList = ['Von Lucken']
 #---------------------------------------------------------------------------
 
 #-------------------- pre-establish a file filter -----------------------------
-wildcard = "All files (*.*)|*.*"
+wildcard = "Riles results |*"
 #---------------------------------------------------------------------------
 
 
 class AddFileDialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, project):
         super(AddFileDialog, self).__init__(parent,
                                 title=_(C.AFD_T), size=(600, 500))
 
         #------ Definiciones iniciales ----------------------------------------
         self.presenter = AddFileDialogPresenter(self)
+        self.project = project
 
         self.InitUI()
         self.Centre()
@@ -74,7 +77,6 @@ class AddFileDialog(wx.Dialog):
         self.rb = wx.RadioBox(
                 panel, -1, _(C.AFD_RBT), wx.DefaultPosition,
                 (600, 50), styleNameList, dimension, wx.RA_SPECIFY_COLS)
-        self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, self.rb)
         s_sizer.Add(self.rb, 1, wx.EXPAND)
 
         #------------------------------------------------------------------
@@ -109,8 +111,7 @@ class AddFileDialog(wx.Dialog):
 
         #------ start config --------------------------------------------------
         self.o_button.Enable(False)
-        self.rb.EnableItem(0, False)
-        self.rb.EnableItem(1, False)
+        self.rb.EnableItem(vonlucken, False)
         #----------------------------------------------------
 
         self.Centre()
@@ -121,9 +122,6 @@ class AddFileDialog(wx.Dialog):
 
     def OnAddFile(self, event):
         self.presenter.AddFile()
-
-    def EvtRadioBox(self, event):
-        print 'EvtRadioBox: %d\n' % event.GetInt()
 
     def OnButtonBrowse(self, evt):
 

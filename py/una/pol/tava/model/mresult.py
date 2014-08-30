@@ -5,6 +5,7 @@ Created on 28/06/2014
 '''
 from py.una.pol.tava.model.processor import styleVon
 from py.una.pol.tava.dao import dresult
+from py.una.pol.tava.base.tavac import vonlucken
 
 
 class ResultModel(object):
@@ -17,8 +18,14 @@ class ResultModel(object):
         Constructor
         '''
 
-    def add(self, list_path_file, project):
-        styleVon.procesarArchivo(list_path_file, project)
+    def add(self, list_path_file, project, style):
+
+        if style == vonlucken:
+            styleVon.procesarArchivo(list_path_file, project)
+
+        # aca se debe agregar las funciones para otros estilos
+        #if style == otro:
+            #otro.procesarArchivo(list_path_file, project)
 
     def delete(self, result):
         dresult.delete(result)

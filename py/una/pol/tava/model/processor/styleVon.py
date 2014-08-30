@@ -24,7 +24,7 @@ def __getObjetiosString(listObjetivos):
 
 
 def __getAlias(proyecto):
-    return 'file-' + str(len(proyecto.resultados) + 1)
+    return 'file-' + str(len(proyecto.results) + 1)
 
 
 def __buildVariablesDefaul(count, variable):
@@ -53,10 +53,10 @@ def procesarArchivo(listFile, proyecto):
         resultado.name = os.path.basename(path)
         resultado.alias = __getAlias(proyecto)
         resultado.iteration_count = int(__getValue__(fOpen.readline()))
-        resultado.etiqueta1 = __getValue__(fOpen.readline())
-        resultado.etiqueta2 = __getValue__(fOpen.readline())
-        resultado.etiqueta3 = __getValue__(fOpen.readline())
-        resultado.etiqueta4 = __getValue__(fOpen.readline())
+        resultado.label1 = __getValue__(fOpen.readline())
+        resultado.label2 = __getValue__(fOpen.readline())
+        resultado.label3 = __getValue__(fOpen.readline())
+        resultado.label4 = __getValue__(fOpen.readline())
         resultado.problem_name = __getValue__(fOpen.readline())
         countO = resultado.number_objectives = int(__getValue__(fOpen.
                                                                 readline()))
@@ -68,7 +68,7 @@ def procesarArchivo(listFile, proyecto):
         resultado.name_objectives = __buildVariablesDefaul(countO, False)
         resultado.add_date = date.today()
 
-        proyecto.resultados.append(resultado)
+        proyecto.results.append(resultado)
         dproject.upDate(proyecto)
 
         print resultado

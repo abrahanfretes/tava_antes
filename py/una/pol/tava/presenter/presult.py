@@ -5,6 +5,7 @@ Created on 30/08/2014
 '''
 
 import  os
+from py.una.pol.tava.model.mresult import ResultModel as rm
 
 
 class AddFileDialogPresenter():
@@ -22,7 +23,7 @@ class AddFileDialogPresenter():
             self.countItem += 1
 
         self.iview.o_button.Enable(True)
-        self.iview.rb.EnableItem(0, True)
+        self.EnableAllRadioButthon()
 
     def Close(self):
         self.iview.Close(True)
@@ -33,6 +34,9 @@ class AddFileDialogPresenter():
             list_path.append(self.getPath(i))
 
         print list_path
+        print self.iview.rb.GetSelection()
+        rm().add(list_path, self.iview.project, self.iview.rb.GetSelection())
+
         self.Close()
 
     def getPath(self, row):
@@ -45,10 +49,19 @@ class AddFileDialogPresenter():
         self.countItem -= 1
         if self.countItem == 0:
             self.iview.o_button.Enable(False)
-            self.iview.rb.EnableItem(0, False)
+            self.DisableAllRadioButthon()
+
+    def DisableAllRadioButthon(self):
+        for r in range(self.iview.rb.GetCount()):
+            self.iview.rb.EnableItem(r, False)
+
+    def EnableAllRadioButthon(self):
+        for r in range(self.iview.rb.GetCount()):
+            self.iview.rb.EnableItem(r, True)
 
     def deletedAllFile(self):
         self.iview.dvlc.DeleteAllItems()
         self.countItem = 0
         self.iview.o_button.Enable(False)
-        self.iview.rb.EnableItem(0, False)
+        self.DisableAllRadioButthon()
+        #self.iview.rb.EnableItem(0, False)
