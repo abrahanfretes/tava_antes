@@ -347,7 +347,7 @@ class RenameProjectDialog(wx.Dialog):
                 self.presenter.UpdateName(self.new_name_textctrl.Value)
 
     def ConfigEnableLabel(self):
-        self.description_text.SetLabel('RenameProyect')
+        self.description_text.SetLabel(_(C.RPD_NNA))
         self.fig_alet_bmp.SetBitmap(I.renamenewproject_png)
         self.new_name_textctrl.SetBackgroundColour((255, 255, 255))
 
@@ -745,7 +745,7 @@ wildcard = "Python source (*.py)|*.py|"     \
 class AddFileDialog(wx.Dialog):
     def __init__(self, parent):
         super(AddFileDialog, self).__init__(parent,
-                                title='hola', size=(600, 500))
+                                title=_(C.AFD_T), size=(600, 500))
 
         self.presenter = AddFileDialogPresenter(self)
         panel = wx.Panel(self, -1, size=(595, 495))
@@ -756,7 +756,7 @@ class AddFileDialog(wx.Dialog):
         #f_bmp = wx.StaticBitmap(panel,bitmap=wx.Bitmap('/icons/add_file.png'))
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(9)
-        header = wx.StaticText(panel, label='Agregar archivo al proyecto')
+        header = wx.StaticText(panel, label=_(C.AFD_STLH))
         header.SetFont(font)
 
         #bmp = wx.StaticBitmap(panel, bitmap=wx.Bitmap('/icons/exec.png'))
@@ -769,23 +769,23 @@ class AddFileDialog(wx.Dialog):
         #------ list DataViewListCtrl file ------------------------------------
         l_sizer = wx.BoxSizer()
         self.dvlc = dv.DataViewListCtrl(panel)
-        self.dvlc.AppendTextColumn('Name', width=220)
-        self.dvlc.AppendTextColumn('directorio', width=100)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCN), width=220)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCD), width=100)
         l_sizer.Add(self.dvlc, 1, wx.EXPAND)
         #------------------------------------------------------------------
 
-        #------ button open  file ---------------------------------------------
+        #------ button open file ----------------------------------------------
         b_sizer = wx.BoxSizer()
-        add_button = wx.Button(panel, -1, "Seleccionar Archivo")
-        b_sizer.Add(add_button, flag=wx.ALIGN_BOTTOM | wx.ALIGN_LEFT)
-        self.Bind(wx.EVT_BUTTON, self.OnButton, add_button)
+        browse = wx.Button(panel, -1, _(C.AFD_BB))
+        b_sizer.Add(browse, flag=wx.ALIGN_BOTTOM | wx.ALIGN_LEFT)
+        self.Bind(wx.EVT_BUTTON, self.OnButtonBrowse, browse)
         #----------------------------------------------------
 
         #------------ list radio button styles ----------------------------
         s_sizer = wx.BoxSizer()
         dimension = len(styleNameList)
         self.rb = wx.RadioBox(
-                panel, -1, "Seleccione el estilo", wx.DefaultPosition,
+                panel, -1, _(C.AFD_RBT), wx.DefaultPosition,
                 (600, 50), styleNameList, dimension, wx.RA_SPECIFY_COLS)
         self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, self.rb)
         s_sizer.Add(self.rb, 1, wx.EXPAND)
@@ -794,8 +794,8 @@ class AddFileDialog(wx.Dialog):
 
         #------ button add and cancel add file --------------------------------
         boc_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.o_button = wx.Button(panel, label='Ok')
-        self.c_button = wx.Button(panel, label='Cancel')
+        self.o_button = wx.Button(panel, label=_(C.AFD_BO))
+        self.c_button = wx.Button(panel, label=_(C.AFD_BC))
         boc_sizer.Add(self.c_button)
         boc_sizer.Add(self.o_button)
 
@@ -836,10 +836,10 @@ class AddFileDialog(wx.Dialog):
     def EvtRadioBox(self, event):
         print 'EvtRadioBox: %d\n' % event.GetInt()
 
-    def OnButton(self, evt):
+    def OnButtonBrowse(self, evt):
 
         self.dlg = wx.FileDialog(
-            self, message="Seleccione archivos",
+            self, message=_(C.AFD_FDM),
             defaultDir=os.getcwd(),
             defaultFile="",
             wildcard=wildcard,
@@ -862,8 +862,8 @@ class AddFileDialog(wx.Dialog):
 
         # make a menu
         menu = wx.Menu()
-        menu.Append(self.popupID1, "Delete File Selected")
-        menu.Append(self.popupID2, "Delete All File")
+        menu.Append(self.popupID1, _(C.AFD_FDMD))
+        menu.Append(self.popupID2, _(C.AFD_FDMDA))
 
         self.PopupMenu(menu)
         menu.Destroy()

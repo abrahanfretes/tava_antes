@@ -180,6 +180,40 @@ msgstr "Cancel"
 msgid "UNHIDE_PROJECT_DIALOG_STATIC_TEXT_DESCRIPTION_EMPTY"
 msgstr "No hidden projects"
 
+# ------------------------------- AddFileDialog -------------------------------
+msgid "ADD_FILE_DIALOG_TITLE"
+msgstr "TAVA Utilities"
+
+msgid "ADD_FILE_DIALOG_STATIC_TEXT_LABEL_HEADER"
+msgstr "Add files to the project"
+
+msgid "ADD_FILE_DIALOG_TEXT_COLUMN_NAME"
+msgstr "Name"
+
+msgid "ADD_FILE_DIALOG_TEXT_COLUMN_DIRECTORI"
+msgstr "Directory"
+
+msgid "ADD_FILE_DIALOG_BUTTON_BROWSER"
+msgstr "Search for"
+
+msgid "ADD_FILE_DIALOG_RADIO_BOX_TITLE"
+msgstr "Select the style file"
+
+msgid "ADD_FILE_DIALOG_BUTTON_OK"
+msgstr "Add"
+
+msgid "ADD_FILE_DIALOG_BUTTON_CANCEL"
+msgstr "Cancel"
+
+msgid "ADD_FILE_DIALOG_FILE_DIALOG_MESSAGE"
+msgstr "Select files"
+
+msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE"
+msgstr "Remove selected file"
+
+msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE_ALL"
+msgstr "Remove all files"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "New"
