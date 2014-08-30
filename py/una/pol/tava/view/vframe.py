@@ -16,7 +16,7 @@ from py.una.pol.tava.view.vproject import RenameProjectDialog
 from py.una.pol.tava.view.vproject import DeleteProjectDialog
 from py.una.pol.tava.view.vproject import PropertiesProjectDialog
 from py.una.pol.tava.view.vproject import UnHideProjectDialog
-from py.una.pol.tava.view.vproject import AddFileDialog
+from py.una.pol.tava.view.vresult import AddFileDialog
 from py.una.pol.tava.presenter.pframe import FramePresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
