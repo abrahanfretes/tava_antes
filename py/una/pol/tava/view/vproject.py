@@ -652,7 +652,7 @@ class UnHideProjectDialog(wx.Dialog):
         hbox.Add(deselect_all_btn, 1, wx.ALL, 10)
 
         # Agregamos hbox al sizer del agrupador
-        boxsizer.Add(hbox, 1,  wx.EXPAND | wx.RIGHT, 350)
+        boxsizer.Add(hbox, 1,  wx.EXPAND | wx.RIGHT, 250)
 
         # Agregamos boxsizer al sizer principal
         sizer.Add(boxsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT
@@ -660,6 +660,15 @@ class UnHideProjectDialog(wx.Dialog):
 
         # Definicion del sizer para los siguientes botones
         hbox = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Definicion del boton cancel
+        cancel_btn = wx.Button(panel, -1, _(C.UHPD_BCL))
+
+        # Enlazamos el evento de boton al metodo OnCancel
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel_btn.GetId())
+
+        # Agregamos el boton al sizer hbox
+        hbox.Add(cancel_btn, 1, wx.RIGHT, 10)
 
         # Definicion del boton apply_changes
         self.apply_change_btn = wx.Button(panel, -1, _(C.UHPD_BRL))
@@ -673,15 +682,6 @@ class UnHideProjectDialog(wx.Dialog):
 
         # Agregamos el boton al sizer hbox
         hbox.Add(self.apply_change_btn)
-
-        # Definicion del boton cancel
-        cancel_btn = wx.Button(panel, -1, _(C.UHPD_BCL))
-
-        # Enlazamos el evento de boton al metodo OnCancel
-        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel_btn.GetId())
-
-        # Agregamos el boton al sizer hbox
-        hbox.Add(cancel_btn, 1, wx.RIGHT, 10)
 
         # Agregamos hbox al sizer principal
         sizer.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
@@ -734,11 +734,7 @@ styleNameList = ['Von Lucken', 'otro']
 #---------------------------------------------------------------------------
 
 #-------------------- pre-establish a file filter -----------------------------
-wildcard = "Python source (*.py)|*.py|"     \
-           "Compiled Python (*.pyc)|*.pyc|" \
-           "SPAM files (*.spam)|*.spam|"    \
-           "Egg file (*.egg)|*.egg|"        \
-           "All files (*.*)|*.*"
+wildcard = "All files (*.*)|*.*"
 #---------------------------------------------------------------------------
 
 
@@ -747,23 +743,31 @@ class AddFileDialog(wx.Dialog):
         super(AddFileDialog, self).__init__(parent,
                                 title=_(C.AFD_T), size=(600, 500))
 
+        #------ Definiciones iniciales ----------------------------------------
         self.presenter = AddFileDialogPresenter(self)
+
+        self.InitUI()
+        self.Centre()
+        self.ShowModal()
+        #----------------------------------------------------
+
+    def InitUI(self):
         panel = wx.Panel(self, -1, size=(595, 495))
         self.g_sizer = wx.BoxSizer(wx.VERTICAL)
 
         #------ header title description --------------------------------------
         ht_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        #f_bmp = wx.StaticBitmap(panel,bitmap=wx.Bitmap('/icons/add_file.png'))
+        f_bmp = wx.StaticBitmap(panel, bitmap=I.add_file_png)
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(9)
         header = wx.StaticText(panel, label=_(C.AFD_STLH))
         header.SetFont(font)
 
-        #bmp = wx.StaticBitmap(panel, bitmap=wx.Bitmap('/icons/exec.png'))
+        bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
 
-        #ht_sizer.Add(f_bmp, flag=wx.ALIGN_LEFT | wx.RIGHT, border=5)
+        ht_sizer.Add(f_bmp, flag=wx.ALIGN_LEFT | wx.RIGHT, border=5)
         ht_sizer.Add(header, flag=wx.ALIGN_LEFT)
-        #ht_sizer.Add(bmp, flag=wx.LEFT, border=386)
+        ht_sizer.Add(bmp, flag=wx.LEFT, border=353)
         #----------------------------------------------------
 
         #------ list DataViewListCtrl file ------------------------------------
@@ -825,7 +829,9 @@ class AddFileDialog(wx.Dialog):
         self.rb.EnableItem(0, False)
         self.rb.EnableItem(1, False)
         #----------------------------------------------------
-        self.Show()
+
+        self.Centre()
+        self.Show(True)
 
     def OnCancel(self, event):
         self.presenter.Close()
@@ -838,13 +844,9 @@ class AddFileDialog(wx.Dialog):
 
     def OnButtonBrowse(self, evt):
 
-        self.dlg = wx.FileDialog(
-            self, message=_(C.AFD_FDM),
-            defaultDir=os.getcwd(),
-            defaultFile="",
-            wildcard=wildcard,
-            style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR
-            )
+        self.dlg = wx.FileDialog(self, message=_(C.AFD_FDM),
+            defaultDir=os.getcwd(), defaultFile="", wildcard=wildcard,
+            style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
 
         if self.dlg.ShowModal() == wx.ID_OK:
             self.presenter.addListPath()

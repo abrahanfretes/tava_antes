@@ -314,6 +314,28 @@ delete_png = PyEmbeddedImage(
 catalog["delete.png"] = "delete_png"
 delete_png = delete_png.GetBitmap()
 
+
+#---------------------------------------------------------------------
+
+add_file_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAhtJ"
+    "REFUOI2Vks9rE0Ecxd/Mzkx2drsx9Uc21YKCtR4sgmBFRNBTzFkq3ouCh/4L0oP3Su2lNyle"
+    "PPYohUWqBQtFD4KltrVIbIxNisaSJtmd3RkPNoH6I7QPBh7f4X34vmEI9uQOXulH5uR5yhgs"
+    "xkAJQE0C06pDN2o4IUx19d3ie/wh0jZ+4f4YuViYErYNISU4Z2DEAI0aoq0NnOFNc+/auafT"
+    "09NjQRA02znWNg9vX9Ujd/JQSkGpGCpWaDYa2Nlx8fWLxvdqheTz+VFmWYNRGBZeLyzs7gNk"
+    "nBR6HYEoAiLLQEUJJARScCFO5WDpCE8eT+Djysr1JFajAKb2Af4pQsA5h3Qc+L6PKIqglEKp"
+    "XE79VaGbOOdwHBe+n0OsYqyurXfu6EEAZA8iHYlsNotcX5851AYAUCxvoVqrIwxbkFJ25gcG"
+    "zG3U8eJnBoIkuBW2Dg8QQiDteUhRDVQ636c74FOxhLmVCiglKLUYPEeix2bYOnL27o0H4xeS"
+    "2rftroDKThOzVQ+eK3Esk8ZxR8LiHOryyHCqqYb1+uLnrgBKCNKS4WiPjV7XBhMMjDMQi8IY"
+    "hiaj/69AKMWlgX5MZraRJHW82txG0RsCRww9+2jyzcv5Z1rrsAPQWv8OEgLLsmCMQY/nwZYS"
+    "SRzD+VECpRQUFmzH3Vxe/vB23yPOzMw8D4Jg3hiD9tFad7w4PTTOBnZvhibB2tJS0M79AjDi"
+    "0hu5wogJAAAAAElFTkSuQmCC"
+    )
+
+catalog["add_file.png"] = "add_file_png"
+add_file_png = add_file_png.GetBitmap()
+
+
 #---------------------------------------------------------------------
 
 tava_png = PyEmbeddedImage(

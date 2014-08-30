@@ -19,8 +19,8 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.CloseProjectPub, T.PROJECT_CLOSE)
         pub.subscribe(self.OpenProjectPub, T.PROJECT_OPEN)
         pub.subscribe(self.RenameProjectPub, T.PROJECT_RENAME_UP)
-        pub.subscribe(self.HideProjectPub, 'PROJECT.HIDE')
-        pub.subscribe(self.UnHideProjectPub, 'PROJECT.LISTRESTORE')
+        pub.subscribe(self.HideProjectPub, T.PROJECT_HIDE)
+        pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
 
     def NewProjectPub(self, message):
         project = message.data

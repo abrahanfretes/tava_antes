@@ -18,7 +18,7 @@ class ToolBarPresenter:
         pub.subscribe(self.DisableAllProjectPub, T.PROJECT_CLOSE)
         pub.subscribe(self.DisableAllProjectPub, T.PROJECT_OPEN)
         pub.subscribe(self.DisableAllProjectPub, T.PROJECT_DELETE_OK)
-        pub.subscribe(self.DisableAllProjectPub, 'PROJECT.HIDE')
+        pub.subscribe(self.DisableAllProjectPub, T.PROJECT_HIDE)
         pub.subscribe(self.UpdateLabelsPub, T.LANGUAGE_CHANGED)
 
     def DisableAllProject(self):
@@ -37,10 +37,10 @@ class ToolBarPresenter:
         pub.sendMessage(T.PROJECT_DELETE_CLICK)
 
     def OnHideProject(self):
-        pub.sendMessage('PROJECT.HIDE')
+        pub.sendMessage(T.PROJECT_HIDE)
 
     def UnHideProject(self):
-        pub.sendMessage('PROJECT.UNHIDE')
+        pub.sendMessage(T.PROJECT_UNHIDE)
 
     def EnableDisableOpenProjectPub(self, message):
         self.iview.EnableDisableOpenProject()

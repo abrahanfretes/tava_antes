@@ -216,7 +216,7 @@ msgstr "Eliminar todos los archivos"
 
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
-msgstr "Nuevo"
+msgstr "Agregar archivo"
 
 msgid "PROJECT_MENU_OPEN"
 msgstr "Abrir"

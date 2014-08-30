@@ -19,8 +19,8 @@ class FramePresenter:
         pub.subscribe(self.EnglishLanguageSelected, T.ENGLISH_SELECTED)
         pub.subscribe(self.SpanishLanguageSelected, T.SPANISH_SELECTED)
         pub.subscribe(self.ProjectSelected, T.PROJECT_SELECTED)
-        pub.subscribe(self.UnHideProjectPub, 'PROJECT.UNHIDE')
-        pub.subscribe(self.AddFileInProjectPub, 'PROJECT.ADDFILE')
+        pub.subscribe(self.UnHideProjectPub, T.PROJECT_UNHIDE)
+        pub.subscribe(self.AddFileInProjectPub, T.PROJECT_ADDFILE)
 
     def ShowNewProjectDialogPub(self, message):
         self.iview.ShowNewProjectDialog()

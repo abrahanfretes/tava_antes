@@ -12,7 +12,7 @@ class ProjectMenuPresenter:
         self.iview = iview
 
     def AddFileInProject(self, project):
-        pub.sendMessage('PROJECT.ADDFILE', project)
+        pub.sendMessage(T.PROJECT_ADDFILE, project)
 
     def OpenProject(self):
         pub.sendMessage(T.PROJECT_OPEN)
@@ -30,4 +30,4 @@ class ProjectMenuPresenter:
         pub.sendMessage(T.PROJECT_PROPERTIES)
 
     def HideProject(self):
-        pub.sendMessage('PROJECT.HIDE')
+        pub.sendMessage(T.PROJECT_HIDE)

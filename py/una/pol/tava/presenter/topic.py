@@ -74,3 +74,23 @@ SPANISH_SELECTED = 'SPANISH.SELECTED'
 # Send = pframe
 # Subscribe = pmenu
 LANGUAGE_CHANGED = 'LANGUAGE.CHANGED'
+
+# Send = ptoolbar, pprojectmenu
+# Subscribe = ptree
+PROJECT_HIDE = 'PROJECT.HIDE'
+
+# Send = ptoolbar
+# Subscribe = pframe
+PROJECT_UNHIDE = 'PROJECT.UNHIDE'
+
+# Send = pproject
+# Subscribe = pproject
+PROJECT_CLICKCHECKBOXLIST = 'PROJECT.CLICKCHECKBOXLIST'
+
+# Send = pproject
+# Subscribe = ptree
+PROJECT_LISTRESTORE = 'PROJECT.LISTRESTORE'
+
+# Send = pprojectmenu
+# Subscribe = pframe
+PROJECT_ADDFILE = 'PROJECT.ADDFILE'

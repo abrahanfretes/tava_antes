@@ -121,13 +121,13 @@ class CheckListCtrlPresenter():
         self.iview = iview
 
     def OnClickCheckbox(self):
-        return pub.sendMessage('PROJECT.CLICKCHECKBOXLIST')
+        return pub.sendMessage(T.PROJECT_CLICKCHECKBOXLIST)
 
 
 class UnHideProjectDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
-        pub.subscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
+        pub.subscribe(self.ClickCheckboxPub, T.PROJECT_CLICKCHECKBOXLIST)
 
     def GetHideProjects(self):
         return pro().getHideProject()
@@ -140,7 +140,7 @@ class UnHideProjectDialogPresenter():
                 self.iview.apply_change_btn.Enable(True)
 
     def ExitDialog(self):
-        pub.unsubscribe(self.ClickCheckboxPub, 'PROJECT.CLICKCHECKBOXLIST')
+        pub.unsubscribe(self.ClickCheckboxPub, T.PROJECT_CLICKCHECKBOXLIST)
         self.iview.Close()
 
     def Restore(self):
@@ -149,7 +149,7 @@ class UnHideProjectDialogPresenter():
         for i in range(num):
             if self.iview.list.IsChecked(i):
                 list_checked.append(self.iview.list.GetItemText(i))
-        pub.sendMessage('PROJECT.LISTRESTORE', tuple(list_checked))
+        pub.sendMessage(T.PROJECT_LISTRESTORE, tuple(list_checked))
         self.ExitDialog()
 
     def SelectAll(self):

@@ -216,7 +216,7 @@ msgstr "Remove all files"
 
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
-msgstr "New"
+msgstr "Add file"
 
 msgid "PROJECT_MENU_OPEN"
 msgstr "Open"
