@@ -10,6 +10,7 @@ import topic as T
 class FramePresenter:
     def __init__(self, iview):
         self.iview = iview
+        #verificar luego si esta correcto
         self.project_selected = None
 
         pub.subscribe(self.ShowNewProjectDialogPub, T.BAR_PROJECT_NEW)

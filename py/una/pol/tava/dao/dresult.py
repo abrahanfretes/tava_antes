@@ -50,7 +50,7 @@ def getAllResult():
 
 
 def getResultsByProject(project):
-    return session.query(Result).filter_by(proyecto_id=project.id).all()
+    return session.query(Result).filter_by(project_id=project.id).all()
 
 
 def getResultById(id_result):

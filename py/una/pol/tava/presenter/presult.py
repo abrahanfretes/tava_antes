@@ -36,6 +36,7 @@ class AddFileDialogPresenter():
         print list_path
         print self.iview.rb.GetSelection()
         rm().add(list_path, self.iview.project, self.iview.rb.GetSelection())
+        #pub.sendMessage('FILE.ADDTOPROJECT')
 
         self.Close()
 

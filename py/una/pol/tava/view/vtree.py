@@ -58,33 +58,34 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.OnItemTreeExpanded)
 
     def OnSelectedItemTree(self, event):
-        item = self.GetSelection()
-        if self.GetItemPyData(item) is not None:
-            self.presenter.SendSelectedProject()
+        self.presenter.SelectedItem()
+        #======================================================================
+        # item = self.GetSelection()
+        # if self.GetItemPyData(item) is not None:
+        #     self.presenter.SelectedItem()
+        #======================================================================
 
-    def AddProjectNode(self, project):
+    def AddProjectOpenNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
         self.SetItemPyData(project_item, project)
         self.SetItemImage(project_item, 0, wx.TreeItemIcon_Normal)
         self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
 
-        if project.state == CLOSED:
-            self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
-            self.SetItemTextColour(project_item, '#BFBFBF')
-        else:
-            # Complementos prueba
-            self.GetFiles(project_item)
-
-        # Ordenamiento de nodos
         self.SortChildren(self.root)
+        return project_item
+
+    def AddProjectCloseNode(self, project):
+        project_item = self.AppendItem(self.root, project.name)
+        self.SetItemPyData(project_item, project)
+        self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
+        self.SetItemTextColour(project_item, '#BFBFBF')
+
+        self.SortChildren(self.root)
+        return project_item
 
     # Se reesscribe este metodo
     def OnCompareItems(self, item1, item2):
         return cmp(item1.GetData().state, item2.GetData().state)
-
-    def LoadProjectsInTree(self, list_project):
-        for project in list_project:
-            self.AddProjectNode(project)
 
     def OnTreeContextMenu(self, event):
         item = self.GetSelection()
@@ -103,21 +104,11 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
     def DeleteProjectItem(self, item):
         self.Delete(item)
 
-    def GetFiles(self, parent):
-        for z in range(3):
-            if z == 0:
-                item = self.AppendItem(parent,  "item %d" % z)
-                self.SetItemHyperText(item, True)
+    def AddResultAProject(self, project_item, result):
+        result_item = self.AppendItem(project_item, result.name, ct_type=1)
+        self.SetItemPyData(result_item, result)
 
-            elif z == 1:
-                item = self.AppendItem(parent,  "item %d" % z, ct_type=2)
-            elif z == 2:
-                item = self.AppendItem(parent,  "item %d" % z, ct_type=1)
-
-            self.SetPyData(item, None)
-            self.SetItemImage(item, 3, CT.TreeItemIcon_Normal)
-            if z == 1:
-                self.AppendSeparator(parent)
+        self.SortChildren(self.root)
 
     def OnItemTreeExpanded(self, event):
         item = self.GetSelection()

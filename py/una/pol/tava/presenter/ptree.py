@@ -5,6 +5,7 @@ Created on 28/07/2014
 '''
 from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
+from py.una.pol.tava.model.mresult import ResultModel
 from py.una.pol.tava.base.entity import OPEN, CLOSED, HIDDEN
 import topic as T
 
@@ -72,21 +73,42 @@ class ProjectTreeCtrlPresenter:
         return ProjectModel().upDate(project)
 
     def AddNode(self, project):
-        self.iview.AddProjectNode(project)
+
+        if project.state == OPEN:
+            project_item = self.iview.AddProjectOpenNode(project)
+            self.AddFileResult(project_item)
+
+        else:
+            project_item = self.iview.AddProjectCloseNode(project)
+            self.AddFileResult(project_item)
+
+    def AddFileResult(self, item):
+        project = self.iview.GetItemPyData(item)
+        for result in ResultModel().getResultsByProject(project):
+            self.iview.AddResultAProject(item, result)
 
     def DeleteProjectItem(self):
         self.iview.DeleteProjectItem(self.iview.GetSelection())
 
     def InitializeTree(self):
-        list_project = ProjectModel().getAll()
-        self.iview.LoadProjectsInTree(list_project)
+        for project in ProjectModel().getAll():
+            self.AddNode(project)
+            #self.iview.AddProjectNode(project)
 
-    def SendSelectedProject(self):
-        pub.sendMessage(T.PROJECT_SELECTED, self.GetProjectSelected())
-        if self.GetProjectSelected().state == OPEN:
-            pub.sendMessage(T.PROJECT_SELECTED_OPEN)
-        else:
-            pub.sendMessage(T.PROJECT_SELECTED_CLOSE)
+    def SelectedItem(self):
+        item = self.iview.GetSelection()
+
+        if self.iview.GetItemPyData(item) is not None:
+            parent_item = self.iview.GetItemParent(item)
+
+            if(parent_item == self.iview.root):
+                #verificar luego si esta correcto
+                pub.sendMessage(T.PROJECT_SELECTED, self.GetProjectSelected())
+
+                if self.GetProjectSelected().state == OPEN:
+                    pub.sendMessage(T.PROJECT_SELECTED_OPEN)
+                else:
+                    pub.sendMessage(T.PROJECT_SELECTED_CLOSE)
 
     def GetNamesProjects(self):
         return ProjectModel().getNamesProject()
