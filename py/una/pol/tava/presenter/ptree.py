@@ -23,6 +23,7 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.HideProjectPub, T.PROJECT_HIDE)
         pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
 
+    #------ funciones encargadas de recepcionar mensajes ----------------------
     def NewProjectPub(self, message):
         project = message.data
         self.AddProjectNode(project)
@@ -60,48 +61,48 @@ class ProjectTreeCtrlPresenter:
     def UnHideProjectPub(self, message):
         list_names = message.data
         for name in list_names:
-            project = self.UpDateOpenForHideProject(name)
+            project = ProjectModel().getProjectForName(name)
             self.AddProjectNode(project)
 
-    def UpdateProjectTree(self, project):
-        self.DeleteProjectItem()
-        self.AddProjectNode(project)
+    #----------------------------------------------------
 
-    def UpDateOpenForHideProject(self, name_project):
-        project = ProjectModel().getProjectForName(name_project)
-        project.state = OPEN
-        return ProjectModel().upDate(project)
+    #- funciones encargadas de inicializar y actualizar el arbol de proyectos -
+
+    def InitializeTree(self):
+        for project in ProjectModel().getAll():
+            self.AddProjectNode(project)
 
     def AddProjectNode(self, project):
 
         if project.state == OPEN:
             project_item = self.iview.AddProjectOpenNode(project)
-            # agregar paquete de arhivos
+            # agregar paquete para arhivos
             package_result_item = self.iview.AddPackageResult(project_item)
             self.AddFileResult(package_result_item, project)
 
-            # agregar paquete para test
+            # agregar paquete para pruebas
             package_analizer_item = self.iview.AddPackageAnalyzer(project_item)
             print self.iview.GetItemText(package_analizer_item)
 
         else:
             project_item = self.iview.AddProjectCloseNode(project)
-            #self.AddFileResult(project_item)
 
     def AddFileResult(self, package_item, project):
-        #project = self.iview.GetItemPyData(item)
         for result in ResultModel().getResultsByProject(project):
             self.iview.AddResultAProject(package_item, result)
+
+    def UpdateProjectTree(self, project):
+        self.DeleteProjectItem()
+        self.AddProjectNode(project)
 
     def DeleteProjectItem(self):
         self.iview.DeleteProjectItem(self.iview.GetSelection())
 
-    def InitializeTree(self):
-        for project in ProjectModel().getAll():
-            self.AddProjectNode(project)
-            #self.iview.AddProjectNode(project)
+    #----------------------------------------------------
 
-    def SelectedItem(self):
+    #------ funciones encargadas de verificar el tipo de item seleccionado ----
+
+    def GetTypeSelectedItem(self):
         item = self.iview.GetSelection()
 
         if self.iview.GetItemPyData(item) is not None:
@@ -116,9 +117,10 @@ class ProjectTreeCtrlPresenter:
                 else:
                     pub.sendMessage(T.PROJECT_SELECTED_CLOSE)
 
-    def GetNamesProjects(self):
-        return ProjectModel().getNamesProject()
+    #----------------------------------------------------
 
+    #------ funciones auxiliares desde la vista -------------------------------
     def GetProjectSelected(self):
         item_selected = self.iview.GetSelection()
         return self.iview.GetItemPyData(item_selected)
+    #----------------------------------------------------

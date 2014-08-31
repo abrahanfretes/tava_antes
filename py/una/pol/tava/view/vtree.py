@@ -59,12 +59,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.Bind(wx.EVT_TREE_ITEM_EXPANDED, self.OnItemTreeExpanded)
 
     def OnSelectedItemTree(self, event):
-        self.presenter.SelectedItem()
-        #======================================================================
-        # item = self.GetSelection()
-        # if self.GetItemPyData(item) is not None:
-        #     self.presenter.SelectedItem()
-        #======================================================================
+        self.presenter.GetTypeSelectedItem()
 
     def AddProjectOpenNode(self, project):
         project_item = self.AppendItem(self.root, project.name)

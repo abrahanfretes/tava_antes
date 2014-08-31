@@ -5,6 +5,7 @@ Created on 28/07/2014
 '''
 from py.una.pol.tava.model.mproject import ProjectModel as pro
 from wx.lib.pubsub import Publisher as pub
+from py.una.pol.tava.base.entity import OPEN
 import topic as T
 
 
@@ -148,7 +149,12 @@ class UnHideProjectDialogPresenter():
         num = self.iview.list.GetItemCount()
         for i in range(num):
             if self.iview.list.IsChecked(i):
-                list_checked.append(self.iview.list.GetItemText(i))
+                name_project = self.iview.list.GetItemText(i)
+                list_checked.append(name_project)
+                project = pro().getProjectForName(name_project)
+                project.state = OPEN
+                pro().upDate(project)
+
         pub.sendMessage(T.PROJECT_LISTRESTORE, tuple(list_checked))
         self.ExitDialog()
 
