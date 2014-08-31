@@ -10,7 +10,7 @@ from py.una.pol.tava.base import base
 
 def main():
     '''
-    Método principal de ejecución del programa
+    Método principal de ejecución del programa---
     '''
     base.createDb()
     ex = wx.App()
