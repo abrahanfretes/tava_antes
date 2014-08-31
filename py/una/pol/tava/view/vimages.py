@@ -335,6 +335,22 @@ add_file_png = PyEmbeddedImage(
 catalog["add_file.png"] = "add_file_png"
 add_file_png = add_file_png.GetBitmap()
 
+#---------------------------------------------------------------------
+
+package_result_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAXJJ"
+    "REFUOI1jYCAAygtzY6qK85/jkmfEp7m2ojjl37+/k3T19Dlv37z168unz16dE6fsRVbDjM+A"
+    "Q0eO37IwNWF68eK5iY6uLseXL18ibK1MzQ8eObGegYHhD9wFgX5e8eqqKguwGXL6xJkmDW2N"
+    "b9w8XHWs7Fz/ZGRkeJ48evjh6rVrhRs2b1/AwsDAwKCuqrLA3c2ZQVxcjIGBgYHh////CAOO"
+    "n2a6cfUG198/fyb/Z2D8r6Akb5eQEG3198/v+QwM25ewwBSKi4sx1KfEMDx6/wXdETXInG9/"
+    "3zCIixfCuKwsyJKP3n9hsFGRwBcsDEfuvEDmsjDBWMjOfvT2C14aWS3cAGQgJ8yDl0YGWA0g"
+    "5AKsBjAyItIUIRcgq6XYBSixICfIAw9lWHSi03KCqOEAN+Dly1cMjXOWMDAwoIYyMoA5/c7t"
+    "u6gGnD57voiBgaEPqy4c4MSpM+UMDAx/YaHByMDAIAc1EG8GQwJPGBgY/gAA10agoMKStEUA"
+    "AAAASUVORK5CYII="
+    )
+
+catalog["package_result.png"] = "package_result_png"
+package_result_png = package_result_png.GetBitmap()
 
 #---------------------------------------------------------------------
 

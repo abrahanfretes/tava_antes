@@ -40,6 +40,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.folder_open_bmp = il.Add(I.folderOpen_png)
         self.folder_closed_bmp = il.Add(I.folderClosed_png)
         self.file_bmp = il.Add(I.result_png)
+        self.package_bmp = il.Add(I.package_result_png)
         self.AssignImageList(il)
 
         # Definicion del nodo raiz del arbol
@@ -104,11 +105,22 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
     def DeleteProjectItem(self, item):
         self.Delete(item)
 
-    def AddResultAProject(self, project_item, result):
-        result_item = self.AppendItem(project_item, result.name, ct_type=1)
+    def AddResultAProject(self, package_item, result):
+        result_item = self.AppendItem(package_item, result.name)
+        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
         self.SetItemPyData(result_item, result)
 
-        self.SortChildren(self.root)
+        #self.SortChildren(package_item)
+
+    def AddPackageResult(self, project_item):
+        package_result_item = self.AppendItem(project_item, 'Resultados')
+        self.SetItemImage(package_result_item, 4, wx.TreeItemIcon_Normal)
+        return package_result_item
+
+    def AddPackageAnalyzer(self, project_item):
+        package_analizer_item = self.AppendItem(project_item, 'Pruebas')
+        self.SetItemImage(package_analizer_item, 4, wx.TreeItemIcon_Normal)
+        return package_analizer_item
 
     def OnItemTreeExpanded(self, event):
         item = self.GetSelection()

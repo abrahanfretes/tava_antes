@@ -25,7 +25,7 @@ class ProjectTreeCtrlPresenter:
 
     def NewProjectPub(self, message):
         project = message.data
-        self.AddNode(project)
+        self.AddProjectNode(project)
 
     def DeleteSelectProjectPub(self, message):
         pub.sendMessage(T.PROJECT_DELETE_SELECT)
@@ -61,38 +61,44 @@ class ProjectTreeCtrlPresenter:
         list_names = message.data
         for name in list_names:
             project = self.UpDateOpenForHideProject(name)
-            self.AddNode(project)
+            self.AddProjectNode(project)
 
     def UpdateProjectTree(self, project):
         self.DeleteProjectItem()
-        self.AddNode(project)
+        self.AddProjectNode(project)
 
     def UpDateOpenForHideProject(self, name_project):
         project = ProjectModel().getProjectForName(name_project)
         project.state = OPEN
         return ProjectModel().upDate(project)
 
-    def AddNode(self, project):
+    def AddProjectNode(self, project):
 
         if project.state == OPEN:
             project_item = self.iview.AddProjectOpenNode(project)
-            self.AddFileResult(project_item)
+            # agregar paquete de arhivos
+            package_result_item = self.iview.AddPackageResult(project_item)
+            self.AddFileResult(package_result_item, project)
+
+            # agregar paquete para test
+            package_analizer_item = self.iview.AddPackageAnalyzer(project_item)
+            print self.iview.GetItemText(package_analizer_item)
 
         else:
             project_item = self.iview.AddProjectCloseNode(project)
-            self.AddFileResult(project_item)
+            #self.AddFileResult(project_item)
 
-    def AddFileResult(self, item):
-        project = self.iview.GetItemPyData(item)
+    def AddFileResult(self, package_item, project):
+        #project = self.iview.GetItemPyData(item)
         for result in ResultModel().getResultsByProject(project):
-            self.iview.AddResultAProject(item, result)
+            self.iview.AddResultAProject(package_item, result)
 
     def DeleteProjectItem(self):
         self.iview.DeleteProjectItem(self.iview.GetSelection())
 
     def InitializeTree(self):
         for project in ProjectModel().getAll():
-            self.AddNode(project)
+            self.AddProjectNode(project)
             #self.iview.AddProjectNode(project)
 
     def SelectedItem(self):
