@@ -35,3 +35,6 @@ class ResultModel(object):
 
     def getResultById(self, id_result):
         return dresult.getResultById(id_result)
+
+    def getResultByName(self, name_result):
+        return dresult.getResultByName(name_result)

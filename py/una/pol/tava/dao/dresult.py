@@ -57,6 +57,10 @@ def getResultById(id_result):
     return session.query(Result).filter_by(id=id_result).first()
 
 
+def getResultByName(name_result):
+    return session.query(Result).filter_by(name=name_result).first()
+
+
 def getResultWithIterations(result):
     return session.query(Result).options(
             subqueryload(Result.iterations)).\

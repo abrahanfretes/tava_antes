@@ -94,3 +94,7 @@ PROJECT_LISTRESTORE = 'PROJECT.LISTRESTORE'
 # Send = pprojectmenu
 # Subscribe = pframe
 PROJECT_ADDFILE = 'PROJECT.ADDFILE'
+
+# Send = presult
+# Subscribe = ptree
+ADDEDFILE_PROJECT = 'ADDEDFILE.PROJECT'

@@ -22,6 +22,7 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.RenameProjectPub, T.PROJECT_RENAME_UP)
         pub.subscribe(self.HideProjectPub, T.PROJECT_HIDE)
         pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
+        pub.subscribe(self.AddFilePub, T.ADDEDFILE_PROJECT)
 
     #------ funciones encargadas de recepcionar mensajes ----------------------
     def NewProjectPub(self, message):
@@ -64,6 +65,13 @@ class ProjectTreeCtrlPresenter:
             project = ProjectModel().getProjectForName(name)
             self.AddProjectNode(project)
 
+    def AddFilePub(self, message):
+        file_names = message.data
+        package_item = self.GetPackageResultSelected()
+        for name in file_names:
+            result = ResultModel().getResultByName(name)
+            self.AddFileResultInProject(package_item, result)
+
     #----------------------------------------------------
 
     #- funciones encargadas de inicializar y actualizar el arbol de proyectos -
@@ -89,7 +97,10 @@ class ProjectTreeCtrlPresenter:
 
     def AddFileResult(self, package_item, project):
         for result in ResultModel().getResultsByProject(project):
-            self.iview.AddResultAProject(package_item, result)
+            self.AddFileResultInProject(package_item, result)
+
+    def AddFileResultInProject(self, package_item, result):
+        self.iview.AddResultAProject(package_item, result)
 
     def UpdateProjectTree(self, project):
         self.DeleteProjectItem()
@@ -123,4 +134,11 @@ class ProjectTreeCtrlPresenter:
     def GetProjectSelected(self):
         item_selected = self.iview.GetSelection()
         return self.iview.GetItemPyData(item_selected)
+
+    def GetPackageResultSelected(self):
+        item_selected = self.iview.GetSelection()
+        for item in item_selected.GetChildren():
+            if self.iview.GetItemText(item) == 'Resultados':
+                return item
+
     #----------------------------------------------------

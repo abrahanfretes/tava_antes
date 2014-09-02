@@ -5,6 +5,8 @@ Created on 30/08/2014
 '''
 
 import  os
+from wx.lib.pubsub import Publisher as pub
+import topic as T
 from py.una.pol.tava.model.mresult import ResultModel as rm
 
 
@@ -30,14 +32,14 @@ class AddFileDialogPresenter():
 
     def AddFile(self):
         list_path = []
+        list_names = []
         for i in range(self.countItem):
-            list_path.append(self.getPath(i))
+            path = self.getPath(i)
+            list_path.append(path)
+            list_names.append(os.path.basename(path))
 
-        print list_path
-        print self.iview.rb.GetSelection()
         rm().add(list_path, self.iview.project, self.iview.rb.GetSelection())
-        #pub.sendMessage('FILE.ADDTOPROJECT')
-
+        pub.sendMessage(T.ADDEDFILE_PROJECT, list_names)
         self.Close()
 
     def getPath(self, row):
