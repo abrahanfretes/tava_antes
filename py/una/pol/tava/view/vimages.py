@@ -5,6 +5,28 @@
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 catalog = {}
+
+#---------------------------------------------------------------------
+
+ok_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAhdJ"
+    "REFUOI1j/P//PwMlgIki3QwMDCykaqhYXXL/+99vwjuP7JS7MeXuB5IMKF9VdFWYV1jh5ddf"
+    "DMK8wlc0U1XWMRIbBpmLU88bKOobrLq+nOH86ysMhvy6DJ/efvwNDwP5GnEvxTpJK2yag+f6"
+    "XDLQ0jPY+nEdwym2Ywz8kuwM7369YfjB+uMLi0qdNNf///+jAw2CZn35/uW3XLWYw6PWV8dg"
+    "ml1m2VwItgzVPfr1AMMl5nMMcjwyDJyP+Ri+ffpey8DIMItFkEfoga68nmicfQLDjz8/WX/+"
+    "/7lPrlrM4FHrqxvGbdoX0vzT9a8zXma4xnSRQYxZguHfY2aGbx++111ruNfCwMDAwPL3/1+G"
+    "p98fM2x6tZZBmVuNIcE7kf3f/79ntBuVr+UE5+s/533CcPPnFQa+/wIMH69+Z/j+8XvFtYZ7"
+    "nTAXMrMZMU59+erVw3vf7viwyDMyMjIyMZiomLLpKOpKf5X4yHCZ8RzDny//GN7s/8jw7d2P"
+    "2uuN99qRwwceCwLlHEkqhgpzjF0NGdVYtBk4WTkYLv0/y/Dp12eGG0vvMfwU/VJ7NfxRC3oA"
+    "w2PhQ+ePeZ+v/Ii/fuTWv6e89xnus99mYGZjZXh6/BUDJz8bVs0MDAwMDP///0fBKpWyqQE7"
+    "XP/3/m/877rW9r/xDM1adDXIGKugVp1SgfV0038atYpd+DT///+fgeiUiAtQnBsBmEYe9RKc"
+    "ZrsAAAAASUVORK5CYII="
+    )
+
+catalog["ok.png"] = "ok_png"
+ok_png = ok_png.GetBitmap()
+
+
 #---------------------------------------------------------------------
 
 blog_png = PyEmbeddedImage(

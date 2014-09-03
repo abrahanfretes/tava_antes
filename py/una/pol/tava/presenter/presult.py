@@ -6,26 +6,39 @@ Created on 30/08/2014
 
 import  os
 from wx.lib.pubsub import Publisher as pub
-import topic as T
 from py.una.pol.tava.model.mresult import ResultModel as rm
+import topic as T
+import py.una.pol.tava.view.vimages as I
 
 
 class AddFileDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
         self.countItem = 0
+        self.existing_names = self.GetNamesResultInProject()
+
+    def GetNamesResultInProject(self):
+        return rm().getNamesResultForProject(self.iview.project)
 
     def addListPath(self):
 
-        for path in self.iview.dlg.GetPaths():
-            dir_name = os.path.split(path)
-            dir_name_add = list(dir_name)
-            dir_name_add.reverse()
-            self.iview.dvlc.AppendItem(dir_name_add)
-            self.countItem += 1
-
-        self.iview.o_button.Enable(True)
         self.EnableAllRadioButthon()
+        self.iview.o_button.Enable(True)
+
+        for path in self.iview.dlg.GetPaths():
+            path_file, name_file = os.path.split(path)
+            print name_file
+            print  self.existing_names
+            if name_file in self.existing_names:
+                icon = I.errornewproject_png
+                self.DisableAllRadioButthon()
+                self.iview.o_button.Enable(False)
+            else:
+                icon = I.ok_png
+
+            row = [icon, name_file, path_file]
+            self.iview.dvlc.AppendItem(row)
+            self.countItem += 1
 
     def Close(self):
         self.iview.Close(True)
@@ -44,15 +57,15 @@ class AddFileDialogPresenter():
 
     def getPath(self, row):
 
-        return os.path.join(self.iview.dvlc.GetTextValue(row, 1),
-            self.iview.dvlc.GetTextValue(row, 0))
+        return os.path.join(self.iview.dvlc.GetTextValue(row, 2),
+            self.iview.dvlc.GetTextValue(row, 1))
 
     def deletedOneFile(self):
         self.iview.dvlc.DeleteItem(self.iview.dvlc.GetSelectedRow())
         self.countItem -= 1
-        if self.countItem == 0:
-            self.iview.o_button.Enable(False)
-            self.DisableAllRadioButthon()
+        if self.countItem != 0 and self.NamesValid():
+            self.iview.o_button.Enable(True)
+            self.EnableAllRadioButthon()
 
     def DisableAllRadioButthon(self):
         for r in range(self.iview.rb.GetCount()):
@@ -68,3 +81,9 @@ class AddFileDialogPresenter():
         self.iview.o_button.Enable(False)
         self.DisableAllRadioButthon()
         #self.iview.rb.EnableItem(0, False)
+
+    def NamesValid(self):
+        for row in range(self.countItem):
+            if self.iview.dvlc.GetTextValue(row, 1) in self.existing_names:
+                return False
+        return  True

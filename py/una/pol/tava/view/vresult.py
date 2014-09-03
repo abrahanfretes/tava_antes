@@ -29,8 +29,8 @@ class AddFileDialog(wx.Dialog):
                                 title=_(C.AFD_T), size=(600, 500))
 
         #------ Definiciones iniciales ----------------------------------------
-        self.presenter = AddFileDialogPresenter(self)
         self.project = project
+        self.presenter = AddFileDialogPresenter(self)
 
         self.InitUI()
         self.Centre()
@@ -59,8 +59,9 @@ class AddFileDialog(wx.Dialog):
         #------ list DataViewListCtrl file ------------------------------------
         l_sizer = wx.BoxSizer()
         self.dvlc = dv.DataViewListCtrl(panel)
-        self.dvlc.AppendTextColumn(_(C.AFD_TCN), width=220)
-        self.dvlc.AppendTextColumn(_(C.AFD_TCD), width=100)
+        self.dvlc.AppendBitmapColumn(_(C.AFD_TCC), 0, width=50)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCN), width=190)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCD), width=70)
         l_sizer.Add(self.dvlc, 1, wx.EXPAND)
         #------------------------------------------------------------------
 

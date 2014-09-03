@@ -65,3 +65,7 @@ def getResultWithIterations(result):
     return session.query(Result).options(
             subqueryload(Result.iterations)).\
             filter_by(id=result.id).first()
+
+
+def getNamesResultForProject(project):
+    return session.query(Result.name).filter_by(project_id=project.id).all()

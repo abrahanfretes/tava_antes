@@ -38,3 +38,10 @@ class ResultModel(object):
 
     def getResultByName(self, name_result):
         return dresult.getResultByName(name_result)
+
+    def getNamesResultForProject(self, project):
+        listNames = []
+        for name in dresult.getNamesResultForProject(project):
+            listNames.append(list(name).pop())
+
+        return listNames

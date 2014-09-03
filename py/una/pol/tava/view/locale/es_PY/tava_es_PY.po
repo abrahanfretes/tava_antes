@@ -214,6 +214,9 @@ msgstr "Eliminar archivo seleccionado"
 msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE_ALL"
 msgstr "Eliminar todos los archivos"
 
+msgid "ADD_FILE_DIALOG_TEXT_COLUMN_CHECK"
+msgstr "Válido"
+
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
 msgstr "Agregar archivo"
