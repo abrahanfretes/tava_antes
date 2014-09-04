@@ -137,8 +137,42 @@ class ProjectTreeCtrlPresenter:
 
     def GetPackageResultSelected(self):
         item_selected = self.iview.GetSelection()
-        for item in item_selected.GetChildren():
-            if self.iview.GetItemText(item) == 'Resultados':
-                return item
+        parent_item = self.iview.GetItemParent(item_selected)
+
+        #si la seleccion es un proyecto
+        if parent_item == self.iview.root:
+            for item in item_selected.GetChildren():
+                if self.iview.GetItemText(item) == 'Resultados':
+                    return item
+        #si la seleccion es un paquete resultado
+        return item_selected
+
+    def ContexMenu(self):
+
+        item = self.iview.GetSelection()
+        parent_item = self.iview.GetItemParent(item)
+
+        #seleccion de un proyecto
+        if(parent_item == self.iview.root):
+            project = self.iview.GetItemPyData(item)
+            self.iview.InitializeProjectMenu(project)
+
+        #seleccion de un paquete resultado
+        elif self.iview.GetItemText(item) == 'Resultados':
+            project = self.iview.GetItemPyData(parent_item)
+            self.iview.InitializeResultPackageMenu(project)
+
+        #seleccion de un paquete analisis
+        elif self.iview.GetItemText(item) == 'Pruebas':
+            project = self.iview.GetItemPyData(parent_item)
+            self.iview.InitializeAnalysisPackageMenu(project)
+
+        #seleccion de un archivo resultado
+        elif self.iview.GetItemText(parent_item) == 'Resultados':
+            self.iview.InitializeResultMenu(item)
+
+        #seleccion de un analisis
+        elif self.iview.GetItemText(parent_item) == 'Pruebas':
+            self.iview.InitializeAnalysisMenu(project)
 
     #----------------------------------------------------

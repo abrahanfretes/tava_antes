@@ -89,7 +89,7 @@ class ProjectModel():
 
     def getHideProject(self):
 
-        return dproject.getAllHideProject()
+        return list(dproject.getAllHideProject())
 
     def getProjectForName(self, name_project):
         return dproject.getProjectByName(name_project)

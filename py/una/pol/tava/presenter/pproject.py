@@ -131,7 +131,14 @@ class UnHideProjectDialogPresenter():
         pub.subscribe(self.ClickCheckboxPub, T.PROJECT_CLICKCHECKBOXLIST)
 
     def GetHideProjects(self):
-        return pro().getHideProject()
+        hidden = pro().getHideProject()
+        print hidden
+        if [] == hidden:
+            self.iview.IsEmptyList()
+            return
+
+        for project in hidden:
+            self.iview.AddItemToList(project.name, str(project.creation_date))
 
     def ClickCheckboxPub(self, message):
         self.iview.apply_change_btn.Enable(False)

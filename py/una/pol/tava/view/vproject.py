@@ -571,44 +571,34 @@ class UnHideProjectDialog(wx.Dialog):
 
     def InitUI(self):
 
-        # Definicion del panel contenedor principal
+        # variables principales
         panel = wx.Panel(self, -1)
-
-        # Definicion del sizer principal de la clase
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        # Definicion del sizer para la cabecera del listado
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        #----- BoxSizer cabecera ----------------------------------------------
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Definicion de la fuente para la descripcion
+        # Definicion de un staticBitmap
+        self.hide_left_bmp = wx.StaticBitmap(panel, bitmap=I.hide_left_png)
+
+        # descripcion de la cabecera
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetWeight(wx.BOLD)
         font.SetPointSize(9)
-
-        # Definicion de un staticBitmap
-        self.hide_left_bmp = wx.StaticBitmap(panel)
-        self.hide_left_bmp.SetBitmap(I.hide_left_png)
-
-        # Agregamos el icono en el sizer de la cabecera
-        hbox.Add(self.hide_left_bmp, 1, wx.RIGHT, 10)
-
-        # Definicion del componente text para desplegar descripciones
         self.description_text = wx.StaticText(panel, label=_(C.UHPD_STD))
         self.description_text.SetFont(font)
-
-        # Insertamos el text de descripcion en el sizer de la cabecera
-        hbox.Add(self.description_text, wx.RIGHT, 10)
 
         # Definicion del icono de ejecucion
         exec_bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
 
-        # Agregamos el icono de ejecucion en el sizer de la cabecera
-        hbox.Add(exec_bmp, 1, wx.LEFT, 220)
+        # Agregamos al BoxSizer cabecera
+        hbox1.Add(self.hide_left_bmp, 1, wx.RIGHT, 10)
+        hbox1.Add(self.description_text, wx.RIGHT, 10)
+        hbox1.Add(exec_bmp, 1, wx.LEFT, 220)
+        #-------------------------------------------------------
 
-        # Agregamos el sizer de la cabecera al sizer principal
-        sizer.Add(hbox, 1, wx.ALIGN_LEFT | wx.ALL, 10)
+        #----- Componete CheckListCtrl  ---------------------------------------
 
-        # Definicion del CheckListCtrl
         self.list = CheckListCtrl(panel)
 
         # Establecemos las columnas con sus respectivos labels
@@ -618,72 +608,59 @@ class UnHideProjectDialog(wx.Dialog):
 
         # Cargamos los proyectos ocultos en la lista
         self.LoadHidesProjects()
+        #-------------------------------------------------------
 
-        # Agregamos la lista en el sizer principal
-        sizer.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-
-        # Definicion del agrupador
+        #----- StaticBox agrupador --------------------------------------------
         sb = wx.StaticBox(panel, label=_(C.UHPD_SBL))
 
         # Definicion del sizer para el staticBox
         boxsizer = wx.StaticBoxSizer(sb, wx.HORIZONTAL)
 
-        # Definicion del boxSizer para los siguientes botones
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        #----- BoxSizer para select_all, deselect_all -------------------------
+        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Definicion del boton select_all
         select_all_btn = wx.Button(panel, -1, _(C.UHPD_BSAL))
-
-        # Asociamos el evento de boton al metodo OnSelectAll
         self.Bind(wx.EVT_BUTTON, self.OnSelectAll, id=select_all_btn.GetId())
 
-        # Agregamos el boton al hbox
-        hbox.Add(select_all_btn, 1, wx.ALL, 10)
-
-        # Definicion del boton deselect_all
         deselect_all_btn = wx.Button(panel, -1, _(C.UHPD_BDSAL))
-
-        # Asociamos el evento de boton al metodo OnDeselectAll
         self.Bind(wx.EVT_BUTTON, self.OnDeselectAll,
                   id=deselect_all_btn.GetId())
 
-        # Agregamos el boton al hbox
-        hbox.Add(deselect_all_btn, 1, wx.ALL, 10)
+        # Agregamos los botones al hbox2
+        hbox2.Add(select_all_btn, 1, wx.ALL, 10)
+        hbox2.Add(deselect_all_btn, 1, wx.ALL, 10)
+        #-------------------------------------------------------
 
         # Agregamos hbox al sizer del agrupador
-        boxsizer.Add(hbox, 1,  wx.EXPAND | wx.RIGHT, 250)
+        boxsizer.Add(hbox2, 1,  wx.EXPAND | wx.RIGHT, 250)
+        #-------------------------------------------------------
 
-        # Agregamos boxsizer al sizer principal
-        sizer.Add(boxsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT
-                  | wx.BOTTOM, 10)
-
-        # Definicion del sizer para los siguientes botones
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        #----- BoxSizer para cancel, apply ------------------------------------
+        hbox3 = wx.BoxSizer(wx.HORIZONTAL)
 
         # Definicion del boton cancel
         cancel_btn = wx.Button(panel, -1, _(C.UHPD_BCL))
-
-        # Enlazamos el evento de boton al metodo OnCancel
         self.Bind(wx.EVT_BUTTON, self.OnCancel, id=cancel_btn.GetId())
-
-        # Agregamos el boton al sizer hbox
-        hbox.Add(cancel_btn, 1, wx.RIGHT, 10)
 
         # Definicion del boton apply_changes
         self.apply_change_btn = wx.Button(panel, -1, _(C.UHPD_BRL))
-
-        # Deshabilitamos el boton
         self.apply_change_btn.Enable(False)
-
-        # Enlazamos el evento de boton al metodo OnApply
         self.Bind(wx.EVT_BUTTON, self.OnApply,
                   id=self.apply_change_btn.GetId())
 
-        # Agregamos el boton al sizer hbox
-        hbox.Add(self.apply_change_btn)
+        # Agregamos los botones al sizer hbox3
+        hbox3.Add(cancel_btn, 1, wx.RIGHT, 10)
+        hbox3.Add(self.apply_change_btn)
+        #-------------------------------------------------------
 
-        # Agregamos hbox al sizer principal
-        sizer.Add(hbox, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        #----- Agregamos los box sizer al BoxSizer principal ------------------
+        sizer.Add(hbox1, 1, wx.ALIGN_LEFT | wx.ALL, 10)
+        sizer.Add(self.list, 8, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        sizer.Add(boxsizer, 1, wx.EXPAND | wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT
+                  | wx.BOTTOM, 10)
+        sizer.Add(hbox3, 1, wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT
+                  | wx.BOTTOM, 10)
+        #-------------------------------------------------------
 
         # Establecemos el sizer al panel principal
         panel.SetSizer(sizer)
@@ -695,15 +672,12 @@ class UnHideProjectDialog(wx.Dialog):
         self.Show(True)
 
     def LoadHidesProjects(self):
-        hides_projects = self.presenter.GetHideProjects()
+        self.presenter.GetHideProjects()
 
-        if not hides_projects:
-            self.IsEmptyList()
-
-        for pro in hides_projects:
-            index = self.list.InsertStringItem(sys.maxint, pro.name)
-            self.list.SetStringItem(index, 1, str(pro.creation_date))
-            self.list.SetStringItem(index, 2, _(C.UHPD_CLCS))
+    def AddItemToList(self, name, date):
+        index = self.list.InsertStringItem(sys.maxint, name)
+        self.list.SetStringItem(index, 1, date)
+        self.list.SetStringItem(index, 2, _(C.UHPD_CLCS))
 
     def OnSelectAll(self, event):
         self.presenter.SelectAll()
@@ -719,7 +693,7 @@ class UnHideProjectDialog(wx.Dialog):
 
     def IsEmptyList(self):
         self.description_text.SetLabel(_(C.UHPD_STDE))
-        self.bmp.SetBitmap(I.warningnewproject_png)
+        self.hide_left_bmp.SetBitmap(I.warningnewproject_png)
 
     def OnKeyDown(self, e):
         key = e.GetKeyCode()
