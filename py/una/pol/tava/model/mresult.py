@@ -27,6 +27,10 @@ class ResultModel(object):
         #if style == otro:
             #otro.procesarArchivo(list_path_file, project)
 
+    def fastVerificationStyle(self, path_file, style):
+        if style == vonlucken:
+            return styleVon.fastVerification(path_file)
+
     def delete(self, result):
         dresult.delete(result)
 

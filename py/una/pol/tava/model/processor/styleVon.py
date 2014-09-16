@@ -6,7 +6,10 @@ Created on 28/06/2014
 from py.una.pol.tava.base.entity import Result, Iteration, Individual
 from py.una.pol.tava.dao import dproject, diteration
 from datetime import date
+from py.una.pol.tava.base.tavac import correct, fos_error, fva_Error
+from py.una.pol.tava.base.tavac import fio_error, fuk_error
 import os
+import sys
 
 
 def __getValue__(string):
@@ -41,6 +44,36 @@ def __buildVariablesDefaul(count, variable):
         variables.append(key + str(var + 1))
 
     return ','.join(variables)
+
+
+def fastVerification(path):
+    retorno = correct
+
+    try:
+        fOpen = open(path, 'r')
+        int(__getValue__(fOpen.readline()))
+        __getValue__(fOpen.readline())
+        __getValue__(fOpen.readline())
+        __getValue__(fOpen.readline())
+        __getValue__(fOpen.readline())
+        __getValue__(fOpen.readline())
+        int(__getValue__(fOpen.readline()))
+        int(__getValue__(fOpen.readline()))
+        int(__getValue__(fOpen.readline()))
+        float(__getValue__(fOpen.readline()))
+
+    except OSError:
+        retorno = fos_error
+    except ValueError:
+        retorno = fva_Error
+    except IOError:
+        retorno = fio_error
+    except:
+        retorno = fuk_error
+    finally:
+        fOpen.close()
+
+    return retorno
 
 
 def procesarArchivo(listFile, proyecto):

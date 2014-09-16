@@ -215,7 +215,31 @@ msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE_ALL"
 msgstr "Eliminar todos los archivos"
 
 msgid "ADD_FILE_DIALOG_TEXT_COLUMN_CHECK"
-msgstr "Válido"
+msgstr "Estado"
+
+msgid "ADD_FILE_DIALOG_TEXT_COLUMN_ERROR"
+msgstr "Descripción del Estado"
+
+msgid "ADD_FILE_DIALOG_ERROR_NONE"
+msgstr "Correcto"
+
+msgid "ADD_FILE_DIALOG_ERROR_DUPLICATE_NAME_GRID"
+msgstr "Error, nombre de archivo duplicado en la lista"
+
+msgid "ADD_FILE_DIALOG_ERROR_DUPLICATE_NAME_PROJECT"
+msgstr "Error, nombre de archivo duplicado en el proyecto"
+
+msgid "ADD_FILE_DIALOG_ERROR_RELATING_SYSTEM"
+msgstr "Error, relacionado con el sistema operativo"
+
+msgid "ADD_FILE_DIALOG_ERROR_FILE_FORMAT"
+msgstr "Error, el formato del contenido del archivo es incorrecto"
+
+msgid "ADD_FILE_DIALOG_ERROR_OPEN_FILE"
+msgstr "Error, no se pudo abrir el archivo"
+
+msgid "ADD_FILE_DIALOG_ERROR_UNEXPECTED_ERROR"
+msgstr "Error inesperado"
 
 # ------------------------------- ProjectMenu ---------------------------------
 msgid "PROJECT_MENU_NEW"
