@@ -127,6 +127,9 @@ msgstr "La cantidad de caracteres '100' para el nombre de proyecto es superado"
 msgid "NEW_PROJECT_DIALOG_HIDE_PROJECT_ALREADY_EXIST"
 msgstr "Ya existe el Proyecto, pero esta 'oculto'"
 
+msgid "NEW_PROJECT_DIALOG_FILE_ERROR_IN_PROJECT"
+msgstr "Error en archivos del proyecto"
+
 # ------------------------------- RenameProjectDialog -------------------------
 msgid "RENAME_PROJECT_DIALOG_RENAME"
 msgstr "Renombrar"

@@ -5,9 +5,13 @@ Created on 28/05/2014
 @author: aferreira
 '''
 
+import os
 import wx
 import sys
 from wx.lib.mixins.listctrl import CheckListCtrlMixin, ListCtrlAutoWidthMixin
+import wx.lib.scrolledpanel as scrolled
+from py.una.pol.tava.base.tavac import wildcard
+import wx.dataview as dv
 from wx import GetTranslation as _
 from py.una.pol.tava.presenter.pproject import NewProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import RenameProjectDialogPresenter
@@ -16,6 +20,9 @@ from py.una.pol.tava.presenter.pproject import UnHideProjectDialogPresenter
 from py.una.pol.tava.presenter.pproject import CheckListCtrlPresenter
 import py.una.pol.tava.view.vi18n as C
 import py.una.pol.tava.view.vimages as I
+from py.una.pol.tava.base.tavac import style_list as styleNameList
+from py.una.pol.tava.base.tavac import correct, nid_error, fos_error, fva_Error
+from py.una.pol.tava.base.tavac import fio_error, fuk_error
 
 
 class NewProjectDialog(wx.Dialog):
@@ -24,198 +31,263 @@ class NewProjectDialog(wx.Dialog):
     '''
 
     def __init__(self, parent):
-        super(NewProjectDialog, self).__init__(parent, size=(600, 250))
+        super(NewProjectDialog, self).__init__(parent, size=(600, 630))
 
-        # Definicion del presenter de la clase
+        #------ Definiciones iniciales ----------------------------------------
         self.presenter = NewProjectDialogPresenter(self)
-
-        # Inicializacion de los componentes de la clase
         self.InitUI()
 
         self.Centre()
         self.ShowModal()
+        #----------------------------------------------------
 
     def InitUI(self):
         '''
         Metodo de inicializacion de componentes de la clase
         '''
 
-        # Definicion del panel contenedor principal
+        #------ variables principales -----------------------------------------
         panel = wx.Panel(self)
+        sizer = wx.GridBagSizer(6, 5)
+        #----------------------------------------------------
 
-        # Definicion del sizer principal de la clase
-        sizer = wx.GridBagSizer(5, 5)
-
-        # Titulo de Proyecto Tava
-        # Fuente para el titulo
+        #------ Titulo de Proyecto Tava ---------------------------------------
         font_title = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font_title.SetWeight(wx.BOLD)
         font_title.SetPointSize(14)
-
-        # Definicion del componente texto para el titulo
         title_text = wx.StaticText(panel, label=_(C.NPD_TP))
         title_text.SetFont(font_title)
 
-        # Asociamos el titulo al sizer de la clase
-        sizer.Add(title_text, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
-
-        # Icono de ejecucion
         exec_bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
 
-        # Asociamos el icono de ejecucion al sizer
+        sizer.Add(title_text, pos=(0, 0), flag=wx.TOP | wx.LEFT, border=15)
         sizer.Add(exec_bmp, pos=(0, 4),
                      flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
+        #----------------------------------------------------
 
-        # Texto Descriptivo que cambia
-        # Sizer horizontal para el componente texto para las descripciones
+        #------ Texto Descriptivo que cambia ----------------------------------
         hbox_description = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Definicion de la fuente para el texto de descripcion
         font_description = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font_description.SetPointSize(9)
-
-        # Definicion del componente texto para las descripciones
         self.description_text = wx.StaticText(panel)
         self.description_text.SetFont(font_description)
 
-        # Definicion del icono de ejecucion
         self.execute_bmp = wx.StaticBitmap(panel)
 
-        # Asociamos el icono con el sizer de las descripciones
         hbox_description.Add(self.execute_bmp, flag=wx.LEFT, border=2)
-
-        # Asociamos el texto con el sizer de las descripciones
         hbox_description.Add(self.description_text, flag=wx.LEFT, border=2)
 
-        # Agregamos el sizer de descripciones al sizer principal de la clase
         sizer.Add(hbox_description, pos=(1, 0), span=(1, 3), flag=wx.TOP |
                             wx.LEFT | wx.BOTTOM, border=15)
+        #----------------------------------------------------
 
-        # Componente Linea estatica
         line = wx.StaticLine(panel)
-
-        # Asociamos la linea con el sizer principal de la clase
         sizer.Add(line, pos=(2, 0), span=(1, 5),
             flag=wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border=15)
 
-        # Definicion del componente texto estático para nombre de proyecto
+        #------ Texto para nombre de proyecto ---------------------------------
         name_project_text = wx.StaticText(panel, label=_(C.NPD_NAP))
 
-        # Asociamos el texto con el sizer principal de la clase
         sizer.Add(name_project_text, pos=(3, 0),
                      flag=wx.LEFT | wx.EXPAND | wx.RIGHT, border=15)
 
-        # Definicion del TextCtrl para el nombre de proyecto
         self.name_project_textctrl = wx.TextCtrl(panel)
-
-        # Enlazamos la gestion de los eventos lanzados por teclado al
-        # componente textCtrl
         self.name_project_textctrl.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-
-        # Establecemos el foco para el textCtrl
         self.name_project_textctrl.SetFocus()
 
-        # Asociamos el textCtrl con el sizer principal de la clase
         sizer.Add(self.name_project_textctrl, pos=(3, 1), span=(1, 4),
                      flag=wx.EXPAND | wx.RIGHT, border=15)
+        #----------------------------------------------------
 
-        # Definicion del Boton Ayuda
+        #------ Agregacion de archivo  (x, y)----------------------------------
+        sb = wx.StaticBox(panel, label=_(C.AFD_STLH))
+        boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
+
+        # boton para busqueda
+        self.browse = wx.Button(panel, -1, _(C.AFD_BB))
+        self.Bind(wx.EVT_BUTTON, self.OnButtonBrowse, self.browse)
+
+        #grilla de archivos
+        self.scrolled_panel = scrolled.ScrolledPanel(panel, -1,
+                    size=(400, 200), style=wx.TAB_TRAVERSAL | wx.SUNKEN_BORDER)
+        l_sizer = wx.BoxSizer()
+        self.dvlc = dv.DataViewListCtrl(self.scrolled_panel)
+        self.dvlc.AppendBitmapColumn(_(C.AFD_TCC), 0, width=60)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCN), width=250)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCD), width=150)
+        self.dvlc.AppendTextColumn(_(C.AFD_TCE), width=400)
+        self.dvlc.Bind(dv.EVT_DATAVIEW_ITEM_CONTEXT_MENU, self.OnRightClick)
+        l_sizer.Add(self.dvlc, 1, wx.EXPAND)
+        self.scrolled_panel.SetSizer(l_sizer)
+        self.scrolled_panel.SetAutoLayout(1)
+        self.scrolled_panel.SetupScrolling()
+
+        #obciones de estilos
+        s_sizer = wx.BoxSizer()
+        dimension = len(styleNameList)
+        self.rb = wx.RadioBox(
+                panel, -1, _(C.AFD_RBT), wx.DefaultPosition, (580, 50),
+                styleNameList, dimension, wx.RA_SPECIFY_COLS)
+        self.rb.Bind(wx.EVT_RADIOBOX, self.OnSelectStyle)
+        s_sizer.Add(self.rb, 1, wx.EXPAND)
+
+        #Se agregan al boxsizer
+        boxsizer.Add(self.browse, flag=wx.ALIGN_LEFT | wx.TOP | wx.BOTTOM,
+                     border=10)
+        boxsizer.Add(self.scrolled_panel, flag=wx.EXPAND | wx.LEFT | wx.RIGHT,
+                     border=10)
+        boxsizer.Add(s_sizer, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=10)
+
+        #Se agregan al bugsizer
+        sizer.Add(boxsizer, pos=(5, 0), span=(1, 5),
+                  flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+        #----------------------------------------------------
+
+        #------ Buttons -------------------------------------------------------
         self.help_button = wx.Button(panel, label=_(C.NPD_HELP))
 
-        # Asociamos el boton ayuda con el sizer principal de la clase
-        sizer.Add(self.help_button, pos=(5, 0), flag=wx.LEFT, border=15)
-
-        # Definicion del Boton Cancelar
+        bsizer = wx.BoxSizer()
         cancel_button = wx.Button(panel, label=_(C.NPD_CAN))
-
-        # Enlazamos el evento de boton al metodo OnCancel
-        cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
-
-        # Asociamos el boton ayuda con el sizer principal de la clase
-        sizer.Add(cancel_button, pos=(5, 3),
-                     flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
-
-        # Definicion del Boton OK
         self.ok_button = wx.Button(panel, label=_(C.NPD_OK))
+        bsizer.Add(cancel_button, flag=wx.ALIGN_RIGHT | wx.RIGHT, border=15)
+        bsizer.Add(self.ok_button, flag=wx.ALIGN_RIGHT)
 
-        # Enlazamos el evento de boton al metodo OnCreateProject
+        cancel_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         self.ok_button.Bind(wx.EVT_BUTTON, self.OnCreateProject)
 
-        # Desabilitamos el boton ok
-        self.ok_button.Disable()
+        sizer.Add(self.help_button, pos=(7, 0), flag=wx.LEFT, border=15)
+        sizer.Add(bsizer, pos=(7, 3), span=(3, 4),
+                  flag=wx.ALIGN_RIGHT | wx.RIGHT, border=95)
 
-        # Asociamos el boton ok con el sizer principal de la clase
-        sizer.Add(self.ok_button, pos=(5, 4),
-                     flag=wx.ALIGN_RIGHT | wx.LEFT | wx.RIGHT, border=15)
+        #----------------------------------------------------
 
-        # Manejo de evento cuando se oprima la tecla Esc
-        panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
-
-        # Configuracion del sizer principal
+        #------ configuraciones Globales --------------------------------------
         sizer.AddGrowableCol(2)
-
-        # Asociamos el sizer al panel principal
         panel.SetSizer(sizer)
+        #----------------------------------------------------
 
-        # Invocamos al metodo de configuracion inicial de label
-        self.ConfigEnableLabel()
+        #------ valores iniciales ---------------------------------------------
+        self.UpDateHiderLabel(0)
+        self.presenter.disablesButtonsProject()
+        #----------------------------------------------------
 
-    def OnKeyUp(self, e):
-        if(self.presenter.IsValidName(self.name_project_textctrl.Value)):
-            if wx.WXK_RETURN == e.GetKeyCode():
-                self.presenter.CreateProject(self.name_project_textctrl.Value)
+    def UpDateHiderLabel(self, key):
 
-    def ConfigEnableLabel(self):
-        self.description_text.SetLabel(_(C.NPD_ENP))
-        self.execute_bmp.SetBitmap(I.execute_png)
-        self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
+        if key == 0:
+            self.description_text.SetLabel(_(C.NPD_ENP))
+            self.IconAndBackgroundDefault()
+            return None
 
-    def ConfigEmptyNameProject(self):
-        self.description_text.SetLabel(_(C.NPD_PNE))
+        if key == 1:
+            self.description_text.SetLabel(_(C.NPD_PNE))
+            self.IconAndBackgroundWarning()
+            return None
+
+        self.IconAndBackgroundError()
+
+        if key == 2:
+            self.description_text.SetLabel(_(C.NPD_PNSI))
+            return None
+
+        if key == 3:
+            self.description_text.SetLabel(_(C.NPD_PNPI))
+            return None
+
+        if key == 4:
+            self.description_text.SetLabel(_(C.NPD_PNLI))
+            return None
+
+        if key == 5:
+            self.description_text.SetLabel(_(C.NPD_PAE))
+            return None
+
+        if key == 6:
+            self.description_text.SetLabel(_(C.NPD_HPAE))
+            return None
+
+        if key == 7:
+            self.description_text.SetLabel(_(C.NPD_FEIP))
+            self.IconAndBackgroundErrorFile()
+            return None
+
+    def IconAndBackgroundError(self):
+        self.execute_bmp.SetBitmap(I.errornewproject_png)
+        self.name_project_textctrl.SetBackgroundColour((237, 93, 93))
+
+    def IconAndBackgroundWarning(self):
         self.execute_bmp.SetBitmap(I.warningnewproject_png)
         self.name_project_textctrl.SetBackgroundColour('#F9EDED')
 
-    def ConfigNameProjectWithSlash(self):
-        self.description_text.SetLabel(_(C.NPD_PNSI))
-        self.IconError()
-        self.SetNameErrorBackground()
+    def IconAndBackgroundDefault(self):
+        self.execute_bmp.SetBitmap(I.execute_png)
+        self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
 
-    def ConfigNameProjectStartWithPoint(self):
-        self.description_text.SetLabel(_(C.NPD_PNPI))
-        self.IconError()
-        self.SetNameErrorBackground()
+    def IconAndBackgroundErrorFile(self):
+        self.execute_bmp.SetBitmap(I.errornewproject_png)
+        self.name_project_textctrl.SetBackgroundColour((255, 255, 255))
 
-    def ConfigNameProjectInvalidLength(self):
-        self.description_text.SetLabel(_(C.NPD_PNLI))
-        self.IconError()
-        self.SetNameErrorBackground()
-
-    def ConfigExistingProject(self):
-        self.description_text.SetLabel(_(C.NPD_PAE))
-        self.IconError()
-        self.SetNameErrorBackground()
-
-    def ConfigExistingHideProject(self):
-        self.description_text.SetLabel(_(C.NPD_HPAE))
-        self.IconError()
-        self.SetNameErrorBackground()
+    def OnKeyUp(self, e):
+        self.presenter.keyboardEvents(e.GetKeyCode())
 
     def OnCreateProject(self, e):
-        self.presenter.CreateProject(self.name_project_textctrl.Value)
-
-    def IconError(self):
-        self.execute_bmp.SetBitmap(I.errornewproject_png)
-
-    def SetNameErrorBackground(self):
-        self.name_project_textctrl.SetBackgroundColour((237, 93, 93))
+        self.presenter.tryToCreate()
 
     def OnCancel(self, e):
-        self.Close(True)
+        self.presenter.ExitDialog()
 
-    def OnKeyDown(self, e):
-        key = e.GetKeyCode()
-        if key == wx.WXK_ESCAPE:
-            self.Close()
+    #--Funciones para agregar archivos ----------------------------------------
+    def OnButtonBrowse(self, evt):
+
+        self.dlg = wx.FileDialog(self, message=_(C.AFD_FDM),
+            defaultDir=os.getcwd(), defaultFile="", wildcard=wildcard,
+            style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
+
+        if self.dlg.ShowModal() == wx.ID_OK:
+            self.presenter.udDateGridFile(self.dlg.GetPaths())
+
+        self.dlg.Destroy()
+
+    def getLabelError(self, error):
+        if error == correct:
+            return _(C.AFD_EN)
+        elif error == nid_error:
+            return _(C.AFD_EDNG)
+        elif error == fos_error:
+            return _(C.AFD_ERS)
+        elif error == fva_Error:
+            return _(C.AFD_EFF)
+        elif error == fio_error:
+            return _(C.AFD_EOF)
+        elif error == fuk_error:
+            return _(C.AFD_EUE)
+
+    def OnRightClick(self, event):
+        if self.presenter.isAnyRowSelected():
+            if not hasattr(self, "popupID1"):
+                self.popupID1 = wx.NewId()
+                self.popupID2 = wx.NewId()
+
+                self.Bind(wx.EVT_MENU, self.OnDeletedOneFile, id=self.popupID1)
+                self.Bind(wx.EVT_MENU, self.OnDeletedAllFile, id=self.popupID2)
+
+            menu = wx.Menu()
+            menu.Append(self.popupID1, _(C.AFD_FDMD))
+            menu.Append(self.popupID2, _(C.AFD_FDMDA))
+
+            self.PopupMenu(menu)
+            menu.Destroy()
+
+    def OnDeletedOneFile(self, event):
+        self.presenter.deletedOneFile()
+
+    def OnDeletedAllFile(self, event):
+        self.presenter.deletedAllFile()
+
+    def OnSelectStyle(self, event):
+        self.presenter.checkStyle()
+
+    #----------------------------------------------------
 
 
 class RenameProjectDialog(wx.Dialog):

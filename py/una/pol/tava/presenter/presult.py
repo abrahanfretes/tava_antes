@@ -43,7 +43,7 @@ class AddFileDialogPresenter():
             self.countItem += 1
 
     def IsValidFile(self, path, name):
-        if  self.name_in_datetable(name):
+        if  self.nameInDatetable(name):
             return nid_error
         if name in self.existing_names:
             return nip_error
@@ -52,7 +52,7 @@ class AddFileDialogPresenter():
             return file_valid
         return correct
 
-    def name_in_datetable(self, name):
+    def nameInDatetable(self, name):
 
         for row in range(self.countItem):
             if self.iview.dvlc.GetTextValue(row, 1) == name:
