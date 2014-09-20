@@ -156,6 +156,9 @@ class NewProjectDialogPresenter():
             self.iview.ok_button.Disable()
             self.iview.UpDateHiderLabel(7)
 
+        self.setStateComponentsStyle()
+
+    def setStateComponentsStyle(self):
         if self.countItem == 0:
             self.disableStyles()
         else:

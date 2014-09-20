@@ -16,31 +16,56 @@ class AddFileDialogPresenter():
     def __init__(self, iview):
         self.iview = iview
         self.countItem = 0
-        self.listNamesError = []
         self.existing_names = self.GetNamesResultInProject()
 
-    def addListPath(self):
+    def udDateGridFile(self, list_path):
+        self.addListPath(list_path)
+        self.setStateComponetsFile()
 
-        self.EnableAllRadioButthon()
-        self.iview.o_button.Enable(True)
+    def addListPath(self, list_path):
 
-        for path in self.iview.dlg.GetPaths():
+        for path in list_path:
+
             path_file, name_file = os.path.split(path)
-
             valid = self.IsValidFile(path_file, name_file)
             if valid != correct:
-                self.listNamesError.append(name_file)
-                icon = I.errornewproject_png
-                error = self.iview.getLabelError(valid)
-                self.DisableAllRadioButthon()
-                self.iview.o_button.Enable(False)
-            else:
-                icon = I.ok_png
-                error = self.iview.getLabelError(correct)
+                icon, label_error = self.getIconAndLabelFileError(valid)
 
-            row = [icon, name_file, path_file, error]
+            else:
+                icon, label_error = self.getIconAndLabelFileCorrect(correct)
+
+            row = [icon, name_file, path_file, label_error]
             self.iview.dvlc.AppendItem(row)
             self.countItem += 1
+
+    def getIconAndLabelFileError(self, key_error):
+        return  I.errornewproject_png, self.iview.getLabelError(key_error)
+
+    def getIconAndLabelFileCorrect(self, key_correct):
+        return  I.ok_png, self.iview.getLabelError(key_correct)
+
+    def setStateComponetsFile(self):
+        if self.isValidAllFiles():
+            self.iview.o_button.Enable()
+            self.iview.UpDateHiderLabel(0)
+            if self.isEmptyGrip():
+                self.iview.o_button.Disable()
+        else:
+            self.iview.o_button.Disable()
+            self.iview.UpDateHiderLabel(1)
+
+        self.setStateComponentsStyle()
+
+    def isEmptyGrip(self):
+        if self.countItem == 0:
+            return True
+        return False
+
+    def setStateComponentsStyle(self):
+        if self.isEmptyGrip():
+            self.disableStyles()
+        else:
+            self.enableStyles()
 
     def IsValidFile(self, path, name):
         if  self.nameInDatetable(name):
@@ -51,6 +76,13 @@ class AddFileDialogPresenter():
         if file_valid != 0:
             return file_valid
         return correct
+
+    def isValidAllFiles(self):
+        not_error = self.iview.getLabelError(correct)
+        for row in range(self.countItem):
+            if self.iview.dvlc.GetTextValue(row, 3) != not_error:
+                return False
+        return  True
 
     def nameInDatetable(self, name):
 
@@ -63,43 +95,35 @@ class AddFileDialogPresenter():
         row = self.iview.dvlc.GetSelectedRow()
         self.iview.dvlc.DeleteItem(row)
         self.countItem -= 1
-
-        if self.isConsistente():
-            self.iview.o_button.Enable(True)
-            self.EnableAllRadioButthon()
-        else:
-            self.iview.o_button.Enable(False)
-            self.DisableAllRadioButthon()
-
-    def DisableAllRadioButthon(self):
-        for r in range(self.iview.rb.GetCount()):
-            self.iview.rb.EnableItem(r, False)
-
-    def EnableAllRadioButthon(self):
-        for r in range(self.iview.rb.GetCount()):
-            self.iview.rb.EnableItem(r, True)
+        self.setStateComponetsFile()
 
     def deletedAllFile(self):
         self.iview.dvlc.DeleteAllItems()
         self.countItem = 0
-        self.listNamesError = []
-        self.iview.o_button.Enable(False)
-        self.DisableAllRadioButthon()
-        #self.iview.rb.EnableItem(0, False)
+        self.setStateComponetsFile()
 
-    def isConsistente(self):
-        if self.countItem == 0:
-            return False
-        not_error = self.iview.getLabelError(correct)
+    def checkStyle(self):
+        list_path = self.getListPath()
+        self.deletedAllFile()
+        self.udDateGridFile(list_path)
+
+    def getListPath(self):
+        list_path = []
         for row in range(self.countItem):
-            if self.iview.dvlc.GetTextValue(row, 3) != not_error:
-                return False
-        return  True
+            name = self.iview.dvlc.GetTextValue(row, 1)
+            path = self.iview.dvlc.GetTextValue(row, 2)
+            fpath = os.path.join(path, name)
+            list_path.append(fpath)
 
-    def getPath(self, row):
+        return list_path
 
-        return os.path.join(self.iview.dvlc.GetTextValue(row, 2),
-            self.iview.dvlc.GetTextValue(row, 1))
+    def enableStyles(self):
+        for i in range(self.iview.rb.GetCount()):
+            self.iview.rb.EnableItem(i, True)
+
+    def disableStyles(self):
+        for i in range(self.iview.rb.GetCount()):
+            self.iview.rb.EnableItem(i, False)
 
     def isAnyRowSelected(self):
         for row in range(self.countItem):
@@ -131,4 +155,8 @@ class AddFileDialogPresenter():
         pub.sendMessage(T.ADDEDFILE_PROJECT, list_names)
         self.Close()
 
+    def getPath(self, row):
+
+        return os.path.join(self.iview.dvlc.GetTextValue(row, 2),
+            self.iview.dvlc.GetTextValue(row, 1))
     #-----------------------------------------------------------------
