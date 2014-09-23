@@ -21,7 +21,7 @@ class ResultModel(object):
     def add(self, list_path_file, project, style):
 
         if style == vonlucken:
-            styleVon.procesarArchivo(list_path_file, project)
+            return styleVon.procesarArchivo(list_path_file, project)
 
         # aca se debe agregar las funciones para otros estilos
         #if style == otro:

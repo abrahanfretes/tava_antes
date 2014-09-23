@@ -16,10 +16,24 @@ class ProjectMenuPresenter:
         pub.sendMessage(T.PROJECT_ADDFILE, project)
 
     def OpenProject(self):
-        pub.sendMessage(T.PROJECT_OPEN)
+        pub.sendMessage(T.PROJECT_STATE_UPDATE, 0)
 
     def CloseProject(self):
-        pub.sendMessage(T.PROJECT_CLOSE)
+        pub.sendMessage(T.PROJECT_STATE_UPDATE, 1)
+
+    def HideProject(self):
+        pub.sendMessage(T.PROJECT_STATE_UPDATE, 2)
+
+#==============================================================================
+#     def OpenProject(self):
+#         pub.sendMessage(T.PROJECT_OPEN, 0)
+#
+#     def CloseProject(self):
+#         pub.sendMessage(T.PROJECT_CLOSE, 1)
+#
+#     def HideProject(self):
+#         pub.sendMessage(T.PROJECT_HIDE, 2)
+#==============================================================================
 
     def DeleteProject(self):
         pub.sendMessage(T.PROJECT_DELETE_CLICK)
@@ -29,9 +43,6 @@ class ProjectMenuPresenter:
 
     def ShowProperties(self):
         pub.sendMessage(T.PROJECT_PROPERTIES)
-
-    def HideProject(self):
-        pub.sendMessage(T.PROJECT_HIDE)
 
     def InitialEnableItem(self):
         # Si el estado del proyecto es Abierto, se desabilitan las sgtes

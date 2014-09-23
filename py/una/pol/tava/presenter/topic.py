@@ -8,13 +8,10 @@ Created on 04/08/2014
 # Subscribe = pframe
 BAR_PROJECT_NEW = 'BAR.PROJECT.NEW'
 
-# Send = ptoolbar, pprojectmenu
-# Subscribe = ptoolbar, ptree
-PROJECT_CLOSE = 'PROJECT.CLOSE'
 
 # Send = ptoolbar, pprojectmenu
 # Subscribe = ptoolbar, ptree
-PROJECT_OPEN = 'PROJECT.OPEN'
+PROJECT_STATE_UPDATE = 'PROJECT.STATEUPDATE'
 
 # Send = ptoolbar, pprojectmenu
 # Subscribe = ptree
@@ -74,10 +71,6 @@ SPANISH_SELECTED = 'SPANISH.SELECTED'
 # Send = pframe
 # Subscribe = pmenu
 LANGUAGE_CHANGED = 'LANGUAGE.CHANGED'
-
-# Send = ptoolbar, pprojectmenu
-# Subscribe = ptree
-PROJECT_HIDE = 'PROJECT.HIDE'
 
 # Send = ptoolbar
 # Subscribe = pframe

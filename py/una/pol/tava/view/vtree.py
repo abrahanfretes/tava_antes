@@ -65,7 +65,6 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetItemImage(project_item, 0, wx.TreeItemIcon_Normal)
         self.SetItemImage(project_item, 1, wx.TreeItemIcon_Expanded)
 
-        self.SortChildren(self.root)
         return project_item
 
     def AddProjectCloseNode(self, project):
@@ -74,12 +73,22 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetItemImage(project_item, 2, wx.TreeItemIcon_Normal)
         self.SetItemTextColour(project_item, '#BFBFBF')
 
-        self.SortChildren(self.root)
         return project_item
 
-    # Se reesscribe este metodo
+    # Se reesscribe este metodo para el SortChildren
     def OnCompareItems(self, item1, item2):
-        return cmp(item1.GetData().state, item2.GetData().state)
+        #si se ordenan proyectos
+        #Se concatena el estado y el nombre del proyecto para tener encuenta
+        #los dos atributos en la comparacion
+        if self.GetItemParent(item1) == self.root:
+            itemc1 = str(item1.GetData().state) + item1.GetData().name
+            itemc2 = str(item2.GetData().state) + item2.GetData().name
+        #si se ordenan Archivos
+        else:
+            itemc1 = item1.GetData().name
+            itemc2 = item2.GetData().name
+
+        return cmp(itemc1, itemc2)
 
     def OnTreeContextMenu(self, event):
         self.presenter.ContexMenu()
@@ -104,15 +113,10 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = AnalysisMenu(self, date_item)
         self.PopupMenu(menu)
 
-    def DeleteProjectItem(self, item):
-        self.Delete(item)
-
     def AddResultAProject(self, package_item, result):
         result_item = self.AppendItem(package_item, result.name)
         self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
         self.SetItemPyData(result_item, result)
-
-        #self.SortChildren(package_item)
 
     def AddPackageResult(self, project_item):
         package_result_item = self.AppendItem(project_item, 'Resultados')

@@ -146,13 +146,13 @@ class AddFileDialogPresenter():
     def AddFile(self):
         list_path = []
         list_names = []
+        style = self.iview.rb.GetSelection()
         for i in range(self.countItem):
             path = self.getPath(i)
             list_path.append(path)
             list_names.append(os.path.basename(path))
-
-        rm().add(list_path, self.iview.project, self.iview.rb.GetSelection())
-        pub.sendMessage(T.ADDEDFILE_PROJECT, list_names)
+        project = rm().add(list_path, self.iview.project, style)
+        pub.sendMessage(T.ADDEDFILE_PROJECT, project)
         self.Close()
 
     def getPath(self, row):

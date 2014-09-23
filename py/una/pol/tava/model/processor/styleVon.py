@@ -9,7 +9,6 @@ from datetime import date
 from py.una.pol.tava.base.tavac import correct, fos_error, fva_Error
 from py.una.pol.tava.base.tavac import fio_error, fuk_error
 import os
-import sys
 
 
 def __getValue__(string):
@@ -151,3 +150,4 @@ def procesarArchivo(listFile, proyecto):
             diteration.add(iteracion)
 
         fOpen.close()
+    return proyecto

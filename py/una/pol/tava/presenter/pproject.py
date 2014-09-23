@@ -275,7 +275,7 @@ class RenameProjectDialogPresenter():
 
         #correct name
         self.iview.ok_button.Enable()
-        self.iview.UpDateHiderLabel(0)
+        self.iview.ConfigEnableLabel()
         return True
 
     def UpdateName(self, new_name):
