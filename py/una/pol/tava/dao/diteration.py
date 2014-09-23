@@ -7,7 +7,6 @@ Created on 26/07/2014
 from py.una.pol.tava.base import base, abm
 from py.una.pol.tava.base.entity import Iteration
 from sqlalchemy.orm import subqueryload
-
 session = base.getSession()
 
 
@@ -31,9 +30,9 @@ def getIterationsByResult(result):
                         filter_by(id=result.id).all()
 
 
-def getIterationsByIdResult(id_result):
+def getIterationsByResultId(result_id):
     return session.query(Iteration).order_by(Iteration.id).\
-                        filter_by(id=id_result).all()
+                        filter_by(result_id=result_id).all()
 
 
 def getIterationById(id_iteration):

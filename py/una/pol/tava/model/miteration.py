@@ -4,6 +4,7 @@ Created on 04/07/2014
 @author: abrahan
 '''
 from py.una.pol.tava.dao import diteration
+from py.una.pol.tava.model.mresult import ResultModel as rm
 
 
 class InterationModel(object):
@@ -27,3 +28,16 @@ class InterationModel(object):
 
     def getIterationWithIndividual(self, id_iteration):
         return diteration.getIterationWithIndividual(id_iteration)
+
+    def getIterationsByResult(self, result):
+        return self.getIterationsByResultId(result.id)
+
+    def getIterationsByResultId(self, result_id):
+        return diteration.getIterationsByResultId(result_id)
+
+    def getIterationsByProjectAndFileName(self, project, file_name):
+        return self.getIterationsByProjectIdAndFileName(project.id, file_name)
+
+    def getIterationsByProjectIdAndFileName(self, project_id, file_name):
+        result = rm().getResultByProjectIdAndFileName(project_id, file_name)
+        return self.getIterationsByResultId(result.id)

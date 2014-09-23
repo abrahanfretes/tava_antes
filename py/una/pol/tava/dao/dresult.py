@@ -7,7 +7,7 @@ Created on 26/07/2014
 from py.una.pol.tava.base import base, abm
 from py.una.pol.tava.base.entity import Result
 from sqlalchemy.orm import subqueryload
-
+from sqlalchemy import and_
 session = base.getSession()
 
 
@@ -49,8 +49,8 @@ def getAllResult():
     return session.query(Result).order_by(Result.name).all()
 
 
-def getResultsByProject(project):
-    return session.query(Result).filter_by(project_id=project.id).all()
+def getResultsByProject(project_id):
+    return session.query(Result).filter_by(project_id=project_id).all()
 
 
 def getResultById(id_result):
@@ -69,3 +69,8 @@ def getResultWithIterations(result):
 
 def getNamesResultForProject(project):
     return session.query(Result.name).filter_by(project_id=project.id).all()
+
+
+def getResultByProjectIdAndFileName(project_id, reult_name):
+    return session.query(Result).filter(and_(Result.project_id == project_id,
+                                        Result.name == reult_name)).first()

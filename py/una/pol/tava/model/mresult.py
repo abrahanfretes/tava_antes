@@ -35,7 +35,10 @@ class ResultModel(object):
         dresult.delete(result)
 
     def getResultsByProject(self, project):
-        return dresult.getResultsByProject(project)
+        return self.getResultsByProjectId(project.id)
+
+    def getResultsByProjectId(self, project_id):
+        return dresult.getResultsByProject(project_id)
 
     def getResultById(self, id_result):
         return dresult.getResultById(id_result)
@@ -49,3 +52,9 @@ class ResultModel(object):
             listNames.append(list(name).pop())
 
         return listNames
+
+    def getResultByProjectAndFileName(self, project, reult_name):
+        return self.getResultByProjectIdAndFileName(project.id, reult_name)
+
+    def getResultByProjectIdAndFileName(self, project_id, reult_name):
+        return dresult.getResultByProjectIdAndFileName(project_id, reult_name)
