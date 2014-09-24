@@ -45,6 +45,10 @@ class Project(Base):
                               cascade="save-update, merge, delete",
                               order_by='Result.id', backref='project')
 
+    test_config = relationship('TestConfig',
+                              cascade="save-update, merge, delete",
+                              order_by='TestConfig.id', backref='project')
+
     def __init__(self, name, blog, state, date):
 
         self.name = name
@@ -159,6 +163,64 @@ class Individual(Base):
         return "<Individual(identifier: '%s', objectives: '%s', variables: \
         '%s', varDTLZ: '%f')>" % (self.identifier, self.objectives,
                                   self.variables, self.varDTLZ)
+
+
+class TestConfig(Base):
+    ''''''
+
+    __tablename__ = 'test_config'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name = Column(String(100), nullable=False, unique=True)
+    description = Column(Text(2000), nullable=True)
+    creation_date = Column(Date(), nullable=False)
+    project_id = Column(Integer, ForeignKey('project.id'))
+
+    test_data = relationship('TestData',
+                              cascade="save-update, merge, delete",
+                              order_by='TestData.id',
+                              backref='test_config')
+
+    test_graphic = relationship('TestGraphic',
+                              cascade="save-update, merge, delete",
+                              order_by='TestGraphic.id',
+                              backref='test_config')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestConfig(name='%s', description='%s', creation_date='%s')>"\
+     % (self.name, self.description, self.creation_date)
+
+
+class TestData(Base):
+    ''''''
+
+    __tablename__ = 'test_data'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name_result = Column(String(100))
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    iteration_id = Column(Integer, ForeignKey('iteration.id'))
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestData(name_result='%s')>" % (self.name_result)
+
+
+class TestGraphic(Base):
+    ''''''
+
+    __tablename__ = 'test_graphic'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestGraphic()>"
 
 
 def createDB():
