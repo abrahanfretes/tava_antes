@@ -5,14 +5,14 @@ Created on 27/06/2014
 @author: aferreira
 '''
 import wx
-from py.una.pol.tava.base import base
+from py.una.pol.tava.base.entity import createDB
 
 
 def main():
     '''
     Método principal de ejecución del programa---
     '''
-    base.createDb()
+    createDB()
     ex = wx.App()
     from py.una.pol.tava.view.vframe import MainFrame
     frame = MainFrame(None)
