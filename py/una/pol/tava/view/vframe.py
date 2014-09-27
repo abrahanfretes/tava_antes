@@ -17,6 +17,7 @@ from py.una.pol.tava.view.vproject import DeleteProjectDialog
 from py.una.pol.tava.view.vproject import PropertiesProjectDialog
 from py.una.pol.tava.view.vproject import UnHideProjectDialog
 from py.una.pol.tava.view.vresult import AddFileDialog
+from py.una.pol.tava.view.vtest import GraphicWizard
 from py.una.pol.tava.presenter.pframe import FramePresenter
 from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
@@ -101,6 +102,9 @@ class MainFrame(wx.Frame):
 
     def ShowAddFileInProjectDialog(self, project):
         AddFileDialog(self, project)
+
+    def ShowGraphicWizard(self, project):
+        GraphicWizard(project)
 
     def OnApplicationExit(self, e):
 

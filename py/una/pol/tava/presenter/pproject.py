@@ -315,7 +315,7 @@ class UnHideProjectDialogPresenter():
 
     def GetHideProjects(self):
         hidden = pro().getHideProject()
-        print hidden
+#         print hidden
         if [] == hidden:
             self.iview.IsEmptyList()
             return

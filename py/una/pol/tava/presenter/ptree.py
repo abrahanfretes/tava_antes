@@ -6,7 +6,7 @@ Created on 28/07/2014
 from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.model.mresult import ResultModel
-from py.una.pol.tava.base.entity import OPEN, HIDDEN
+from py.una.pol.tava.base.entity import OPEN, CLOSED, HIDDEN, Project
 import topic as T
 
 
@@ -128,10 +128,17 @@ class ProjectTreeCtrlPresenter:
     #------ funciones encargadas de verificar el tipo de item seleccionado ----
 
     def GetTypeSelectedItem(self):
+        
         item, data = self.getItemEndDataSelected()
+        item_parent = self.iview.GetItemParent(item)
+        if item_parent is not None:
+            item_parent_py_data = self.iview.GetItemPyData(item_parent)
+
+            if isinstance(item_parent_py_data, Project):
+                pub.sendMessage(T.PROJECT_SELECTED, item_parent_py_data)
+
         if data is not None:
             parent_item = self.iview.GetItemParent(item)
-
             if(parent_item == self.iview.root):
                 #verificar luego si esta correcto
                 pub.sendMessage(T.PROJECT_SELECTED, self.GetProjectSelected())

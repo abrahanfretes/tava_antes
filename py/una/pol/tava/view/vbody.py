@@ -153,15 +153,15 @@ class AUINotebook(aui.AuiNotebook):
         # Establecemos el estilo similar al navegador Chrome
         self.SetArtProvider(aui.ChromeTabArt())
 
-        # Se agregan algunas paginas al Notebook
-        pages = [ParallelPanel, TabPanel]
-
-        pageCtr = 1
-        for page in pages:
-            label = "Tab #%i" % pageCtr
-            tab = page(self)
-            self.AddPage(tab, label, False)
-            pageCtr += 1
+#         # Se agregan algunas paginas al Notebook
+#         pages = [ParallelPanel, TabPanel]
+#
+#         pageCtr = 1
+#         for page in pages:
+#             label = "Tab #%i" % pageCtr
+#             tab = page(self)
+#             self.AddPage(tab, label, False)
+#             pageCtr += 1
 
 
 class ZoomPan:

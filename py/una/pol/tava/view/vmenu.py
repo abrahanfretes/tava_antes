@@ -10,6 +10,7 @@ from wx import GetTranslation as _
 from py.una.pol.tava.view.vabout import AboutDialog
 import py.una.pol.tava.view.vi18n as C
 from py.una.pol.tava.presenter.pmenu import MainMenuBarPresenter
+from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
 
@@ -248,6 +249,8 @@ class AnalysisPackageMenu(wx.Menu):
     def __init__(self, parent, analysis_package):
         super(AnalysisPackageMenu, self).__init__()
 
+        self.presentermenu = AnalysisPackageMenuPresenter(self)
+
         #------ definiciones iniciales ----------------------------------------
 
         self.package = analysis_package
@@ -261,7 +264,10 @@ class AnalysisPackageMenu(wx.Menu):
         # menu agregar analisis a proyecto
         new_analise = wx.MenuItem(self, wx.ID_ANY, 'Nuevo Analisis')
         self.AppendItem(new_analise)
-        new_analise.Enable(False)
+        self.Bind(wx.EVT_MENU, self.OnShowGraphicWizard, new_analise)
+
+    def OnShowGraphicWizard(self, event):
+        self.presentermenu.ShowGraphicWizard()
         #----------------------------------------------------
 #----------------------------------------------------
 

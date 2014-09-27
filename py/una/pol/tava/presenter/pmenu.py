@@ -24,3 +24,11 @@ class MainMenuBarPresenter:
 
     def UpdateLabelsPub(self, message):
         self.iview.SetLabels()
+
+
+class AnalysisPackageMenuPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    def ShowGraphicWizard(self):
+        pub.sendMessage(T.GRAPHIC_WIZARD)

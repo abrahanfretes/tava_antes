@@ -34,7 +34,7 @@ PROJECT_SELECTED_OPEN = 'PROJECT.SELECTEDOPEN'
 PROJECT_SELECTED_CLOSE = 'PROJECT.SELECTEDCLOSE'
 
 # Send = ptree
-# Subscribe = pframe
+# Subscribe = pframe, ptest
 PROJECT_SELECTED = 'PROJECT.SELECTED'
 
 # Send = pproject
@@ -91,3 +91,7 @@ PROJECT_ADDFILE = 'PROJECT.ADDFILE'
 # Send = presult
 # Subscribe = ptree
 ADDEDFILE_PROJECT = 'ADDEDFILE.PROJECT'
+
+# Send = pmenu
+# Subscribe = pframe
+GRAPHIC_WIZARD = 'GRAPHIC.WIZARD'
