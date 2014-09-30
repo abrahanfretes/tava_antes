@@ -21,6 +21,17 @@ from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 import numpy as np
 import matplotlib.pyplot as plt
 
+#-- Config Parallel -------------------
+import wx.dataview as dv
+
+
+filesD = {
+    1: ("20", "file1"),
+    2: ("10", "file1"),
+    3: ("15", "file2")
+    }
+#-------------------------------------
+
 
 class MainPanel(wx.Panel):
     '''
@@ -73,7 +84,7 @@ class MainPanel(wx.Panel):
         right_panel.SetSizer(right_panel_hsizer)
 
         # Asociamos los paneles izquierdo y derecho al splitter
-        self.splitter.SplitVertically(left_panel, right_panel, 300)
+        self.splitter.SplitVertically(left_panel, right_panel, 210)
         self.splitter.SetMinimumPaneSize(200)
 
         # Creamos el sizer para colocar el Splitter y expandirlo
@@ -154,6 +165,7 @@ class AUINotebook(aui.AuiNotebook):
         self.SetArtProvider(aui.ChromeTabArt())
 
 #         # Se agregan algunas paginas al Notebook
+        self.AddPage(WorkingPage(self), 'TabPrueba', True)
 #         pages = [ParallelPanel, TabPanel]
 #
 #         pageCtr = 1
@@ -162,6 +174,22 @@ class AUINotebook(aui.AuiNotebook):
 #             tab = page(self)
 #             self.AddPage(tab, label, False)
 #             pageCtr += 1
+
+
+class WorkingPage(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+
+        #una Pagina consiste en:
+        #Una o mas figuras y,
+        #Unas configuraciones
+        self.figure = ParallelPanel(self)
+        self.config = ParallelConfig(self, filesD)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self.config, 1, wx.EXPAND)
+        sizer.Add(self.figure, 3, wx.EXPAND)
+        self.SetSizer(sizer)
 
 
 class ZoomPan:
@@ -300,8 +328,11 @@ class ParallelPanel(wx.Panel):
         values = np.hstack((np.random.randn(4, 10) + 4 * np.random.rand(4, 1),
                         np.random.randn(4, 8) + 4 * np.random.rand(4, 1)
                        ))
+        print values
         labels = np.concatenate((['Label A'] * 10, ['Label B'] * 8))
+        print labels
         coordinates = map(lambda x: "coord %i" % x, range(4))
+        print coordinates
 
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111)
@@ -311,11 +342,14 @@ class ParallelPanel(wx.Panel):
 
         # find names and number of different classes
         ulabels = np.unique(labels)
+        print ulabels
         n_labels = len(ulabels)
+        print n_labels
 
         # for each select distinct colors from Accent pallette
         cmap = plt.get_cmap('Accent')
         colors = cmap(np.arange(n_labels) * cmap.N / (n_labels + 1))
+        print colors
 
         # change the label strings to indices into class names array
         class_id = np.searchsorted(ulabels, labels)
@@ -347,3 +381,216 @@ class ParallelPanel(wx.Panel):
         self.sizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
         self.SetSizer(self.sizer)
         self.Fit()
+
+
+#------------------- Config Data ------------------------------------------
+
+class Iteration(object):
+    def __init__(self, id_, label, result_file):
+        self.id = id_
+        self.label = label
+        self.result_file = result_file
+        self.check = True
+
+    def __repr__(self):
+        return 'Iteration %s-%s' % (self.label, self.result_file)
+
+
+class ResultFile(object):
+    def __init__(self, name):
+        self.name = name
+        self.iterations = []
+
+    def __repr__(self):
+        return 'ResultFile: ' + self.name
+
+
+class MyTreeListModel(dv.PyDataViewModel):
+    def __init__(self, data):
+        dv.PyDataViewModel.__init__(self)
+        self.data = data
+        self.objmapper.UseWeakRefs(True)
+
+    # Report how many columns this model provides data for.
+    def GetColumnCount(self):
+        return 3
+
+    # Map the data column numbers to the data type
+    def GetColumnType(self, col):
+        mapper = {0: 'string', 1: 'string', 2: 'bool'}
+        return mapper[col]
+
+    def GetChildren(self, parent, children):
+
+        if not parent:
+            for result in self.data:
+                children.append(self.ObjectToItem(result))
+            return len(self.data)
+
+        # Otherwise we'll fetch the python object associated with the parent
+        # item and make DV items for each of it's child objects.
+        node = self.ItemToObject(parent)
+        if isinstance(node, ResultFile):
+            for itr in node.iterations:
+                children.append(self.ObjectToItem(itr))
+            return len(node.iterations)
+        return 0
+
+    def IsContainer(self, item):
+        # Return True if the item has children, False otherwise.
+        ##self.log.write("IsContainer\n")
+
+        # The hidden root is a container
+        if not item:
+            return True
+        # and in this model the genre objects are containers
+        node = self.ItemToObject(item)
+        if isinstance(node, ResultFile):
+            return True
+        # but everything else (the song objects) are not
+        return False
+
+    #def HasContainerColumns(self, item):
+    #    self.log.write('HasContainerColumns\n')
+    #    return True
+
+    def GetParent(self, item):
+        # Return the item which is this item's parent.
+        ##self.log.write("GetParent\n")
+
+        if not item:
+            return dv.NullDataViewItem
+
+        node = self.ItemToObject(item)
+        if isinstance(node, ResultFile):
+            return dv.NullDataViewItem
+        elif isinstance(node, Iteration):
+            for rf in self.data:
+                if rf.name == node.result_file:
+                    return self.ObjectToItem(rf)
+
+    def GetValue(self, item, col):
+        # Return the value to be displayed for this item and column. For this
+        # example we'll just pull the values from the data objects we
+        # associated with the items in GetChildren.
+
+        # Fetch the data object for this item.
+        node = self.ItemToObject(item)
+
+        if isinstance(node, ResultFile):
+            # We'll only use the first column for the Genre objects,
+            # for the other columns lets just return empty values
+            mapper = {0: node.name, 1: "", 2: False}
+            return mapper[col]
+
+        elif isinstance(node, Iteration):
+            mapper = {0: "", 1: node.label, 2: node.check}
+            return mapper[col]
+
+        else:
+            raise RuntimeError("unknown node type")
+
+    def GetAttr(self, item, col, attr):
+        ##self.log.write('GetAttr')
+        node = self.ItemToObject(item)
+        if isinstance(node, ResultFile):
+            attr.SetColour('blue')
+            attr.SetBold(True)
+            return True
+        return False
+
+    def SetValue(self, value, item, col):
+        #print("SetValue: %s\n" % value)
+        node = self.ItemToObject(item)
+        if isinstance(node, Iteration):
+            if col == 2:
+                node.check = value
+
+    def getParentItem(self):
+        itemParent = []
+        for node in self.data:
+            if isinstance(node, ResultFile):
+                itemParent.append(self.ObjectToItem(node))
+        return itemParent
+
+
+    #----------------------------------------------------------------------
+
+
+class ParallelConfig(wx.Panel):
+    def __init__(self, parent, data):
+        wx.Panel.__init__(self, parent, -1)
+
+        #------ Definiciones iniciales ----------------------------------------
+        self.data = self.GetDatas(data)
+
+        self.InitUI()
+        self.Centre()
+        self.Show()
+        #----------------------------------------------------
+
+    def InitUI(self):
+        #-- Se define el DataviewControl
+        self.dvc = self.GetDataViewCtrl()
+        self.model = MyTreeListModel(self.data)
+        self.dvc.AssociateModel(self.model)
+        self.ExpandFileResultItem()
+        #------------------------------------------------------------------
+        self.dvc.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.OnActivate)
+
+        #-- parte de prueba
+        remainingSpace = wx.Panel(self, -1, style=wx.SUNKEN_BORDER)
+        wx.StaticText(remainingSpace, -1, "Lo que sea", (15, 30))
+        #-------------------------------------------------------------
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.dvc, 1, wx.EXPAND)
+        sizer.Add(remainingSpace, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+    def ExpandFileResultItem(self):
+        for node in self.model.getParentItem():
+            self.dvc.Expand(node)
+
+    def OnActivate(self, event):
+        print 'OnActivate'
+        for result in self.data:
+            print result
+            for itr in result.iterations:
+                if itr.check:
+                    print result.name, ':', itr.label, ': true'
+
+    def GetDatas(self, data):
+
+        filedatas = data.items()
+        filedatas.sort()
+
+        #nuestra estructura de datos sera una coleccion de RsultFile, cada una
+        # de las cuales es una coleccion de Ieration
+
+        data_aux = dict()
+        for key, val in filedatas:
+            itr = Iteration(str(key), val[0], val[1])
+            result_file = data_aux.get(itr.result_file)
+            if result_file is None:
+                result_file = ResultFile(itr.result_file)
+                data_aux[itr.result_file] = result_file
+            result_file.iterations.append(itr)
+        return data_aux.values()
+
+    def GetDataViewCtrl(self):
+        dvc = dv.DataViewCtrl(self, style=wx.BORDER_THEME
+                    | dv.DV_ROW_LINES | dv.DV_VERT_RULES | dv.DV_MULTIPLE)
+
+        #Defino las columnas
+        tr = dv.DataViewTextRenderer()
+        c0 = dv.DataViewColumn("File", tr, 0, width=80)
+        dvc.AppendColumn(c0)
+        c0.Alignment = wx.ALIGN_LEFT
+        c1 = dvc.AppendTextColumn("Iteration", 1, width=68)
+        c1.Alignment = wx.ALIGN_CENTER
+        dvc.AppendToggleColumn("Select", 2, width=30,
+                               mode=dv.DATAVIEW_CELL_ACTIVATABLE)
+        return dvc
+
+    #-------------------------------------------------------------------------
