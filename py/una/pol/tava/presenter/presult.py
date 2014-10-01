@@ -151,8 +151,9 @@ class AddFileDialogPresenter():
             path = self.getPath(i)
             list_path.append(path)
             list_names.append(os.path.basename(path))
+
         project = rm().add(list_path, self.iview.project, style)
-        pub.sendMessage(T.ADDEDFILE_PROJECT, project)
+        pub.sendMessage(T.PROJECT_UPDATE, project)
         self.Close()
 
     def getPath(self, row):

@@ -344,8 +344,8 @@ class UnHideProjectDialogPresenter():
                 project = pro().getProjectForName(name_project)
                 project.state = OPEN
                 pro().upDate(project)
+                pub.sendMessage(T.PROJECT_NEW, project)
 
-        pub.sendMessage(T.PROJECT_LISTRESTORE, tuple(list_checked))
         self.ExitDialog()
 
     def SelectAll(self):

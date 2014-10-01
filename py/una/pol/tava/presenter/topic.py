@@ -51,7 +51,7 @@ PROJECT_PROPERTIES = 'PROJECT.PROPERTIES'
 # PROJECT_RENAME_UP = 'PROJECT.RENAME.UP'
 #==============================================================================
 
-# Send = pproject
+# Send = pproject, presult
 # Subscribe = ptree
 PROJECT_UPDATE = 'PROJECT.UPDATE'
 
@@ -75,17 +75,9 @@ PROJECT_UNHIDE = 'PROJECT.UNHIDE'
 # Subscribe = pproject
 PROJECT_CLICKCHECKBOXLIST = 'PROJECT.CLICKCHECKBOXLIST'
 
-# Send = pproject
-# Subscribe = ptree
-PROJECT_LISTRESTORE = 'PROJECT.LISTRESTORE'
-
 # Send = pprojectmenu
 # Subscribe = pframe
 PROJECT_ADDFILE = 'PROJECT.ADDFILE'
-
-# Send = presult
-# Subscribe = ptree
-ADDEDFILE_PROJECT = 'ADDEDFILE.PROJECT'
 
 # Send = pmenu
 # Subscribe = pframe

@@ -21,8 +21,6 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.UdDateProjectPub, T.PROJECT_UPDATE)
         pub.subscribe(self.DeleteProjectPub, T.PROJECT_DELETE)
         pub.subscribe(self.UpDateStateProjectPub, T.PROJECT_STATE_UPDATE)
-        pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
-        pub.subscribe(self.AddFilePub, T.ADDEDFILE_PROJECT)
 
     #------ funciones encargadas de recepcionar mensajes ----------------------
     def NewProjectPub(self, message):
@@ -43,16 +41,6 @@ class ProjectTreeCtrlPresenter:
         project = self.getItemDate()
         project.state = state
         self.UpdateProjectData(project)
-        self.UdDateItemProject(project)
-
-    def UnHideProjectPub(self, message):
-        list_names = message.data
-        for name in list_names:
-            project = self.GetProjectByName(name)
-            self.NewProjectItem(project)
-
-    def AddFilePub(self, message):
-        project = message.data
         self.UdDateItemProject(project)
     #----------------------------------------------------
 
