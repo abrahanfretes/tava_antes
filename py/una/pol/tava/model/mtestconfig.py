@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 '''
 Created on 23/09/2014
 
@@ -30,3 +31,9 @@ class TestConfigModel():
         test_config.creation_date = date.today()
 
         return dtestconfig.add(test_config)
+
+    def getTestConfigByProject(self, project):
+        return self.getTestConfigByProjectId(project.id)
+
+    def getTestConfigByProjectId(self, project_id):
+        return dtestconfig.getTestConfigByProjectId(project_id)

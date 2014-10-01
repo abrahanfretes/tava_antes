@@ -282,7 +282,7 @@ class RenameProjectDialogPresenter():
         if self.iview.previous_name != new_name.strip(' '):
             self.iview.project.name = new_name.strip(' ')
             project = pro().upDate(self.iview.project)
-            pub.sendMessage(T.PROJECT_RENAME_UP, project)
+            pub.sendMessage(T.PROJECT_UPDATE, project)
         self.iview.Close(True)
 
     def GetNamesProject(self):

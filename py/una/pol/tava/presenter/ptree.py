@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 '''
 Created on 28/07/2014
 
@@ -6,7 +7,9 @@ Created on 28/07/2014
 from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.model.mresult import ResultModel
-from py.una.pol.tava.base.entity import OPEN, CLOSED, HIDDEN, Project
+from py.una.pol.tava.model.mtestconfig import TestConfigModel
+from py.una.pol.tava.base.entity import OPEN, CLOSED, Project
+from py.una.pol.tava.base.entity import Result, TestConfig
 import topic as T
 
 
@@ -15,16 +18,21 @@ class ProjectTreeCtrlPresenter:
         self.iview = iview
 
         pub.subscribe(self.NewProjectPub, T.PROJECT_NEW)
+        pub.subscribe(self.UdDateProjectPub, T.PROJECT_UPDATE)
         pub.subscribe(self.DeleteProjectPub, T.PROJECT_DELETE_OK)
         pub.subscribe(self.DeleteSelectProjectPub, T.PROJECT_DELETE_CLICK)
         pub.subscribe(self.UpDateStateProjectPub, T.PROJECT_STATE_UPDATE)
-        pub.subscribe(self.RenameProjectPub, T.PROJECT_RENAME_UP)
         pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
         pub.subscribe(self.AddFilePub, T.ADDEDFILE_PROJECT)
 
     #------ funciones encargadas de recepcionar mensajes ----------------------
     def NewProjectPub(self, message):
-        self.NewProject(message.data)
+        project = message.data
+        self.NewProjectItem(project)
+
+    def UdDateProjectPub(self, message):
+        project = message.data
+        self.UdDateItemProject(project)
 
     def DeleteProjectPub(self, message):
         self.DeleteProject()
@@ -34,101 +42,144 @@ class ProjectTreeCtrlPresenter:
 
     def UpDateStateProjectPub(self, message):
         state = message.data
-        item, project = self.getItemEndDataSelected()
+        project = self.getItemDate()
         project.state = state
-        if state == HIDDEN:
-            self.UpdateProjectData(project)
-            self.DeleteProjectItem(item)
-        else:
-            self.UpDateProject(project, item)
+        self.UpdateProjectData(project)
+        self.UdDateItemProject(project)
 
     def UnHideProjectPub(self, message):
         list_names = message.data
         for name in list_names:
             project = self.GetProjectByName(name)
-            self.NewProject(project)
-
-    def RenameProjectPub(self, message):
-        project = message.data
-        self.UpDateFromtProjectItem(project)
+            self.NewProjectItem(project)
 
     def AddFilePub(self, message):
         project = message.data
-        self.UpDateFromtProjectItem(project)
+        self.UdDateItemProject(project)
     #----------------------------------------------------
 
-    #--------- Funciones generales (abm, model and view) ----------------------
-
-    def NewProject(self, project):
-        self.NewProjectItem(project)
-
-    def DeleteProject(self):
-        item, project = self.getItemEndDataSelected()
-        self.DeleteProjectData(project)
-        self.DeleteProjectItem(item)
-
-    def UpDateProject(self, project, item):
-        self.UpdateProjectData(project)
-        self.UpdateProjectItem(project, item)
-
-    def UpDateFromtProjectItem(self, project):
-        item = self.getItemSelected()
-        self.UpdateProjectItem(project, item)
-
-    def InitializeTree(self):
-        for project in ProjectModel().getAll():
-            self.NewProjectItem(project)
-    #----------------------------------------------------
-
-    #- funciones encargadas del arbol de proyectos ----------------------------
-    #----- abm of view -------------------------------------------------
+    #-----------  NewProjectItem ----------------------------------------
     def NewProjectItem(self, project):
+        '''
+        Función que agrega un item proyecto al arbol.
+        Clasifica a los proyectos para su insercion; si esta en un estado OPEN,
+        agrega sus correspondientes item Result e item TestConfig, en caso
+        contrario, solo agrega el item proyecto.
+
+        :project: Project, representa el proyecto a ser agregado al arbol.
+        '''
         if project.state == OPEN:
             pitem = self.AddProjectOpenNodeItem(project)
-            pr_item = self.AddPackageResultItem(pitem)
-            self.NewFileResultItem(pr_item, project)
+            pr_item = self.AddItemPackageResult(pitem)
+            pt_item = self.AddPackageAnalyzerItem(pitem)
+
+            self.AddItemsFileResult(pr_item, project)
             self.sortTree(pr_item)
-            self.AddPackageAnalyzerItem(pitem)
-        else:
+
+            self.AddItemsTestConfig(pt_item, project)
+            self.sortTree(pr_item)
+
+        elif project.state == CLOSED:
             self.AddProjectCloseNodeItem(project)
+
         self.sortTree(self.iview.root)
 
-    def DeleteProjectItem(self, item):
-        self.iview.Delete(item)
-
-    def UpdateProjectItem(self, project, item):
-        self.DeleteProjectItem(item)
-        self.NewProjectItem(project)
-
-    def NewFileResultItem(self, package_item, project):
-        for result in ResultModel().getResultsByProject(project):
-            self.AddFileResultItemInProject(package_item, result)
-    #----------------------------------------------------------
-
-    #---- funciones auxiliares enlazados a la vista(view)---------------
     def AddProjectOpenNodeItem(self, project):
         return self.iview.AddProjectOpenNode(project)
 
-    def AddProjectCloseNodeItem(self, project):
-        return self.iview.AddProjectCloseNode(project)
-
-    def AddPackageResultItem(self, project_item):
+    def AddItemPackageResult(self, project_item):
         return self.iview.AddPackageResult(project_item)
 
+    def AddItemsFileResult(self, package_item, project):
+        for result in ResultModel().getResultsByProject(project):
+            self.iview.AddResultToProject(package_item, result)
+
     def AddPackageAnalyzerItem(self, project_item):
-        return self.iview.AddPackageAnalyzer(project_item)
+        return self.iview.AddPackageResult(project_item)
+
+    def AddItemsTestConfig(self, package_test, project):
+        for test in TestConfigModel().getTestConfigByProject(project):
+            self.iview.AddTestToProject(package_test, test)
 
     def sortTree(self, item):
         self.iview.SortChildren(item)
 
-    def AddFileResultItemInProject(self, package_item, result):
-        self.iview.AddResultAProject(package_item, result)
-    #------------------------------------------------------------
+    def AddProjectCloseNodeItem(self, project):
+        return self.iview.AddProjectCloseNode(project)
+    #---------------------------------------------------
 
-    #------ funciones encargadas de verificar el tipo de item seleccionado ----
+    #----------  DeleteProjectItem  -------------------------------------
+    def DeleteProjectItem(self):
+        '''
+        Función que elimina un item proyecto del arbol.
+        Elimina el item proyecto selecionado o si la seleccion afecta a algun
+        item hijo.
+        '''
+        item_project = self.GetItemPorjectSelected()
+        self.iview.Delete(item_project)
+    #---------------------------------------------------
 
+    #----------  UdDateItemProject  -------------------------------------
+    def UdDateItemProject(self, project):
+        '''
+        Función que actualiza un item proyecto del arbol.
+        Elimina el item del proyecto que se encuentra en el arbol y agrega uno
+        nuevo con los atributos actualizados pasado como parametro.
+
+        :project: Project, representa el proyecto actualizado a ser agregado al
+        arbol.
+        '''
+        self.DeleteProjectItem()
+        self.NewProjectItem(project)
+    #---------------------------------------------------
+
+    #----------  InitializeTree  -------------------------------------
+    def InitializeTree(self):
+        for project in ProjectModel().getAll():
+            self.NewProjectItem(project)
+    #---------------------------------------------------
+
+    #------------- GetItemPorjectSelected  ------------------------------------
+    def GetItemPorjectSelected(self):
+        '''
+        Funcion para obtener el item del projecto a partir del item
+        seleccionado, los item selccionados pueden ser, Projecto, Resultado,
+        TestConfig, PackageResult, PackageAnlizae. En todos los casos retorna
+        el item del projecto a ser actualizado.
+        '''
+        item, data = self.getItemEndDataSelected()
+
+        if isinstance(data, Project):
+            return item
+
+        if isinstance(data, Result):
+            return self.GetGrandFather(item)
+
+        if isinstance(data, TestConfig):
+            return self.GetGrandFather(item)
+
+        if(self.IsPackageResult(item)):
+            return self.iview.GetItemParent(item)
+
+        if(self.IsPackageAnalyzer(item)):
+            return self.iview.GetItemParent(item)
+
+    def IsPackageResult(self, item):
+        toRet = (self.iview.GetItemText(item) == 'Resultados')
+        return toRet
+
+    def IsPackageAnalyzer(self, item):
+        toRet = (self.iview.GetItemText(item) == 'Pruebas')
+        return toRet
+
+    def GetGrandFather(self, item):
+        father = self.iview.GetItemParent(item)
+        return self.iview.GetItemParent(father)
+    #--------------------------------------------------------------------------
+
+    #------------ GetTypeSelectedItem -----------------------------------------
     def GetTypeSelectedItem(self):
-        
+
         item, data = self.getItemEndDataSelected()
         item_parent = self.iview.GetItemParent(item)
         if item_parent is not None:
@@ -148,7 +199,7 @@ class ProjectTreeCtrlPresenter:
                 else:
                     pub.sendMessage(T.PROJECT_SELECTED_CLOSE)
 
-    #----------------------------------------------------
+    #--------------------------------------------------------------------------
 
     #------ funciones auxiliares desde la vista -------------------------------
     def GetProjectSelected(self):

@@ -58,7 +58,7 @@ PROJECT_PROPERTIES = 'PROJECT.PROPERTIES'
 
 # Send = pproject
 # Subscribe = ptree
-PROJECT_RENAME_UP = 'PROJECT.UPRENAME'
+PROJECT_UPDATE = 'PROJECT.UPDATE'
 
 # Send = pmenu
 # Subscribe = pframe

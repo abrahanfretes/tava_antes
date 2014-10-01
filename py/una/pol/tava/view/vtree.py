@@ -113,10 +113,15 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = AnalysisMenu(self, date_item)
         self.PopupMenu(menu)
 
-    def AddResultAProject(self, package_item, result):
+    def AddResultToProject(self, package_item, result):
         result_item = self.AppendItem(package_item, result.name)
         self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
         self.SetItemPyData(result_item, result)
+
+    def AddTestToProject(self, package_item, test):
+        test_item = self.AppendItem(package_item, test.name)
+        self.SetItemImage(test_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(test_item, test)
 
     def AddPackageResult(self, project_item):
         package_result_item = self.AppendItem(project_item, 'Resultados')
