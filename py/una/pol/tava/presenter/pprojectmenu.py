@@ -36,7 +36,8 @@ class ProjectMenuPresenter:
 #==============================================================================
 
     def DeleteProject(self):
-        pub.sendMessage(T.PROJECT_DELETE_CLICK)
+        #pub.sendMessage(T.PROJECT_DELETE_CLICK)
+        pub.sendMessage(T.PROJECT_DELETE_SELECT)
 
     def RenameProject(self, project):
         pub.sendMessage(T.PROJECT_RENAME, project)

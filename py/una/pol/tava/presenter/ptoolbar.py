@@ -15,14 +15,8 @@ class ToolBarPresenter:
                       T.PROJECT_SELECTED_OPEN)
         pub.subscribe(self.EnableDisableCloseProjectPub,
                       T.PROJECT_SELECTED_CLOSE)
-        #======================================================================
-        # pub.subscribe(self.DisableAllProjectPub, T.PROJECT_CLOSE)
-        # pub.subscribe(self.DisableAllProjectPub, T.PROJECT_OPEN)
-        # pub.subscribe(self.DisableAllProjectPub, T.PROJECT_HIDE)
-        #======================================================================
         pub.subscribe(self.DisableAllProjectPub, T.PROJECT_STATE_UPDATE)
-
-        pub.subscribe(self.DisableAllProjectPub, T.PROJECT_DELETE_OK)
+        pub.subscribe(self.DisableAllProjectPub, T.PROJECT_DELETE)
         pub.subscribe(self.UpdateLabelsPub, T.LANGUAGE_CHANGED)
 
     def DisableAllProject(self):
@@ -37,22 +31,12 @@ class ToolBarPresenter:
     def HideProject(self):
         pub.sendMessage(T.PROJECT_STATE_UPDATE, 2)
 
-#==============================================================================
-#     def CloseProject(self):
-#         pub.sendMessage(T.PROJECT_CLOSE)
-#
-#     def OpenProject(self):
-#         pub.sendMessage(T.PROJECT_OPEN)
-#
-#     def OnHideProject(self):
-#         pub.sendMessage(T.PROJECT_HIDE)
-#==============================================================================
-
     def NewProject(self):
         pub.sendMessage(T.BAR_PROJECT_NEW)
 
     def DeleteProject(self):
-        pub.sendMessage(T.PROJECT_DELETE_CLICK)
+        #pub.sendMessage(T.PROJECT_DELETE_CLICK)
+        pub.sendMessage(T.PROJECT_DELETE_SELECT)
 
     def UnHideProject(self):
         pub.sendMessage(T.PROJECT_UNHIDE)

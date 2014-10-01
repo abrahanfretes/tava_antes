@@ -297,7 +297,7 @@ class DeleteProjectDialogPresenter():
         self.iview = iview
 
     def DeleteProject(self):
-        pub.sendMessage(T.PROJECT_DELETE_OK)
+        pub.sendMessage(T.PROJECT_DELETE)
 
 
 class CheckListCtrlPresenter():

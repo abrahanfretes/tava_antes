@@ -8,22 +8,17 @@ Created on 04/08/2014
 # Subscribe = pframe
 BAR_PROJECT_NEW = 'BAR.PROJECT.NEW'
 
-
 # Send = ptoolbar, pprojectmenu
 # Subscribe = ptoolbar, ptree
 PROJECT_STATE_UPDATE = 'PROJECT.STATEUPDATE'
 
 # Send = ptoolbar, pprojectmenu
-# Subscribe = ptree
-PROJECT_DELETE_CLICK = 'PROJECT.CLICKDELETE'
-
-# Send = ptree
 # Subscribe = pframe
 PROJECT_DELETE_SELECT = 'PROJECT.SELECTDELETE'
 
 # Send = pproject
-# Subscribe = ptree
-PROJECT_DELETE_OK = 'PROJECT.OKDELETE'
+# Subscribe = ptree, ptoolbar
+PROJECT_DELETE = 'PROJECT.DELETE'
 
 # Send = ptree
 # Subscribe = ptoolbar

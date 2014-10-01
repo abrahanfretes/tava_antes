@@ -19,8 +19,7 @@ class ProjectTreeCtrlPresenter:
 
         pub.subscribe(self.NewProjectPub, T.PROJECT_NEW)
         pub.subscribe(self.UdDateProjectPub, T.PROJECT_UPDATE)
-        pub.subscribe(self.DeleteProjectPub, T.PROJECT_DELETE_OK)
-        pub.subscribe(self.DeleteSelectProjectPub, T.PROJECT_DELETE_CLICK)
+        pub.subscribe(self.DeleteProjectPub, T.PROJECT_DELETE)
         pub.subscribe(self.UpDateStateProjectPub, T.PROJECT_STATE_UPDATE)
         pub.subscribe(self.UnHideProjectPub, T.PROJECT_LISTRESTORE)
         pub.subscribe(self.AddFilePub, T.ADDEDFILE_PROJECT)
@@ -35,10 +34,9 @@ class ProjectTreeCtrlPresenter:
         self.UdDateItemProject(project)
 
     def DeleteProjectPub(self, message):
-        self.DeleteProject()
-
-    def DeleteSelectProjectPub(self, message):
-        pub.sendMessage(T.PROJECT_DELETE_SELECT)
+        project = self.getItemDate()
+        self.DeleteProjectData(project)
+        self.DeleteProjectItem()
 
     def UpDateStateProjectPub(self, message):
         state = message.data
@@ -95,7 +93,7 @@ class ProjectTreeCtrlPresenter:
             self.iview.AddResultToProject(package_item, result)
 
     def AddPackageAnalyzerItem(self, project_item):
-        return self.iview.AddPackageResult(project_item)
+        return self.iview.AddPackageAnalyzer(project_item)
 
     def AddItemsTestConfig(self, package_test, project):
         for test in TestConfigModel().getTestConfigByProject(project):
@@ -249,7 +247,8 @@ class ProjectTreeCtrlPresenter:
     def getItemSelected(self):
         return self.iview.GetSelection()
 
-    def getItemDate(self, item):
+    def getItemDate(self):
+        item = self.iview.GetSelection()
         return self.iview.GetItemPyData(item)
 
     def getItemEndDataSelected(self):
