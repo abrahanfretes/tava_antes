@@ -22,6 +22,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from py.una.pol.tava.presenter.pbody import WorkingPagePresenter
+from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
 
 #-- Config Parallel -------------------
 import wx.dataview as dv
@@ -146,37 +147,36 @@ class AUINotebook(aui.AuiNotebook):
         Método de inicialización de la clase AUINotebook.
         :param parent: referencia al objeto padre de la clase.
         '''
-
         aui.AuiNotebook.__init__(self, parent=parent)
 
-        # Se establecen los estilos por defecto
+        #------ Definiciones iniciales ----------------------------------------
+        self.presenter = AUINotebookPresenter(self)
+        self.InitUI()
+        #----------------------------------------------------
+
+    def InitUI(self):
         self.default_style = (aui.AUI_NB_DEFAULT_STYLE |
                                 aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER)
 
         self.SetWindowStyleFlag(self.default_style)
 
-        # Establecemos el estilo similar al navegador Chrome
         self.SetArtProvider(aui.ChromeTabArt())
 
-#         # Se agregan algunas paginas al Notebook
-        self.AddPage(WorkingPage(self), 'TabPrueba', True)
-#         pages = [ParallelPanel, TabPanel]
-#
-#         pageCtr = 1
-#         for page in pages:
-#             label = "Tab #%i" % pageCtr
-#             tab = page(self)
-#             self.AddPage(tab, label, False)
-#             pageCtr += 1
+    def OnAddPage(self, name_tab, datas):
+        self.AddPage(WorkingPage(self, datas), name_tab, True)
 
 
 class WorkingPage(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, datas):
         wx.Panel.__init__(self, parent)
 
+        #------ Definiciones iniciales ----------------------------------------
         self.presenter = WorkingPagePresenter(self)
-        self.datas = self.presenter.createDate()
+        self.datas = datas
+        self.InitUI()
+        #----------------------------------------------------
 
+    def InitUI(self):
         #una Pagina consiste en:
         #Una o mas figuras y,
         #Unas configuraciones

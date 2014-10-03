@@ -82,3 +82,7 @@ PROJECT_ADDFILE = 'PROJECT.ADDFILE'
 # Send = pmenu
 # Subscribe = pframe
 GRAPHIC_WIZARD = 'GRAPHIC.WIZARD'
+
+# Send = pmenu
+# Subscribe = pbody
+TESTCONFIG_ADD_PAGE = 'TESTCONFIG.ADDPAGE'

@@ -32,3 +32,12 @@ class AnalysisPackageMenuPresenter:
 
     def ShowGraphicWizard(self):
         pub.sendMessage(T.GRAPHIC_WIZARD)
+
+
+class AnalysisMenuPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    def ShowGraphic(self):
+        test = self.iview.test
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, test)

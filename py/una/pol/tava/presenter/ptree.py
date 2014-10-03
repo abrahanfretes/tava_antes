@@ -206,13 +206,12 @@ class ProjectTreeCtrlPresenter:
 
     def ContexMenu(self):
 
-        item = self.iview.GetSelection()
+        item, data = self.getItemEndDataSelected()
         parent_item = self.iview.GetItemParent(item)
 
         #seleccion de un proyecto
         if(parent_item == self.iview.root):
-            project = self.iview.GetItemPyData(item)
-            self.iview.InitializeProjectMenu(project)
+            self.iview.InitializeProjectMenu(data)
 
         #seleccion de un paquete resultado
         elif self.iview.GetItemText(item) == 'Resultados':
@@ -230,7 +229,7 @@ class ProjectTreeCtrlPresenter:
 
         #seleccion de un analisis
         elif self.iview.GetItemText(parent_item) == 'Pruebas':
-            self.iview.InitializeAnalysisMenu(project)
+            self.iview.InitializeAnalysisMenu(data)
 
     def getItemSelected(self):
         return self.iview.GetSelection()

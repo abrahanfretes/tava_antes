@@ -11,6 +11,7 @@ from py.una.pol.tava.view.vabout import AboutDialog
 import py.una.pol.tava.view.vi18n as C
 from py.una.pol.tava.presenter.pmenu import MainMenuBarPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
+from py.una.pol.tava.presenter.pmenu import AnalysisMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
 
@@ -313,12 +314,13 @@ class ResultMenu(wx.Menu):
 
 #------ menu para analisis ----------------------------------------------------
 class AnalysisMenu(wx.Menu):
-    def __init__(self, parent, result):
+    def __init__(self, parent, test):
         super(AnalysisMenu, self).__init__()
 
         #------ definiciones iniciales ----------------------------------------
+        self.presenter_menuanalizer = AnalysisMenuPresenter(self)
 
-        self.result = result
+        self.test = test
         self.InitUI()
         #----------------------------------------------------
 
@@ -327,11 +329,15 @@ class AnalysisMenu(wx.Menu):
         #------ items del menu ----------------------------------------
 
         # menu graficar resultado
-        self.graficar = wx.MenuItem(self, wx.ID_ANY, 'Graficar')
-        self.AppendItem(self.graficar)
-        self.graficar.Enable(False)
-
+        graficar = wx.MenuItem(self, wx.ID_ANY, 'Graficar')
+        self.AppendItem(graficar)
+        graficar.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowGraphic, graficar)
         self.AppendSeparator()
+
+    def OnShowGraphic(self, event):
+        self.presenter_menuanalizer.ShowGraphic()
+        #----------------------------------------------------
 #----------------------------------------------------
 
 #--------------------------------------------------------------
