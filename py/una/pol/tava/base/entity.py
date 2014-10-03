@@ -199,6 +199,7 @@ class TestData(Base):
     __tablename__ = 'test_data'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name_result = Column(String(100))
+    iteration_identifier = Column(Integer)
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
     iteration_id = Column(Integer, ForeignKey('iteration.id'))
 

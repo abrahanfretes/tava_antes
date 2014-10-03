@@ -46,3 +46,7 @@ def upDate(test_config):
 
 def getTestConfigByProjectId(project_id):
     return session.query(TestConfig).filter_by(project_id=project_id).all()
+
+
+def getTestConfigById(test_config_id):
+    return session.query(TestConfig).filter_by(id=test_config_id).first()
