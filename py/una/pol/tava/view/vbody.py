@@ -21,16 +21,10 @@ from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 import numpy as np
 import matplotlib.pyplot as plt
 
+from py.una.pol.tava.presenter.pbody import WorkingPagePresenter
+
 #-- Config Parallel -------------------
 import wx.dataview as dv
-
-
-filesD = {
-    1: ("20", "file1"),
-    2: ("10", "file1"),
-    3: ("15", "file2")
-    }
-#-------------------------------------
 
 
 class MainPanel(wx.Panel):
@@ -180,11 +174,14 @@ class WorkingPage(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
 
+        self.presenter = WorkingPagePresenter(self)
+        self.datas = self.presenter.createDate()
+
         #una Pagina consiste en:
         #Una o mas figuras y,
         #Unas configuraciones
         self.figure = ParallelPanel(self)
-        self.config = ParallelConfig(self, filesD)
+        self.config = ParallelConfig(self, self.datas)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.config, 1, wx.EXPAND)

@@ -63,7 +63,7 @@ class ProjectTreeCtrlPresenter:
             self.sortTree(pr_item)
 
             self.AddItemsTestConfig(pt_item, project)
-            self.sortTree(pr_item)
+            self.sortTree(pt_item)
 
         elif project.state == CLOSED:
             self.AddProjectCloseNodeItem(project)
