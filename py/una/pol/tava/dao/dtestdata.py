@@ -41,6 +41,6 @@ def upDate(test_data):
     return abm.add(test_data)
 
 
-def getTestDatasByTestConfigId(test_config_id):
+def getTestDatasByTestDetailId(test_detail_id):
     return session.query(TestData).\
-        filter_by(test_config_id=test_config_id).all()
+        filter_by(test_detail_id=test_detail_id).all()

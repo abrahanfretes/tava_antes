@@ -9,6 +9,9 @@ import py.una.pol.tava.view.vi18n as C
 from wx import GetTranslation as _
 
 from py.una.pol.tava.model.mtestdata import TestDataModel as tdm
+from py.una.pol.tava.model.mtestdetail import TestDetailModel as tdem
+from py.una.pol.tava.model.mresult import ResultModel as rm
+from py.una.pol.tava.model.miteration import InterationModel as im
 
 
 class ProjectTreeNotebookPresenter:
@@ -40,15 +43,14 @@ class AUINotebookPresenter:
         #Creacion del Formato que recibe un DataViewCtrl.
         #-----------------------------------------------------
 
-        #test = tm().getTestConfigById(1)
-        test_data = []
         datas = {}
-
         if test != None:
-            test_data = tdm().getTestDatasByTestConfig(test)
-
-        for tdata in test_data:
-            datas[tdata.id] = (str(tdata.iteration_identifier),
-                               tdata.name_result)
+            test_details = tdem().getTestDetailsByTestConfigId(test.id)
+            for td in test_details:
+                result = rm().getResultById(td.result_id)
+                test_datas = tdm().getTestDatasByTestDetailId(td.id)
+                for tdata in test_datas:
+                    iteration = im().getIterationById(tdata.iteration_id)
+                    datas[tdata.id] = (str(iteration.identifier), result.name)
 
         self.iview.OnAddPage(test.name, datas)

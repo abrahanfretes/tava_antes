@@ -144,7 +144,7 @@ def procesarArchivo(listFile, proyecto):
             iteracion.execution_end = float(
                                     __getValue__(fOpen.readline()))
             tiempoInicial = iteracion.execution_end
-            iteracion.individuos = listIndividuos
+            iteracion.individuals = listIndividuos
             iteracion.result_id = resultado.id
 
             diteration.add(iteracion)

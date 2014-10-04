@@ -175,9 +175,9 @@ class TestConfig(Base):
     creation_date = Column(Date(), nullable=False)
     project_id = Column(Integer, ForeignKey('project.id'))
 
-    test_data = relationship('TestData',
+    test_details = relationship('TestDetail',
                               cascade="save-update, merge, delete",
-                              order_by='TestData.id',
+                              order_by='TestDetail.id',
                               backref='test_config')
 
     test_graphic = relationship('TestGraphic',
@@ -193,21 +193,39 @@ class TestConfig(Base):
      % (self.name, self.description, self.creation_date)
 
 
+class TestDetail(Base):
+    ''''''
+
+    __tablename__ = 'test_detail'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    result_id = Column(Integer, ForeignKey('result.id'))
+
+    test_datas = relationship('TestData',
+                              cascade="save-update, merge, delete",
+                              order_by='TestData.id',
+                              backref='test_detail')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestDetail(id='%i')>" % (self.id)
+
+
 class TestData(Base):
     ''''''
 
     __tablename__ = 'test_data'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    name_result = Column(String(100))
-    iteration_identifier = Column(Integer)
-    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    test_detail_id = Column(Integer, ForeignKey('test_detail.id'))
     iteration_id = Column(Integer, ForeignKey('iteration.id'))
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<TestData(name_result='%s')>" % (self.name_result)
+        return "<TestData(id='%s')>" % (self.id)
 
 
 class TestGraphic(Base):
