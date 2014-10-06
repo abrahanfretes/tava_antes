@@ -17,9 +17,9 @@ def getIndividuosByIteracion(iteration):
                             filter_by(iteracion_id=iteration.id).all()
 
 
-def getIndividualsByIteracionId(id_iteration):
+def getIndividualsByIteracionId(iteration_id):
     return session.query(Individual).order_by(Individual.identifier).\
-                            filter_by(iteracion_id=id_iteration).all()
+                            filter_by(iteration_id=iteration_id).all()
 
 
 def getIdentifierAndVariableOfIndividual(id_iteration):

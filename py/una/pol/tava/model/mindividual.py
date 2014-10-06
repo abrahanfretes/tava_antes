@@ -19,7 +19,7 @@ class IndividualModel(object):
     def getIndividualsByIteracionId(self, id_iteration):
         return dindividual.getIndividualsByIteracionId(id_iteration)
 
-    def getIndividualsByIterationId(self, list_id_iteration):
+    def getIndividualsByListIterationId(self, list_id_iteration):
 
         individual = []
         for id_ite in list_id_iteration:

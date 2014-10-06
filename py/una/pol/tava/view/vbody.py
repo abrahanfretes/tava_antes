@@ -19,7 +19,6 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 import numpy as np
-import matplotlib.pyplot as plt
 
 from py.una.pol.tava.presenter.pbody import WorkingPagePresenter
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
@@ -162,17 +161,18 @@ class AUINotebook(aui.AuiNotebook):
 
         self.SetArtProvider(aui.ChromeTabArt())
 
-    def OnAddPage(self, name_tab, datas):
-        self.AddPage(WorkingPage(self, datas), name_tab, True)
+    def OnAddPage(self, name_tab, datas, files_path):
+        self.AddPage(WorkingPage(self, datas, files_path), name_tab, True)
 
 
 class WorkingPage(wx.Panel):
-    def __init__(self, parent, datas):
+    def __init__(self, parent, datas, files_path):
         wx.Panel.__init__(self, parent)
 
         #------ Definiciones iniciales ----------------------------------------
         self.presenter = WorkingPagePresenter(self)
         self.datas = datas
+        self.files_path = files_path
         self.InitUI()
         #----------------------------------------------------
 
@@ -180,7 +180,7 @@ class WorkingPage(wx.Panel):
         #una Pagina consiste en:
         #Una o mas figuras y,
         #Unas configuraciones
-        self.figure = ParallelPanel(self)
+        self.figure = ParallelPanel(self, self.files_path)
         self.config = ParallelConfig(self, self.datas)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -314,64 +314,35 @@ class TabPanel(wx.Panel):
         self.Fit()
 
 
+from pandas import read_csv
+from pandas.tools.plotting import parallel_coordinates
+
+
 class ParallelPanel(wx.Panel):
     '''
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
     '''
-    def __init__(self, parent):
+    def __init__(self, parent, files_path):
         wx.Panel.__init__(self, parent)
 
-        values = np.hstack((np.random.randn(4, 10) + 4 * np.random.rand(4, 1),
-                        np.random.randn(4, 8) + 4 * np.random.rand(4, 1)
-                       ))
-        print values
-        labels = np.concatenate((['Label A'] * 10, ['Label B'] * 8))
-        print labels
-        coordinates = map(lambda x: "coord %i" % x, range(4))
-        print coordinates
-
         self.figure = Figure()
-        self.axes = self.figure.add_subplot(111)
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.toolbar = Toolbar(self.canvas)
         self.toolbar.Realize()
 
-        # find names and number of different classes
-        ulabels = np.unique(labels)
-        print ulabels
-        n_labels = len(ulabels)
-        print n_labels
+        amount = len(files_path)
+        print amount
+        c_plot = 100 * amount + 11
+        list_axes = []
 
-        # for each select distinct colors from Accent pallette
-        cmap = plt.get_cmap('Accent')
-        colors = cmap(np.arange(n_labels) * cmap.N / (n_labels + 1))
-        print colors
-
-        # change the label strings to indices into class names array
-        class_id = np.searchsorted(ulabels, labels)
-        lines = self.axes.plot(values[:, :], 'k')
-        [l.set_color(colors[c]) for c, l in zip(class_id, lines)]
-
-        # add grid, configure labels and axes
-        self.axes.spines['top'].set_visible(False)
-        self.axes.spines['bottom'].set_position(('outward', 5))
-        self.axes.spines['bottom'].set_visible(False)
-        self.axes.yaxis.set_ticks_position('both')
-        self.axes.xaxis.set_ticks_position('none')
-
-        self.axes.set_xticks(np.arange(len(coordinates)), coordinates)
-        self.axes.grid(axis='x', ls='-')
-
-        leg_handlers = [lines[np.where(class_id == id_)[0][0]]
-                        for id_ in range(n_labels)]
-        self.axes.legend(leg_handlers, ulabels, frameon=False,
-                         loc='upper left', ncol=len(labels),
-                bbox_to_anchor=(0, -0.03, 1, 0))
-        scale = 1.1
-        zp = ZoomPan()
-        zp.zoom_factory(self.axes, self.figure, base_scale=scale)
-        zp.pan_factory(self.axes, self.figure)
+        axe = self.figure.add_subplot(c_plot)
+        for pf in files_path:
+            axe = self.figure.add_subplot(c_plot)
+            df = read_csv(pf)
+            axe = parallel_coordinates(df, 'Name', None, axe)
+            list_axes.append(axe)
+            c_plot += 1
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
@@ -379,8 +350,8 @@ class ParallelPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
 
-
 #------------------- Config Data ------------------------------------------
+
 
 class Iteration(object):
     def __init__(self, id_, label, result_file):
@@ -510,6 +481,12 @@ class MyTreeListModel(dv.PyDataViewModel):
                 itemParent.append(self.ObjectToItem(node))
         return itemParent
 
+    def getItemChildrens(self):
+        item = []
+        for results in self.data:
+            for iteration in results.iterations:
+                item.append(self.ObjectToItem(iteration))
+        return item
 
     #----------------------------------------------------------------------
 
@@ -540,6 +517,8 @@ class ParallelConfig(wx.Panel):
         wx.StaticText(remainingSpace, -1, "Lo que sea", (15, 30))
         #-------------------------------------------------------------
 
+        self.item_inicial = self.model.getItemChildrens()
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.dvc, 1, wx.EXPAND)
         sizer.Add(remainingSpace, 1, wx.EXPAND)
@@ -550,12 +529,8 @@ class ParallelConfig(wx.Panel):
             self.dvc.Expand(node)
 
     def OnActivate(self, event):
-        print 'OnActivate'
-        for result in self.data:
-            print result
-            for itr in result.iterations:
-                if itr.check:
-                    print result.name, ':', itr.label, ': true'
+        print'OnActivate'
+        print event
 
     def GetDatas(self, data):
 
