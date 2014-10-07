@@ -179,7 +179,7 @@ class WorkingPage(wx.Panel):
         #una Pagina consiste en:
         #Una o mas figuras y,
         #Unas configuraciones
-        self.figure = ParallelPanel(self, self.files_path)
+        self.figure = ParallelFigure(self, self.files_path)
         self.config = ParallelData(self, self.test)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -192,7 +192,7 @@ from pandas import read_csv
 from pandas.tools.plotting import parallel_coordinates
 
 
-class ParallelPanel(wx.Panel):
+class ParallelFigure(wx.Panel):
     '''
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
@@ -206,7 +206,6 @@ class ParallelPanel(wx.Panel):
         self.toolbar.Realize()
 
         amount = len(files_path)
-        print amount
         c_plot = 100 * amount + 11
         list_axes = []
 
@@ -246,8 +245,17 @@ class ParallelData(CT.CustomTreeCtrl):
         self.AssignImageList(il)
         self.SetBackgroundColour('#D9F0F8')
 
+        self.InitUI()
+        #----------------------------------------------------
+
+    def InitUI(self):
+
         # Inicializacion del arbol de proyectos
         self.presenter.InitializeTree(self.test)
+        for item in self.root.GetChildren():
+            self.Expand(item)
+        self.Bind(CT.EVT_TREE_ITEM_CHECKED, self.OnChecked)
+
         #----------------------------------------------------
 
     def AddTestDetailNode(self, test_detail, resul_name):
@@ -259,7 +267,11 @@ class ParallelData(CT.CustomTreeCtrl):
     def AddTestDetaNode(self, td_item, test_data, identifier):
         tda_item = self.AppendItem(td_item, identifier, ct_type=1)
         #self.SetItemPyData(project_item, test_detail)
+        self.CheckItem(tda_item, True)
         return tda_item
+
+    def OnChecked(self, event):
+        print 'OnChecked'
 
 
 class ZoomPan:
