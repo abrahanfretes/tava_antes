@@ -8,6 +8,25 @@ catalog = {}
 
 #---------------------------------------------------------------------
 
+filegraph_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAe9J"
+    "REFUOI1tk79rVEEQxz8z+96R34fEFEm0EAR7o4WIoJ3Y2IlYiZ1WdnbBTv8DEezyD1iI0UIs"
+    "LCwsA5YhhcEgRiR6Se7e2/lavHdnNDcw7JfdnQ8zsztGa8/fvLspQIJACIhWg7FEvXHrxvVN"
+    "/jMbirdb25p2p5aoRbuKSmIQcKk7USX31eWT80+PAnwoJt3oFs5c67PJmWl9OhmFWWnSky/f"
+    "d1fHAgozivySibzGdKzRsT1Ks5ELKAwU8Xhjc+vKKG4oEkaZXzHp25QuvnKNsDkIIxw+9/r0"
+    "suiHrFa6C3z4F2BQySgFFkZKUGBgQhgVMJWgNPhZhx/LoDCjn40kI1zMfHvBws57cPFj8T67"
+    "87dHbS9s1Pt/M/idHeR0JCYPK/JeD0+BL1RN/Rjy5u54QG1kdzouOnUiDhMqDdveofPsEYWg"
+    "XDrF3r0H4wDGXpUYtIBu5eRBQaIm7feY+vSx+R9nz1H4mBIc+FU5+yRKF8vhKBuSkTA8QREw"
+    "SJCO/IO/AIN+GAdVA8ADLzOWgmRNhtmFuY1vomOcX7hDFQcAzESXNL/SzISfJh5eJIA826UY"
+    "10QzONO9PDqQIE5coAZMIi+uUEtkQarycQCCQTRTqJYQNBOZaQIb1/hnXF9/fVVtkNRAhjoQ"
+    "cWTPYGcY9weuZeRj3NzrhgAAAABJRU5ErkJggg=="
+    )
+
+catalog["filegraph.png"] = "filegraph_png"
+filegraph_png = filegraph_png.GetBitmap()
+
+#---------------------------------------------------------------------
+
 ok_png = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAhdJ"
     "REFUOI1j/P//PwMlgIki3QwMDCykaqhYXXL/+99vwjuP7JS7MeXuB5IMKF9VdFWYV1jh5ddf"

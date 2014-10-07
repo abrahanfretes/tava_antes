@@ -57,7 +57,7 @@ class AUINotebookPresenter:
                     iteration = im().getIterationById(tdata.iteration_id)
                     datas[tdata.id] = (str(iteration.identifier), result.name)
 
-        self.iview.OnAddPage(test.name, datas, files_path)
+        self.iview.OnAddPage(test.name, datas, files_path, test)
 
     def createFileTest(self, test):
         #--- creacion de archivos, un archivo por resultado
@@ -104,3 +104,20 @@ class AUINotebookPresenter:
                 f.close()
                 #-----------------------------------------
         return files_path_r
+
+
+class ParallelDataPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    def InitializeTree(self, test):
+        if test != None:
+            test_details = tdem().getTestDetailsByTestConfigId(test.id)
+            for td in test_details:
+                result = rm().getResultById(td.result_id)
+                td_item = self.iview.AddTestDetailNode(td, result.name)
+                test_datas = tdm().getTestDatasByTestDetailId(td.id)
+                for tdata in test_datas:
+                    iteration = im().getIterationById(tdata.iteration_id)
+                    self.iview.AddTestDetaNode(td_item,
+                                tdata, str(iteration.identifier))
