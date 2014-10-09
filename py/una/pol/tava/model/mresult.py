@@ -46,6 +46,9 @@ class ResultModel(object):
     def getResultByName(self, name_result):
         return dresult.getResultByName(name_result)
 
+    def getResultWithIterations(self, result):
+        return dresult.getResultWithIterations(result)
+
     def getNamesResultForProject(self, project):
         listNames = []
         for name in dresult.getNamesResultForProject(project):

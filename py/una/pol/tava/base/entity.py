@@ -41,11 +41,11 @@ class Project(Base):
     state = Column(SmallInteger, nullable=False)
     creation_date = Column(Date(), nullable=False)
 
-    results = relationship('Result',
+    results = relationship('Result', lazy=None,
                               cascade="save-update, merge, delete",
                               order_by='Result.id', backref='project')
 
-    test_config = relationship('TestConfig',
+    test_config = relationship('TestConfig', lazy=None,
                               cascade="save-update, merge, delete",
                               order_by='TestConfig.id', backref='project')
 
@@ -102,7 +102,7 @@ class Result(Base):
     add_date = Column(Date())
     project_id = Column(Integer, ForeignKey('project.id'))
 
-    iterations = relationship('Iteration',
+    iterations = relationship('Iteration', lazy=None,
                           cascade="save-update, merge, delete",
                           order_by='Iteration.id', backref='result')
 
@@ -132,7 +132,7 @@ class Iteration(Base):
     number_individuals = Column(Integer)
     result_id = Column(Integer, ForeignKey('result.id'))
 
-    individuals = relationship('Individual',
+    individuals = relationship('Individual', lazy=None,
                           cascade="save-update, merge, delete",
                           order_by='Individual.id', backref='iteration')
 
