@@ -22,8 +22,9 @@ from py.una.pol.tava.presenter.pparallelcoordinates\
 from py.una.pol.tava.presenter.pparallelcoordinates\
                                                 import ParallelFigurePresenter
 from pandas import read_csv
-from pandas.tools.plotting import parallel_coordinates
 from pandas.tools.plotting import andrews_curves
+
+parallel_suplot = tipo_graphict = 1
 
 
 class WorkingPageParallel(wx.Panel):
@@ -32,31 +33,67 @@ class WorkingPageParallel(wx.Panel):
 
         #------ Definiciones iniciales ----------------------------------------
         self.test = test
-        self.presenter = WorkingPagePresenter(self)
+        self.presenter = WorkingPagePresenter(self, test)
+
         self.InitUI()
         #----------------------------------------------------
 
     def InitUI(self):
+
         # una Pagina consiste en:
         # Una o mas figuras y,
         # Unas configuraciones
-        self.list_path = self.presenter.createFileForParallel()
-        self.figure = ParallelFigure(self, self.test, self.list_path)
-        self.config = ParallelData(self, self.test)
-        self.tool = ParallelDataToll(self)
+        self.data = ParallelData(self, self.test)
+        self.options = ParallelDataOptions(self)
+        self.figure = ParallelFigure(self)
 
         box_config = wx.BoxSizer(wx.VERTICAL)
-        box_config.Add(self.config, 2, wx.EXPAND)
-        box_config.Add(self.tool, 1, wx.EXPAND)
+        box_config.Add(self.data, 2, wx.EXPAND)
+        box_config.Add(self.options, 1, wx.EXPAND)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(box_config, 1, wx.EXPAND)
         sizer.Add(self.figure, 3, wx.EXPAND)
         self.SetSizer(sizer)
 
+        self.presenter.setDicIterationByResult()
+        keys_result = self.presenter.dic_path_iteration.keys()
+        self.figure.createKeysForSubPlot(keys_result)
+
     def showGraphicTava(self):
-        #se inicializan las figuras
-        self.figure.OnInitializeigure()
+
+        if self.isFirstInvocation():
+            cleaned_dic = self.clearDicChecked(self.data.getDicIteChecked())
+            new_dic = self.presenter.updateDicCheckedLast(cleaned_dic)
+            dic_path_plot = self.presenter.createFileForParallel(new_dic)
+            self.figure.showSubplots(dic_path_plot)
+            self.data.updateListChecked()
+
+            self.figure.showed_figure = True
+            self.options.UpDateNameButton()
+        else:
+            modified = self.data.isTreeModified()
+            if modified:
+                cleaned_dic = self.data.getDicIteChecked()
+                #print  cleaned_dic
+                new_dic = self.presenter.updateDicCheckedLast(cleaned_dic)
+                #print  new_dic
+                dic_path_plot = self.presenter.createFileForParallel(new_dic)
+                print dic_path_plot
+                self.figure.updateSubplots(dic_path_plot)
+                self.data.updateListChecked()
+
+            else:
+                print  'Arbol no modificado'
+
+    def  isFirstInvocation(self):
+            return not self.figure.showed_figure
+
+    def clearDicChecked(self, dic_checked):
+        for key_result in dic_checked.keys():
+            if dic_checked[key_result] == ():
+                del dic_checked[key_result]
+        return dic_checked
 
 
 class ParallelFigure(wx.Panel):
@@ -64,13 +101,12 @@ class ParallelFigure(wx.Panel):
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
     '''
-    def __init__(self, parent, test, list_path):
+    def __init__(self, parent):
         wx.Panel.__init__(self, parent)
 
         #------ Definiciones iniciales ----------------------------------------
-        self.list_path = list_path
-        self.test = test
         self.presenter = ParallelFigurePresenter(self)
+        self.showed_figure = False
         self.InitUI()
         #----------------------------------------------------
 
@@ -86,21 +122,27 @@ class ParallelFigure(wx.Panel):
         self.sizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
         self.SetSizer(self.sizer)
         self.Fit()
-        #self.OnInitializeigure()
 
-    def OnInitializeigure(self):
-        self.presenter.initializeFigure()
+    def createKeysForSubPlot(self, keys_result):
+        self.presenter.createKeysForSubPlot(sorted(keys_result))
 
-    def ShowParallelCoordinates(self, file_path, c_plot):
-        axe = self.figure.add_subplot(c_plot)
-        df = read_csv(file_path)
-        axe = parallel_coordinates(df, 'Name', None, axe)
-        self.canvas.draw()
+    def  showSubplots(self, dic_for_plot):
+        self.presenter.showSubplots(dic_for_plot)
+
+    def  updateSubplots(self, dic_for_plot):
+        self.presenter.updateSubplots(dic_for_plot)
+
+    def CreateSubplots(self, dic_for_plot):
+        self.presenter.createSubplots(dic_for_plot)
+
+    def UpdateSubplots(self, dic_for_plot):
+        self.presenter.updateSubplots(dic_for_plot)
 
     def ShowAndrewsCurves(self, file_path, c_plot):
         axe = self.figure.add_subplot(c_plot)
         df = read_csv(file_path)
         axe = andrews_curves(df, 'Name', axe)
+
         self.canvas.draw()
 #------------------- Config Data ------------------------------------------
 
@@ -116,6 +158,9 @@ class ParallelData(CT.CustomTreeCtrl):
         self.test = test
         self.root = self.AddRoot("Test Data")
 
+        #lista de  iteraciones checkeadas
+        self.list_shecked = []
+
         il = wx.ImageList(16, 16)
         self.file_bmp = il.Add(I.filegraph_png)
         self.AssignImageList(il)
@@ -128,50 +173,67 @@ class ParallelData(CT.CustomTreeCtrl):
 
         # Inicializacion del arbol de proyectos
         self.presenter.InitializeTree(self.test)
-        for item in self.root.GetChildren():
-            self.Expand(item)
+        self.presenter.expandItemTree()
+
         self.Bind(CT.EVT_TREE_ITEM_CHECKED, self.OnChecked)
 
         #----------------------------------------------------
 
-    def AddTestDetailNode(self, test_detail, resul_name):
+    def updateListChecked(self):
+        self.list_shecked = self.presenter.setGraphedList()
+
+    def getDicIteChecked(self):
+        items_checked = self.presenter.getGraphedDictionary()
+        return  items_checked
+
+    def AddTestDetailNode(self, result_id, resul_name):
         td_item = self.AppendItem(self.root, resul_name)
-        # self.SetItemPyData(project_item, test_detail)
+        self.SetItemPyData(td_item, result_id)
         self.SetItemImage(td_item, 0, wx.TreeItemIcon_Normal)
         return td_item
 
-    def AddTestDetaNode(self, td_item, test_data, identifier):
+    def AddTestDataNode(self, td_item, iteration_id, identifier, check):
         tda_item = self.AppendItem(td_item, identifier, ct_type=1)
-        # self.SetItemPyData(project_item, test_detail)
-        self.CheckItem(tda_item, True)
+        self.SetItemPyData(tda_item, iteration_id)
+        self.CheckItem(tda_item, check)
         return tda_item
 
-    def OnChecked(self, event):
-        print 'OnChecked'
-        self.getDataFormat()
+    def  isTreeModified(self):
+        aux = self.presenter.setGraphedList()
+        if self.list_shecked != aux:
+            return True
+        return False
 
-    def getDataFormat(self):
-        items_checked = []
+    def  getPlottedInteractions(self):
+        to_ret = []
         for item_result in self.root.GetChildren():
-            for item_iteration in item_result.GetChildren():
-                if self.IsItemChecked(item_iteration):
-                    ite = self.GetItemText(item_iteration)
-                    res = self.GetItemText(item_result)
-                    item_checked = (res, ite)
-                    items_checked.append(item_checked)
-                    #print '{ ' + res + ', ' + ite + '}'
-        print items_checked
+            for item_ite in item_result.GetChildren():
+                if self.IsItemChecked(item_ite):
+                    to_ret.append(self.GetItemPyData(item_ite))
+
+        return to_ret
+
+    def OnChecked(self, event):
+        pass
+        #======================================================================
+        # print 'OnChecked'
+        # print  self.getDicIteChecked
+        # print  self.list_shecked
+        #======================================================================
 
 
-class ParallelDataToll(wx.Panel):
+class ParallelDataOptions(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         self.parent = parent
-        self.update = wx.Button(self, -1, 'Graficar')
-        self.Bind(wx.EVT_BUTTON, self.OnUpDateGrafic, self.update)
+        self.button_grafic = wx.Button(self, -1, 'Show')
+        self.Bind(wx.EVT_BUTTON, self.OnUpDateGrafic, self.button_grafic)
 
     def OnUpDateGrafic(self, event):
         self.parent.showGraphicTava()
+
+    def UpDateNameButton(self):
+        self.button_grafic.SetLabel('Update')
 
 
 class ZoomPan:

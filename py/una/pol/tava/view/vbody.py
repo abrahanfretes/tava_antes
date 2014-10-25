@@ -152,4 +152,5 @@ class AUINotebook(aui.AuiNotebook):
 
     def OnAddPage(self, test):
         #falta verificar el tipo de grafico que desea ver
-        self.AddPage(WorkingPageParallel(self, test), test.name, True)
+        working_space = WorkingPageParallel(self, test)
+        self.AddPage(working_space, test.name, True)
