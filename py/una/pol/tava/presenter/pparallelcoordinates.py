@@ -18,6 +18,7 @@ class WorkingPagePresenter:
     def __init__(self, iview, test):
         self.iview = iview
         self.test = test
+        self.filename_onlyheader = '/onlyheader.csv'
 
         #crea un directorio si no existe
         self.path_test = self.getDirTest()
@@ -50,6 +51,33 @@ class WorkingPagePresenter:
         #self.name_path_figure = '/afretes/temp/test/file.csv'
         self.name_path_figure = None
 
+        #--- varaibles secuencial ----------------------------------
+
+        #contiene los items checkeados de la anterior grafica
+        #Se utiliza para construir la lista de path para graficar
+        #{u'vonLucken1.2': (24,), u'vonLucken.1': (21,)}
+        self.dic_name_ite_checked_last_sec = None
+
+        #contiene el nombre del archivo a graficar y su path
+        #self.name_path_figure = '/afretes/temp/test/file.csv'
+        self.name_path_sec = None
+
+        #--- varaibles Iteracion ----------------------------------
+
+        #contiene los items checkeados de la anterior grafica
+        #Se utiliza para construir la lista de path para graficar
+        #[1.vonLucken.19, 2.vonLucken.23, ...]
+        self.dic_name_ite_checked_last_ite = None
+
+        #contiene el nombre del archivo a graficar y su path
+        #self.dic_name_path_ite =
+        #{1.vonLucken.19:'/afretes/temp/test/file.csv'}
+        self.dic_name_path_ite = {}
+
+        #contiene el key y el nombre de los archivos creados para ite
+        #self.dic_key_path_ite = {'1.vonlucken.20':/afretes/temp/test/fil.csv'}
+        self.dic_key_path_ite = {}
+
     #---- Funciones Generales -------------------------------------------------
 
     def  setDicIterationByResult(self):
@@ -62,6 +90,18 @@ class WorkingPagePresenter:
         * genera un diccionario del tipo:
           {name.id:((id-ite1, path1), (id-ite2, path2), ...)}
         '''
+        #======================================================================
+        # #Se crea el archivo que contiene solamente nombres de objetivos
+        # for_header = self.test.test_details[0]
+        # file_path = self.path_test + self.filename_onlyheader
+        # result = rm().getResultById(for_header.result_id)
+        # line_header = result.name_objectives + ',Name\n'
+        # f_header = open(file_path, 'w')
+        # f_header.write(line_header)
+        # f_header.close()
+        #======================================================================
+
+        #Se crean archivos por cada iteracion
         for t_detail in self.test.test_details:
             path_iteraciones = []
             result = rm().getResultById(t_detail.result_id)
@@ -259,7 +299,178 @@ class WorkingPagePresenter:
         return file_path
     #------------------------------------------------------------------
 
+    #---- Funciones definidas para ParallelFigure sin SubPlot -----------------
 
+    def  setDicNameIteCheckedLastSec(self, dic):
+        self.dic_name_ite_checked_last_sec = dic
+
+    def  updateDicCheckedLastSec(self, dic_checked_now):
+        modified = dic_checked_now
+
+        if self.dic_name_ite_checked_last_sec != None:
+
+            keys_less = sorted(self.dic_name_ite_checked_last_sec.keys())
+            keys_now = sorted(dic_checked_now.keys())
+
+            for k_n in keys_now:
+                if k_n in keys_less:
+                    if self.dic_name_ite_checked_last_sec[k_n] != \
+                                                        dic_checked_now[k_n]:
+                        self.dic_name_ite_checked_last_sec[k_n] = \
+                                                        dic_checked_now[k_n]
+                    #sino, elimino de donde debo retornar
+                    else:
+                        del modified[k_n]
+                    #si son iguales no se modifico por ende no agrego
+                # si no existe lo agrego
+                else:
+                    #i no existe en el historico, lo actualizo
+                    self.dic_name_ite_checked_last_sec[k_n] = \
+                                                        dic_checked_now[k_n]
+
+            for k_l in keys_less:
+                #si existe verifico que se haya modificado o no
+                if k_l not in keys_now:
+                    del self.dic_name_ite_checked_last_sec[k_l]
+        else:
+            self.dic_name_ite_checked_last_sec = modified
+
+        return modified
+
+    def createFileForSec(self, new_items_checked):
+        '''
+        crea un archivo con todas las iteraciones checkeadas de los diferentes
+        archivos resultados, retorna un path del archivo creado.
+        '''
+
+        dic_path = self.dic_path_iteration
+        dir_result = self.path_test
+
+        file_path = dir_result + '/' + 'parallelSec' + '.csv'
+        f_graphic_parallel = open(file_path, 'w')
+
+        #Se agrega la cabecera
+        detail = self.test.test_details[0]
+        result = rm().getResultById(detail.result_id)
+        line_header = result.name_objectives + ',Name\n'
+
+        f_graphic_parallel.write(line_header)
+
+        for key_name in list(new_items_checked.keys()):
+
+            dic_existing = dict(list(dic_path[key_name]))
+            #Se agrega el contenido
+            for id_ite in new_items_checked[key_name]:
+                ite = open(dic_existing[id_ite])
+                ite.readline()
+                f_graphic_parallel.write(ite.read())
+                ite.close()
+
+        f_graphic_parallel.close()
+
+        self.name_path_sec = file_path
+        return file_path
+    #------------------------------------------------------------------
+
+    #---- Funciones definidas para Parallel Iteration -------------------------
+
+    def getKeyIteForSubplot(self):
+        # {name.id:((id-ite1, path1), (id-ite2, path2), ...)}
+        #self.dic_path_iteration = {}
+        list_keys = []
+        aux = self.dic_path_iteration
+        for key_r in aux.keys():
+            res = str(key_r).split('.')
+            basename = res[1] + '.' + res[0]
+            tuple_ite = aux[key_r]
+            for tuple_value in tuple_ite:
+                list_keys.append(basename + '.' + str(tuple_value[0]))
+
+        return list_keys
+
+    def getListChecked(self, dic_checked_now):
+        #{u'vonLucken1.2': (24,), u'vonLucken.1': (21,)}
+        list_checked = []
+        aux = dic_checked_now
+        for key_r in aux.keys():
+            res = str(key_r).split('.')
+            basename = res[1] + '.' + res[0]
+            tuple_ite = aux[key_r]
+            for ite in tuple_ite:
+                list_checked.append(basename + '.' + str(ite))
+
+        return list_checked
+
+    def  updateDicCheckedLastIte(self, keys_checked):
+
+        to_ret = {}
+        keys_last = self.dic_name_ite_checked_last_ite
+
+        if keys_last != None:
+
+            #recorro la nueva lista
+            for value_ite in keys_checked:
+                if value_ite  not in keys_last:
+                    to_ret[value_ite] = self.dic_key_path_ite[value_ite]
+                    keys_last.append(value_ite)
+                    self.dic_name_path_ite[value_ite] =\
+                                            self.dic_key_path_ite[value_ite]
+
+            #recorro la lista anterior
+            for value_ite_last in keys_last:
+                if value_ite_last  not in keys_checked:
+                    to_ret[value_ite_last] = ''
+                    keys_last.remove(value_ite_last)
+        else:
+            keys_last = keys_checked
+            for ite in keys_checked:
+                to_ret[ite] = self.dic_key_path_ite[ite]
+            self.dic_name_path_ite = to_ret
+
+        self.dic_name_ite_checked_last_ite = keys_last
+
+        return to_ret
+
+    def setDicNameIteCheckedLastIte(self, dic):
+        self.dic_name_ite_checked_last_ite = dic
+
+    def createFileForIte(self, keys_result):
+        '''
+        Crea los archivos para cada iteracion y retorna un diccionario con
+        el key y el path {key:path}
+        '''
+
+        dic_toret = {}
+        for_header = self.test.test_details[0]
+        result = rm().getResultById(for_header.result_id)
+        line_header = result.name_objectives + ',Name\n'
+
+        for key in keys_result:
+
+            file_path = self.path_test + '/' + key + '.csv'
+            f_ite = open(file_path, 'w')
+            f_ite.write(line_header)
+
+            f_aux = open(self.path_test + '/' + key)
+            f_ite.write(f_aux.read())
+            f_aux.close()
+            f_ite.close()
+
+            dic_toret[key] = file_path
+
+        self.dic_key_path_ite = dic_toret
+
+        return  dic_toret
+    #------------------------------------------------------------------
+
+
+#------------------- ParallelDataOptionsPresenter -----------------------------
+class ParallelDataOptionsPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+
+#------------------- ParallelFigurePresenter ----------------------------------
 class ParallelFigurePresenter:
     def __init__(self, iview):
         self.iview = iview
@@ -269,10 +480,14 @@ class ParallelFigurePresenter:
         #{nombre.id:axe}
         self.dic_axes = {}
 
+        #{nombre.id:cplot}
+        self.dic_plot_ite = {}
+        #{nombre.id:axe}
+        self.dic_axes_ite = {}
+
     #---- Funciones Generales -------------------------------------------------
     def cleanParallelFigure(self):
         for axe in self.iview.figure.get_axes():
-            print 'eliminando axes'
             self.iview.figure.delaxes(axe)
 
         self.dic_axes = {}
@@ -284,21 +499,15 @@ class ParallelFigurePresenter:
     #-------------------------------------------------------------------------
 
     def createKeysForSubPlot(self, keys_result):
-        print 'Entro en creacion de subplot'
         count_r = len(keys_result)
-        print  'count: ', count_r
         c_plot = 100 * count_r + 11
 
         for key_name in keys_result:
             self.dic_plot[key_name] = c_plot
             c_plot += 1
 
-        print  self.dic_plot
-
     # recibe del tipo {name.id: /algo/algo/algo.csv}
     def showSubplots(self, dic_for_plot):
-        print dic_for_plot
-        print  self.dic_plot
         keys_result = sorted(dic_for_plot.keys())
 
         for key_name in keys_result:
@@ -345,12 +554,82 @@ class ParallelFigurePresenter:
         self.showForParallelFigure(path_plot)
 
     def showForParallelFigure(self, path_plot):
-        print 'in showForParallelFigure'
         df = read_csv(path_plot)
         axe = self.iview.figure.gca()
         axe = parallel_coordinates(df, 'Name', None, axe)
         self.iview.figure.suptitle('Hola Mundo')
         self.iview.canvas.draw()
+
+    #------------------------------------------------------------------
+
+    #---- Funciones definidas para ParallelFigure sin SubPlot -----------------
+
+    def showParallelSecuencialUpdate(self, path_plot):
+
+        if len(self.iview.figure.get_axes()):
+            axe = self.iview.figure.get_axes()[0]
+            self.iview.figure.delaxes(axe)
+        self.showParallelSecuencial(path_plot)
+
+    def showParallelSecuencial(self, path_plot):
+        self.iview.figure.suptitle('Hola Mundo')
+
+        fileopen = open(path_plot)
+        cabecera = fileopen.readline()
+        line = fileopen.readline()
+
+        file_aux = open('parallelSec1.csv', 'w')
+        file_aux.write(cabecera)
+        file_aux.close()
+
+        axe = self.iview.figure.gca()
+        lin = 1
+        while line != '':
+
+            file_aux = open('parallelSec1.csv', 'a')
+            file_aux.write(line)
+            file_aux.close()
+
+            self.iview.figure.delaxes(axe)
+            df = read_csv('parallelSec1.csv')
+            axe = self.iview.figure.gca()
+            parallel_coordinates(df, 'Name', None, axe)
+            self.iview.canvas.draw()
+
+            line = fileopen.readline()
+            lin += 1
+        fileopen.close()
+    #------------------------------------------------------------------
+
+    #---- Funciones definidas para ParallelFigure Ite -----------------
+
+    def createKeysIteForPlot(self, keys_result):
+        count_r = len(keys_result)
+        c_plot = 100 * count_r + 11
+
+        for key_name in keys_result:
+            self.dic_plot_ite[key_name] = c_plot
+            c_plot += 1
+
+    def showParallelIteUpdate(self, dic_for_plot):
+
+        keys_result = sorted(dic_for_plot.keys())
+
+        for key_name in keys_result:
+            c_path_name = dic_for_plot[key_name]
+
+            if c_path_name != '':
+
+                df = read_csv(c_path_name)
+                c_plot = self.dic_plot_ite[key_name]
+                axe = self.iview.figure.add_subplot(c_plot)
+                axe = parallel_coordinates(df, 'Name', None, axe)
+                self.dic_axes_ite[key_name] = axe
+            else:
+                axe = self.dic_axes_ite[key_name]
+                self.iview.figure.delaxes(axe)
+
+            self.iview.canvas.draw()
 
     #------------------------------------------------------------------
 
@@ -389,12 +668,12 @@ class ParallelDataPresenter:
 
         return sorted(to_ret)
 
-    def getGraphedDictionary(self):
+    def getGraphedDictionary(self, true):
         to_ret = {}
         for item_result in self.iview.root.GetChildren():
             to_dicc = []
             for item_ite in item_result.GetChildren():
-                if self.iview.IsItemChecked(item_ite):
+                if true == self.iview.IsItemChecked(item_ite):
                     to_dicc.append(self.iview.GetItemPyData(item_ite))
             key_dic = self.iview.GetItemText(item_result)\
                         + '.' + str(self.iview.GetItemPyData(item_result))
