@@ -130,68 +130,68 @@ class WorkingPageParallel(wx.Panel):
         type_f = self.options.getTypeSelection()
 
         if type_f == 0:
-            return self.isTreeModifiedSubplot()
-        elif type_f == 1:
             return self.isTreeModifiedFigure()
+        elif type_f == 1:
+            return self.isTreeModifiedSubplot()
         elif type_f == 2:
-            return self.isTreeModifiedSec()
-        elif type_f == 3:
             return self.isTreeModifiedIte()
+        elif type_f == 3:
+            return self.isTreeModifiedSec()
 
     def updateListChecked(self):
         type_f = self.options.getTypeSelection()
 
         if type_f == 0:
-            self.checked_last_ite_subplot = self.data.setGraphedList()
-        elif type_f == 1:
             self.checked_last_ite_figure = self.data.setGraphedList()
+        elif type_f == 1:
+            self.checked_last_ite_subplot = self.data.setGraphedList()
         elif type_f == 2:
-            self.checked_last_ite_sec = self.data.setGraphedList()
-        elif type_f == 3:
             self.checked_last_ite_ite = self.data.setGraphedList()
+        elif type_f == 3:
+            self.checked_last_ite_sec = self.data.setGraphedList()
 
     def showOnlyTreeModified(self, type_f):
 
         if type_f == 0:
-            dic_namepath_file = self.createPathFileForTypeSubplot()
-            self.figure.updateSubplots(dic_namepath_file)
-        elif type_f == 1:
             self.presenter.setDicNameIteCheckedLastFigure(None)
             path_plot = self.createPathFileForTypeFigure()
             self.figure.showParallelFigureUpdate(path_plot)
+        elif type_f == 1:
+            dic_namepath_file = self.createPathFileForTypeSubplot()
+            self.figure.updateSubplots(dic_namepath_file)
         elif type_f == 2:
+            dic_for_plot = self.createPathFileForTypeIte()
+            self.figure.showParallelIteUpdate(dic_for_plot)
+        elif type_f == 3:
             self.presenter.setDicNameIteCheckedLastSec(None)
             path_plot = self.createPathFileForTypeSec()
             self.figure.showParallelSecuencialUpdate(path_plot)
-        elif type_f == 3:
-            dic_for_plot = self.createPathFileForTypeIte()
-            self.figure.showParallelIteUpdate(dic_for_plot)
 
     def showOnlyTypeModified(self, type_f):
 
         if type_f == 0:
-            dic_namepath_file = self.presenter.dic_name_path_subplot
-            self.figure.updateSubplots(dic_namepath_file)
-        elif type_f == 1:
             path_plot = self.presenter.name_path_figure
             self.figure.showParallelFigureUpdate(path_plot)
+        elif type_f == 1:
+            dic_namepath_file = self.presenter.dic_name_path_subplot
+            self.figure.updateSubplots(dic_namepath_file)
         elif type_f == 2:
-            path_plot = self.presenter.name_path_sec
-            self.figure.showParallelSecuencialUpdate(path_plot)
-        elif type_f == 3:
             dic_for_plot = self.presenter.dic_name_path_ite
             self.figure.showParallelIteUpdate(dic_for_plot)
+        elif type_f == 3:
+            path_plot = self.presenter.name_path_sec
+            self.figure.showParallelSecuencialUpdate(path_plot)
 
     def showTreeAndTypeModified(self, type_f):
 
         if type_f == 0:
-            self.presenter.setDicNameIteCheckedLastSubplot(None)
+            pass
         elif type_f == 1:
-            pass
+            self.presenter.setDicNameIteCheckedLastSubplot(None)
         elif type_f == 2:
-            pass
-        elif type_f == 3:
             self.presenter.setDicNameIteCheckedLastIte(None)
+        elif type_f == 3:
+            pass
 
         self.showOnlyTreeModified(type_f)
 
@@ -383,15 +383,15 @@ class ParallelDataOptions(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.parent = parent
         self.presenter = ParallelDataOptionsPresenter(self)
-        self.styleNameList = ['Por Result', 'Por Test', 'Secuencial',
-                              'Por Iteracion']
+        self.styleNameList = ['Test', 'Result', 'Iteracion', 'Secuencial']
         self.InitUI()
         #----------------------------------------------------
 
     def InitUI(self):
         dimension = len(self.styleNameList)
-        self.radiob = wx.RadioBox(self, -1, 'tipo grafico', wx.DefaultPosition,
-            wx.DefaultSize, self.styleNameList, dimension, wx.RA_SPECIFY_ROWS)
+        self.radiob = wx.RadioBox(self, -1, 'tipo grafico por:',
+            wx.DefaultPosition, wx.DefaultSize, self.styleNameList, dimension,
+            wx.RA_SPECIFY_ROWS)
 
         self.button_grafic = wx.Button(self, -1, 'Show')
         self.Bind(wx.EVT_BUTTON, self.OnUpDateGrafic, self.button_grafic)
