@@ -26,8 +26,10 @@ from py.una.pol.tava.presenter.pparallelcoordinates\
 from pandas import read_csv
 from pandas.tools.plotting import andrews_curves
 
-parallel_suplot = 0
-parallel_figure = 1
+TYPE_TEST = 0
+TYPE_RESULT = 1
+TYPE_ITERATION = 2
+TYPE_SEQUENTIAL = 3
 
 
 class WorkingPageParallel(wx.Panel):
@@ -38,17 +40,17 @@ class WorkingPageParallel(wx.Panel):
         self.test = test
         self.presenter = WorkingPagePresenter(self, test)
 
-        #ultimas iteraciones checkeadas para el tipo de Subplot
-        self.checked_last_ite_subplot = []
+        #ultimas iteraciones checkeadas ParallelFigure Test
+        self.checked_last_test = []
 
-        #ultimas iteraciones checkeadas para el tipo de no Subplot
-        self.checked_last_ite_figure = []
+        #ultimas iteraciones checkeadas ParallelFigure Result
+        self.checked_last_result = {}
 
-        #ultimas iteraciones checkeadas para el tipo secuencial
-        self.checked_last_ite_sec = []
+        #ultimas iteraciones checkeadas ParallelFigure Iteration
+        self.checked_last_iteration = []
 
-        #ultimas iteraciones checkeadas para el tipo por iteracion
-        self.checked_last_ite_ite = []
+        #ultimas iteraciones checkeadas ParallelFigure Sequential
+        self.checked_last_sequential = []
 
         self.type_figure_last = None
 
@@ -57,12 +59,15 @@ class WorkingPageParallel(wx.Panel):
 
     def InitUI(self):
 
+        #crea una archivo por cada iteracion
+        main_dic = self.presenter.setDicIterationByResult()
+
         # una Pagina consiste en:
         # Una o mas figuras y,
         # Unas configuraciones
-        self.data = ParallelDataTree(self, self.test)
+        self.data = ParallelDataTree(self, main_dic)
         self.options = ParallelDataOptions(self)
-        self.figure = ParallelFigure(self)
+        self.figure = ParallelFigure(self, self.presenter.test_path)
 
         box_config = wx.BoxSizer(wx.VERTICAL)
         box_config.Add(self.data, 2, wx.EXPAND)
@@ -73,10 +78,7 @@ class WorkingPageParallel(wx.Panel):
         sizer.Add(self.figure, 3, wx.EXPAND)
         self.SetSizer(sizer)
 
-        #crea una archivo por cada iteracion
-        self.presenter.setDicIterationByResult()
-        self.initializeSubplot()
-        self.initializeIte()
+        self.figure.initializeFigureResult(main_dic.keys())
 
     def  isTypeModified(self):
         type_aux = self.options.getTypeSelection()
@@ -86,6 +88,51 @@ class WorkingPageParallel(wx.Panel):
 
     def updateTypeFigure(self):
         self.type_figure_last = self.options.getTypeSelection()
+
+    def isTreeModified(self):
+
+        type_p = self.options.getTypeSelection()
+        current_state_tree = sorted(self.data.getGraphedList())
+        last_state_tree = sorted(self.getLastStateTree(type_p))
+
+        if current_state_tree == last_state_tree:
+            return False
+        return True
+
+    def getLastStateTree(self, type_p):
+        if type_p == TYPE_TEST:
+            return self.checked_last_test
+        elif type_p == TYPE_RESULT:
+            return self.presenter.getListByDic(self.checked_last_result)
+        elif type_p == TYPE_ITERATION:
+            return self.checked_last_iteration
+        elif type_p == TYPE_SEQUENTIAL:
+            return self.checked_last_sequential
+
+    def getCurrentStateTree(self, type_p):
+        if type_p == TYPE_TEST:
+            return self.data.getGraphedList()
+        elif type_p == TYPE_RESULT:
+            return self.presenter.getListByDic(
+                                            self.data.getCurrentDicChecked())
+        elif type_p == TYPE_ITERATION:
+            #se debera actualizar
+            return self.checked_last_iteration
+        elif type_p == TYPE_SEQUENTIAL:
+            #se debera actualizar
+            return self.checked_last_sequential
+
+    def updateListChecked(self):
+        type_f = self.options.getTypeSelection()
+
+        if type_f == TYPE_TEST:
+            self.checked_last_test = self.data.getGraphedList()
+        elif type_f == TYPE_RESULT:
+            self.checked_last_result = self.data.getCurrentDicChecked()
+        elif type_f == TYPE_ITERATION:
+            self.checked_last_iteration = self.data.getGraphedList()
+        elif type_f == TYPE_SEQUENTIAL:
+            self.checked_last_sequential = self.data.getGraphedList()
 
     def showGraphicTava(self, type_figure):
         '''
@@ -125,172 +172,53 @@ class WorkingPageParallel(wx.Panel):
         else:
             print 'tree: not modified, type: not modified'
 
-    def isTreeModified(self):
-
-        type_f = self.options.getTypeSelection()
-
-        if type_f == 0:
-            return self.isTreeModifiedFigure()
-        elif type_f == 1:
-            return self.isTreeModifiedSubplot()
-        elif type_f == 2:
-            return self.isTreeModifiedIte()
-        elif type_f == 3:
-            return self.isTreeModifiedSec()
-
-    def updateListChecked(self):
-        type_f = self.options.getTypeSelection()
-
-        if type_f == 0:
-            self.checked_last_ite_figure = self.data.setGraphedList()
-        elif type_f == 1:
-            self.checked_last_ite_subplot = self.data.setGraphedList()
-        elif type_f == 2:
-            self.checked_last_ite_ite = self.data.setGraphedList()
-        elif type_f == 3:
-            self.checked_last_ite_sec = self.data.setGraphedList()
-
     def showOnlyTreeModified(self, type_f):
 
-        if type_f == 0:
-            self.presenter.setDicNameIteCheckedLastFigure(None)
-            path_plot = self.createPathFileForTypeFigure()
-            self.figure.showParallelFigureUpdate(path_plot)
-        elif type_f == 1:
-            dic_namepath_file = self.createPathFileForTypeSubplot()
-            self.figure.updateSubplots(dic_namepath_file)
-        elif type_f == 2:
-            dic_for_plot = self.createPathFileForTypeIte()
-            self.figure.showParallelIteUpdate(dic_for_plot)
-        elif type_f == 3:
-            self.presenter.setDicNameIteCheckedLastSec(None)
-            path_plot = self.createPathFileForTypeSec()
-            self.figure.showParallelSecuencialUpdate(path_plot)
+        if type_f == TYPE_TEST:
+            list_c = self.data.getCurrentListChecked()
+            self.figure.showUpdateFigure(list_c, self.checked_last_test)
+        elif type_f == TYPE_RESULT:
+            dic_c = self.data.getCurrentDicChecked()
+            self.figure.showUpdateSubplot(dic_c, self.checked_last_result)
+        elif type_f == TYPE_ITERATION:
+            self.figure.cleanParallelFigure()
+            lit_c = self.data.getCurrentListChecked()
+            self.figure.showNewIteration(lit_c)
+        elif type_f == TYPE_SEQUENTIAL:
+            list_c = self.data.getCurrentListChecked()
+            self.figure.showNewSequencial(list_c)
 
     def showOnlyTypeModified(self, type_f):
 
-        if type_f == 0:
-            path_plot = self.presenter.name_path_figure
-            self.figure.showParallelFigureUpdate(path_plot)
-        elif type_f == 1:
-            dic_namepath_file = self.presenter.dic_name_path_subplot
-            self.figure.updateSubplots(dic_namepath_file)
-        elif type_f == 2:
-            dic_for_plot = self.presenter.dic_name_path_ite
-            self.figure.showParallelIteUpdate(dic_for_plot)
-        elif type_f == 3:
-            path_plot = self.presenter.name_path_sec
-            self.figure.showParallelSecuencialUpdate(path_plot)
+        if type_f == TYPE_TEST:
+            list_plot = self.data.getCurrentListChecked()
+            self.figure.showNewFigure(list_plot)
+        elif type_f == TYPE_RESULT:
+            dic_checked = self.data.getCurrentDicChecked()
+            self.figure.showNewSubplot(dic_checked)
+        elif type_f == TYPE_ITERATION:
+            list_plot = self.data.getCurrentListChecked()
+            self.figure.showNewIteration(list_plot)
+        elif type_f == TYPE_SEQUENTIAL:
+            list_c = self.data.getCurrentListChecked()
+            self.figure.showNewSequencial(list_c)
 
     def showTreeAndTypeModified(self, type_f):
 
-        if type_f == 0:
-            pass
-        elif type_f == 1:
-            self.presenter.setDicNameIteCheckedLastSubplot(None)
-        elif type_f == 2:
-            self.presenter.setDicNameIteCheckedLastIte(None)
-        elif type_f == 3:
-            pass
-
-        self.showOnlyTreeModified(type_f)
-
-    #---- Funciones definidas para Parallel Secuencial ------------------------
-
-    def createPathFileForTypeSec(self):
-        #obtengo la lista de iteraciones checkeadas
-        cleaned_dic = self.data.getDicIteChecked()
-        new_dic = self.presenter.updateDicCheckedLastSec(cleaned_dic)
-        path_plot = self.presenter.createFileForSec(new_dic)
-        return path_plot
-
-    def  isTreeModifiedSec(self):
-        aux = self.data.setGraphedList()
-        if self.checked_last_ite_sec != aux:
-            return True
-        return False
+        if type_f == TYPE_TEST:
+            list_plot = self.data.getCurrentListChecked()
+            self.figure.showNewFigure(list_plot)
+        elif type_f == TYPE_RESULT:
+            dic_checked = self.data.getCurrentDicChecked()
+            self.figure.showNewSubplot(dic_checked)
+        elif type_f == TYPE_ITERATION:
+            list_plot = self.data.getCurrentListChecked()
+            self.figure.showNewIteration(list_plot)
+        elif type_f == TYPE_SEQUENTIAL:
+            list_c = self.data.getCurrentListChecked()
+            self.figure.showNewSequencial(list_c)
 
     #------------------------------------------------------------------
-
-    #---- Funciones definidas para ParallelFigure sin SubPlot -----------------
-    def initializeParallelFigure(self):
-        pass
-
-    def createPathFileForTypeFigure(self):
-        #obtengo la lista de iteraciones checkeadas
-        cleaned_dic = self.data.getDicIteChecked()
-        new_dic = self.presenter.updateDicCheckedLastFigure(cleaned_dic)
-        path_plot = self.presenter.createFileForFigure(new_dic)
-        return path_plot
-
-    def  isTreeModifiedFigure(self):
-        aux = self.data.setGraphedList()
-        if self.checked_last_ite_figure != aux:
-            return True
-        return False
-
-    #------------------------------------------------------------------
-
-    #---- Funciones definidas para Parallel SubPlot ---------------------------
-
-    def createPathFileForTypeSubplot(self):
-        #obtengo la lista de iteraciones checkeadas
-        dic_checked = self.data.getDicIteChecked()
-        #actualizo la lista de checkeados anteriores, retorno la diferencia
-        dic_new = self.presenter.updateDicCheckedLastSubplot(dic_checked)
-        #obtengo la lista de actualizacion, creo el archivo y devuelvo path
-        dic_namepath_file = self.presenter.createFileForSubplot(dic_new)
-        return dic_namepath_file
-
-    def initializeSubplot(self):
-        keys_result = self.presenter.dic_path_iteration.keys()
-        self.figure.createKeysForSubPlot(keys_result)
-
-    def  isTreeModifiedSubplot(self):
-        aux = self.data.setGraphedList()
-        if self.checked_last_ite_subplot != aux:
-            return True
-        return False
-
-    #------------------------------------------------------------------
-
-    #---- Funciones definidas para Parallel Iteracion -------------------------
-
-    def createPathFileForTypeIte(self):
-        #obtengo la lista de iteraciones checkeadas
-        dic_checked = self.data.getDicIteChecked()
-        list_checked = self.presenter.getListChecked(dic_checked)
-        #actualizo la lista de checkeados anteriores, retorno la diferencia y
-        #obtengo la lista de actualizacion, creo el archivo y devuelvo path
-        dic_name = self.presenter.updateDicCheckedLastIte(list_checked)
-
-        return dic_name
-
-    def initializeIte(self):
-        keys_result = self.presenter.getKeyIteForSubplot()
-        self.presenter.createFileForIte(keys_result)
-        self.figure.createKeysIteForPlot(keys_result)
-
-    def  isTreeModifiedIte(self):
-        aux = self.data.setGraphedList()
-        if self.checked_last_ite_ite != aux:
-            return True
-        return False
-
-    #------------------------------------------------------------------
-
-    def  isFirstInvocation(self):
-            return not self.figure.showed_figure
-
-    def clearDicChecked(self, dic_checked):
-        '''
-        Elimina de la lista los archivos resultados que no tenga ninguna
-        iteracion checkeado.
-        '''
-        for key_result in dic_checked.keys():
-            if dic_checked[key_result] == ():
-                del dic_checked[key_result]
-        return dic_checked
 
 
 class ParallelFigure(wx.Panel):
@@ -298,12 +226,11 @@ class ParallelFigure(wx.Panel):
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
     '''
-    def __init__(self, parent):
+    def __init__(self, parent, dir_path):
         wx.Panel.__init__(self, parent)
 
         #------ Definiciones iniciales ----------------------------------------
-        self.presenter = ParallelFigurePresenter(self)
-        self.showed_figure = False
+        self.presenter = ParallelFigurePresenter(self, dir_path)
         self.InitUI()
         #----------------------------------------------------
 
@@ -325,54 +252,40 @@ class ParallelFigure(wx.Panel):
         self.presenter.cleanParallelFigure()
         self.figure.clear()
 
-    def  updateShowedFigure(self, value):
-        self.showed_figure = value
-    #-------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+    #    Funciones especificas para cada tipo de grafico
+    #--------------------------------------------------------------------------
 
-    #---- Funciones definidas para Parallel SubPlot ---------------------------
-    def createKeysForSubPlot(self, keys_result):
-        self.presenter.createKeysForSubPlot(sorted(keys_result))
+    #---- Funciones definidas para ParallelFigure Test ------------------------
+    def showNewFigure(self, current_plot):
+        self.presenter.newFigureTest(current_plot, 'Figura de Prueba')
 
-    def  showSubplots(self, dic_for_plot):
-        self.presenter.showSubplots(dic_for_plot)
+    def showUpdateFigure(self, current_plot, last_plot):
+        self.presenter.updateFigureTest(current_plot, last_plot)
 
-    def  updateSubplots(self, dic_for_plot):
-        self.presenter.updateSubplots(dic_for_plot)
+    #---- Funciones definidas para ParallelFigure Result ----------------------
+    def initializeFigureResult(self, keys_result):
+        self.presenter.initializeFigureResult(sorted(keys_result))
+
+    def  showNewSubplot(self, dic_for_plot):
+        self.presenter.newFigureResult(dic_for_plot)
+
+    def  showUpdateSubplot(self, current_plot, last_plot):
+        self.presenter.updateFigureResult(current_plot, last_plot)
 
     def ShowAndrewsCurves(self, file_path, c_plot):
         axe = self.figure.add_subplot(c_plot)
         df = read_csv(file_path)
         axe = andrews_curves(df, 'Name', axe)
         self.canvas.draw()
-    #------------------------------------------------------------------
 
-    #---- Funciones definidas para ParallelFigure sin SubPlot -----------------
-    def showParallelFigure(self, path_plot):
-        self.presenter.showForParallelFigure(path_plot)
+    #---- Funciones definidas para ParallelFigure Iteration -------------------
+    def showNewIteration(self, list_plot):
+        self.presenter.newFigureIteration(list_plot)
 
-    def showParallelFigureUpdate(self, path_plot):
-        self.presenter.showParallelFigureUpdate(path_plot)
-
-    #------------------------------------------------------------------
-
-    #---- Funciones definidas para ParallelFigure Secuencial -----------------
-    def showParallelSecuencial(self, path_plot):
-        self.presenter.showParallelSecuencial(path_plot)
-
-    def showParallelSecuencialUpdate(self, path_plot):
-        self.presenter.showParallelSecuencialUpdate(path_plot)
-
-    #------------------------------------------------------------------
-
-    #------------------------------------------------------------------
-
-    #---- Funciones definidas para ParallelFigure Iteracion -------------------
-
-    def createKeysIteForPlot(self, keys_result):
-        self.presenter.createKeysIteForPlot(sorted(keys_result))
-
-    def showParallelIteUpdate(self, dic_for_plot):
-        self.presenter.showParallelIteUpdate(dic_for_plot)
+    #---- Funciones definidas para ParallelFigure Sequential ------------------
+    def showNewSequencial(self, path_plot):
+        self.presenter.newFigureSequential(path_plot)
 
     #------------------------------------------------------------------
 
@@ -416,21 +329,20 @@ class ParallelDataOptions(wx.Panel):
 
 #------------------- Config Tree Test Data ------------------------------------
 class ParallelDataTree(CT.CustomTreeCtrl):
-    def __init__(self, parent, test):
+    def __init__(self, parent, main_dic):
         CT.CustomTreeCtrl.__init__(self, parent, agwStyle=CT.TR_HIDE_ROOT)
 
         #------ Definiciones iniciales -------------------------------
         self.presenter = ParallelDataPresenter(self)
-        self.test = test
         self.root = self.AddRoot("Test Data")
 
         #lista de  iteraciones checkeadas
         self.list_shecked = []
 
-        self.InitUI()
+        self.InitUI(main_dic)
         #------------------------------------------------------------
 
-    def InitUI(self):
+    def InitUI(self, main_dic):
 
         il = wx.ImageList(16, 16)
         self.file_bmp = il.Add(I.filegraph_png)
@@ -438,7 +350,7 @@ class ParallelDataTree(CT.CustomTreeCtrl):
         self.SetBackgroundColour('#D9F0F8')
 
         # Inicializacion del arbol de proyectos
-        self.presenter.InitializeTree(self.test)
+        self.presenter.InitializeTree(main_dic)
         self.presenter.expandItemTree()
 
         self.Bind(CT.EVT_TREE_ITEM_CHECKED, self.OnChecked)
@@ -449,34 +361,35 @@ class ParallelDataTree(CT.CustomTreeCtrl):
         self.SetItemImage(td_item, 0, wx.TreeItemIcon_Normal)
         return td_item
 
-    def AddTestDataNode(self, td_item, iteration_id, identifier, check):
+    def AddTestDataNode(self, td_item, i_name, identifier, check):
         tda_item = self.AppendItem(td_item, identifier, ct_type=1)
-        self.SetItemPyData(tda_item, iteration_id)
+        self.SetItemPyData(tda_item, i_name)
         self.CheckItem(tda_item, check)
         return tda_item
 
-    def getDicIteChecked(self):
-        items_checked = self.presenter.getGraphedDictionary(True)
+    def getCurrentListChecked(self):
+        items_checked = self.presenter.getCurrentListChecked(True)
         return  items_checked
 
-    def getDicIteNotChecked(self):
-        items_notchecked = self.presenter.getGraphedDictionary(False)
-        return  items_notchecked
+    def getCurrentDicChecked(self):
+        items_checked = self.presenter.getCurrentDicChecked(True)
+        return  items_checked
 
     def  isTreeModified(self):
-        aux = self.presenter.setGraphedList()
+        aux = self.presenter.getGraphedList()
         if self.list_shecked != aux:
             return True
         return False
 
-    def  setGraphedList(self):
-        aux = self.presenter.setGraphedList()
+    def  getGraphedList(self):
+        aux = self.presenter.getGraphedList()
         return aux
 
     def updateListChecked(self):
-        self.list_shecked = self.presenter.setGraphedList()
+        self.list_shecked = self.presenter.getGraphedList()
 
     def OnChecked(self, event):
+        print 'algo'
         pass
 #------------------------------------------------------------------------------
 
