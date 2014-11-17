@@ -79,6 +79,7 @@ class WorkingPageParallel(wx.Panel):
         self.SetSizer(sizer)
 
         self.figure.initializeFigureResult(main_dic.keys())
+        self.optionsManger()
 
     def  isTypeModified(self):
         type_aux = self.options.getTypeSelection()
@@ -141,6 +142,7 @@ class WorkingPageParallel(wx.Panel):
 
         :param type_figure: Integer.
         '''
+
         type_modified = self.isTypeModified()
         tree_modiefed = self.isTreeModified()
 
@@ -218,6 +220,15 @@ class WorkingPageParallel(wx.Panel):
             list_c = self.data.getCurrentListChecked()
             self.figure.showNewSequencial(list_c)
 
+    def optionsManger(self):
+        if(len(self.data.getCurrentListChecked()) == 0):
+            self.options.setDisableAllCheckOptions()
+        elif(len(self.data.getCurrentListChecked()) > 1):
+            self.options.setEnableAllCheckOptions()
+            self.options.setDisableCheckSequence()
+        else:
+            self.options.setEnableAllCheckOptions()
+
     #------------------------------------------------------------------
 
 
@@ -231,6 +242,7 @@ class ParallelFigure(wx.Panel):
 
         #------ Definiciones iniciales ----------------------------------------
         self.presenter = ParallelFigurePresenter(self, dir_path)
+        self.title_g = 'TAVA'
         self.InitUI()
         #----------------------------------------------------
 
@@ -258,7 +270,7 @@ class ParallelFigure(wx.Panel):
 
     #---- Funciones definidas para ParallelFigure Test ------------------------
     def showNewFigure(self, current_plot):
-        self.presenter.newFigureTest(current_plot, 'Figura de Prueba')
+        self.presenter.newFigureTest(current_plot, self.title_g)
 
     def showUpdateFigure(self, current_plot, last_plot):
         self.presenter.updateFigureTest(current_plot, last_plot)
@@ -268,10 +280,11 @@ class ParallelFigure(wx.Panel):
         self.presenter.initializeFigureResult(sorted(keys_result))
 
     def  showNewSubplot(self, dic_for_plot):
-        self.presenter.newFigureResult(dic_for_plot)
+        self.presenter.newFigureResult(dic_for_plot, self.title_g)
 
     def  showUpdateSubplot(self, current_plot, last_plot):
-        self.presenter.updateFigureResult(current_plot, last_plot)
+        self.presenter.updateFigureResult(current_plot, last_plot,
+                                                                self.title_g)
 
     def ShowAndrewsCurves(self, file_path, c_plot):
         axe = self.figure.add_subplot(c_plot)
@@ -281,11 +294,11 @@ class ParallelFigure(wx.Panel):
 
     #---- Funciones definidas para ParallelFigure Iteration -------------------
     def showNewIteration(self, list_plot):
-        self.presenter.newFigureIteration(list_plot)
+        self.presenter.newFigureIteration(list_plot, self.title_g)
 
     #---- Funciones definidas para ParallelFigure Sequential ------------------
     def showNewSequencial(self, path_plot):
-        self.presenter.newFigureSequential(path_plot)
+        self.presenter.newFigureSequential(path_plot, self.title_g)
 
     #------------------------------------------------------------------
 
@@ -324,6 +337,20 @@ class ParallelDataOptions(wx.Panel):
     def getTypeSelection(self):
         return self.radiob.GetSelection()
 
+    def  setDisableCheckSequence(self):
+        self.radiob.EnableItem(3, False)
+
+    def  setEnableCheckSequence(self):
+        self.radiob.EnableItem(3, True)
+
+    def  setEnableAllCheckOptions(self):
+        for option in range(len(self.styleNameList)):
+            self.radiob.EnableItem(option, True)
+
+    def  setDisableAllCheckOptions(self):
+        for option in range(len(self.styleNameList)):
+            self.radiob.EnableItem(option, False)
+
 #------------------------------------------------------------------------------
 
 
@@ -333,6 +360,7 @@ class ParallelDataTree(CT.CustomTreeCtrl):
         CT.CustomTreeCtrl.__init__(self, parent, agwStyle=CT.TR_HIDE_ROOT)
 
         #------ Definiciones iniciales -------------------------------
+        self.parent = parent
         self.presenter = ParallelDataPresenter(self)
         self.root = self.AddRoot("Test Data")
 
@@ -389,8 +417,7 @@ class ParallelDataTree(CT.CustomTreeCtrl):
         self.list_shecked = self.presenter.getGraphedList()
 
     def OnChecked(self, event):
-        print 'algo'
-        pass
+        self.parent.optionsManger()
 #------------------------------------------------------------------------------
 
 

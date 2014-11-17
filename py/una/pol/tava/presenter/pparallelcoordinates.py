@@ -140,16 +140,16 @@ class ParallelFigurePresenter:
         self.axe_test = self._updateFigurePaint(current_plot, last_plot, axe)
 
     #---- Funciones definidas para ParallelFigure Result ----------------------
-    def newFigureResult(self, dic_plot):
+    def newFigureResult(self, dic_plot, suptitle=''):
         keys_result = sorted(dic_plot.keys())
 
         for key_r in keys_result:
             list_plot = list(dic_plot[key_r])
             sp_axe = self.splot_result[key_r]
-            axe = self._initFigurePaint(list_plot, 'suptitle', sp_axe)
+            axe = self._initFigurePaint(list_plot, suptitle, sp_axe)
             self.axe_result[key_r] = axe
 
-    def  updateFigureResult(self, current_plot, last_plot):
+    def  updateFigureResult(self, current_plot, last_plot, suptitle=''):
 
         for key_r in list(sorted(current_plot.keys())):
             axe = self.axe_result[key_r]
@@ -161,26 +161,26 @@ class ParallelFigurePresenter:
             else:
                 list_plot = list(current_plot[key_r])
                 sp_axe = self.splot_result[key_r]
-                axe = self._initFigurePaint(list_plot, 'suptitle', sp_axe)
+                axe = self._initFigurePaint(list_plot, suptitle, sp_axe)
             self.axe_result[key_r] = axe
 
     #---- Funciones definidas para ParallelFigure Iteration -----------------
-    def newFigureIteration(self, list_plot):
+    def newFigureIteration(self, list_plot, suptitle=''):
         count_r = len(list_plot)
         c_plot = 100 * count_r + 11
 
         for name_i in list_plot:
             sp_axe = c_plot
-            self._initFigurePaint([name_i], 'suptitle', sp_axe)
+            self._initFigurePaint([name_i], suptitle, sp_axe)
             c_plot += 1
 
     #---- Funciones definidas para ParallelFigure Sequential -----------------
-    def newFigureSequential(self, i_name):
+    def newFigureSequential(self, i_name, suptitle=''):
 
         self.cleanParallelFigure()
         i_path = os.path.join(self.dir_path, i_name[0])
         axe = self.iview.figure.gca()
-        self.iview.figure.suptitle('Hola Mundo')
+        self.iview.figure.suptitle(suptitle)
 
         fileopen = open(i_path)
         cabecera = fileopen.readline()
