@@ -26,5 +26,5 @@ class AUINotebookPresenter:
         pub.subscribe(self.AddPage, T.TESTCONFIG_ADD_PAGE)
 
     def AddPage(self, message):
-        test = message.data
-        self.iview.OnAddPage(test)
+        tuple_test = message.data
+        self.iview.OnAddPage(tuple_test[0], tuple_test[1])

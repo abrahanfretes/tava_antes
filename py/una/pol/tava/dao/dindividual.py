@@ -12,6 +12,15 @@ session = base.getSession()
 #Querys para Individual
 
 
+def getIndividualById(id_individual):
+    return session.query(Individual).filter_by(id=id_individual).first()
+
+
+def getObjectivesIndividualById(id_individual):
+    return session.query(Individual.objectives).\
+                                            filter_by(id=id_individual).first()
+
+
 def getIndividuosByIteracion(iteration):
     return session.query(Individual).order_by(Individual.identifier).\
                             filter_by(iteracion_id=iteration.id).all()

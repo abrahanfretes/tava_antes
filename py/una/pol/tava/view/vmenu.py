@@ -328,15 +328,23 @@ class AnalysisMenu(wx.Menu):
 
         #------ items del menu ----------------------------------------
 
-        # menu graficar resultado
-        graficar = wx.MenuItem(self, wx.ID_ANY, 'Graficar')
-        self.AppendItem(graficar)
-        graficar.Enable(True)
-        self.Bind(wx.EVT_MENU, self.OnShowGraphic, graficar)
+        # menu only_graphics resultado
+        only_graphics = wx.MenuItem(self, wx.ID_ANY, 'Only Graphics')
+        self.AppendItem(only_graphics)
+        only_graphics.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowGraphic, only_graphics)
         self.AppendSeparator()
 
+        graphs_and_data = wx.MenuItem(self, wx.ID_ANY, 'Graphs And Data')
+        self.AppendItem(graphs_and_data)
+        graphs_and_data.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)
+
     def OnShowGraphic(self, event):
-        self.presenter_menuanalizer.ShowGraphic()
+        self.presenter_menuanalizer.ShowGraphic(1)
+
+    def OnShowGraphsAndData(self, event):
+        self.presenter_menuanalizer.OnShowGraphsAndData(2)
         #----------------------------------------------------
 #----------------------------------------------------
 

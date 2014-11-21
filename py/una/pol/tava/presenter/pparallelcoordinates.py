@@ -381,12 +381,13 @@ class ParallelDataPresenter:
         self.iview = iview
 
     def InitializeTree(self, main_dic):
-
+        first = True
         for r_name in sorted(main_dic.keys()):
             r_item = self.iview.AddTestDetailNode('', r_name)
             for i_name in main_dic[r_name]:
                 idn = i_name.split('.')[-2]
-                self.iview.AddTestDataNode(r_item, i_name, idn, True)
+                self.iview.AddTestDataNode(r_item, i_name, idn, first)
+                first = False
 
         self.iview.SortChildren(self.iview.root)
 

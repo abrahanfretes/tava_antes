@@ -15,6 +15,11 @@ class IndividualModel(object):
         '''
         Constructor
         '''
+    def getIndividualById(self, id_individual):
+        return dindividual.getIndividualById(id_individual)
+
+    def getObjectivesIndividualById(self, id_individual):
+        return dindividual.getObjectivesIndividualById(id_individual)[0]
 
     def getIndividualsByIteracionId(self, id_iteration):
         return dindividual.getIndividualsByIteracionId(id_iteration)

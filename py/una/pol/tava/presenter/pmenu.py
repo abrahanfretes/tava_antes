@@ -38,6 +38,10 @@ class AnalysisMenuPresenter:
     def __init__(self, iview):
         self.iview = iview
 
-    def ShowGraphic(self):
+    def ShowGraphic(self, type_g):
         test = self.iview.test
-        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, test)
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, type_g))
+
+    def OnShowGraphsAndData(self, type_g):
+        test = self.iview.test
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, type_g))
