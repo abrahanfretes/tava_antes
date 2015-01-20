@@ -19,10 +19,19 @@ def __getValue__(string):
 def __getObjetiosString(listObjetivos):
 
     stringObjetivos = []
+    floatObjetivos = []
     for valor in listObjetivos:
         stringObjetivos.append(str(float.fromhex(valor)))
+        floatObjetivos.append(float.fromhex(valor))
 
-    return ",".join(stringObjetivos)
+    return stringObjetivos, floatObjetivos
+
+
+def  __converter(listFloat):
+    list_string = []
+    for i in listFloat:
+        list_string.append(str(i))
+    return ','.join(list_string)
 
 
 def __getAlias(proyecto):
@@ -121,6 +130,8 @@ def procesarArchivo(listFile, proyecto):
             listIndividuos = []
             indiTotal = iteracion.number_individuals
             indiSum = 0
+            list_min_indi = []
+            list_max_indi = []
             while(indiSum < indiTotal):
                 indiSum += 1
                 individuo = Individual()
@@ -136,10 +147,24 @@ def procesarArchivo(listFile, proyecto):
                 individuo.variables = ",".join(unIndi[2:longV])
                 longO = longV + resultado.number_objectives
                 individuo.objectives = ",".join(unIndi[longV:longO])
-                individuo.objectives = __getObjetiosString(unIndi[longV:longO])
+                s_obj, f_obj = __getObjetiosString(unIndi[longV:longO])
+                individuo.objectives = ",".join(s_obj)
+
+                if list_min_indi != []:
+                    idx = 0
+                    for obj in f_obj:
+                        if obj < list_min_indi[idx]:
+                            list_min_indi[idx] = obj
+                        elif obj > list_max_indi[idx]:
+                            list_max_indi[idx] = obj
+                else:
+                    list_min_indi = list_max_indi = f_obj
+
                 individuo.identifier = unIndi[1]
                 listIndividuos.append(individuo)
 
+            iteracion.objectives_min = __converter(list_min_indi)
+            iteracion.objectives_max = __converter(list_min_indi)
             iteracion.identifier = unIndi[0]
             iteracion.execution_end = float(
                                     __getValue__(fOpen.readline()))

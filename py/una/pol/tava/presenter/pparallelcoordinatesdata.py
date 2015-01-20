@@ -33,6 +33,11 @@ class WorkingPageDataPresenter:
         '''
         self.main_dic = {}
 
+        self.dictObjetiveMinMax = {}
+        self.dictObjetiveMinMaxTem = {}
+
+        self.dictIterationId = {}
+
     #---- Funciones Generales -------------------------------------------------
 
     def  setDicIterationByResult(self):
@@ -62,6 +67,7 @@ class WorkingPageDataPresenter:
                 self._createTempFileObj(filename, idn, i.id, index_f, lh_obj)
                 self._createTempFileVar(filename_var, i.id, lh_var)
                 list_iteraciones.append(filename)
+                self.dictIterationId[filename] = i.id
             key_dic = 'f' + str(index_f) + '-' + r.name
             self.main_dic[key_dic] = tuple(list_iteraciones)
             index_f += 1
@@ -74,10 +80,40 @@ class WorkingPageDataPresenter:
         f = open(filepath, 'w')
         f.write(lh_obj)
         individuals = inm().getIndividualsByIteracionId(ite_id)
+
+        listMinObjetive = []
+        listMaxObjetive = []
+
         for ind in individuals:
             linea = ind.objectives + line_aux
             f.write(linea)
+
+            #se busca los objetivos minimos y maximos
+            if listMinObjetive != []:
+                index = 0
+                for obj_aux in ind.objectives.split(','):
+
+                    if float(obj_aux) < listMinObjetive[index]:
+                        listMinObjetive[index] = float(obj_aux)
+
+                    if float(obj_aux) > listMaxObjetive[index]:
+                        listMaxObjetive[index] = float(obj_aux)
+                    index += 1
+            else:
+                for obj_aux in ind.objectives.split(','):
+                    listMinObjetive.append(float(obj_aux))
+                    listMaxObjetive.append(float(obj_aux))
+
         f.close()
+
+        listKey = lh_obj.split(',')
+        dic_aux = {}
+        for index in range(len(listMinObjetive)):
+            dic_aux[listKey[index]] = (listMinObjetive[index],
+                                                       listMaxObjetive[index])
+
+        self.dictObjetiveMinMax[filename] = dic_aux
+        self.dictObjetiveMinMaxTem[filename] = dic_aux
         return filename
 
     def _createTempFileVar(self, filename, ite_id, lh_var):
@@ -129,6 +165,102 @@ class WorkingPageDataPresenter:
 
 
 #------------------- ParallelDataFigurePresenter ------------------------------
+
+
+    def updateForFilters(self, filtros, filename):
+
+        #ordenar la lista de acuerdo al archivo
+        filepath = os.path.join(self.test_path, filename)
+        filepath_var = os.path.join(self.test_path, filename[:-4])
+
+        f = open(filepath)
+        header = f.readline()
+        line_aux = ',' + f.readline().split(',')[-1]
+        f.close()
+
+        min_o = []
+        max_o = []
+        listMinObjetive = []
+        listMaxObjetive = []
+
+        for key in header.split(',')[:-1]:
+            t_values = filtros[key]
+            min_o.append(t_values[0])
+            max_o.append(t_values[1])
+            listMinObjetive.append(t_values[0])
+            listMaxObjetive.append(t_values[1])
+
+        #obtener los individuos a filtrar
+
+        f = open(filepath, 'w')
+        f.write(header)
+        f_var = open(filepath_var, 'w')
+
+        ite_id = self.dictIterationId[filename]
+        individuals = inm().getIndividualsByIteracionId(ite_id)
+
+
+        key_id = 0
+        for ind in individuals:
+
+            #objetivos filtrados
+            c_obj = ind.objectives.split(',')
+            to_write = True
+            for i in range(len(c_obj)):
+
+                if float(c_obj[i]) < min_o[i] or float(c_obj[i]) > max_o[i]:
+                    to_write = False
+                    break
+            if(to_write):
+                print'----true---'
+                print min_o
+                print  ind.objectives
+                print max_o
+                linea = ind.objectives + line_aux
+                f.write(linea)
+
+                #linea_var = str(ind.id) + ',' + ind.variables + '\n'
+                linea_var = str(key_id) + ',' + ind.variables + '\n'
+        
+                f_var.write(linea_var)
+                key_id += 1
+
+                #se busca los objetivos minimos y maximos
+
+                if listMinObjetive != []:
+                    index = 0
+                    for obj_aux in ind.objectives.split(','):
+    
+                        if float(obj_aux) < listMinObjetive[index]:
+                            listMinObjetive[index] = float(obj_aux)
+    
+                        if float(obj_aux) >= listMaxObjetive[index]:
+                            listMaxObjetive[index] = float(obj_aux)
+                        index += 1
+  
+            else:
+                print'----false---'
+                print min_o
+                print  ind.objectives
+                print max_o
+                
+                to_write = True
+
+        f.close()
+        f_var.close()
+
+        #actualizacion de filtros
+        key_list = header.split(',')[:-1]
+        dic_aux = {}
+        for index in range(len(listMinObjetive)):
+            dic_aux[key_list[index]] = (listMinObjetive[index],
+                                                       listMaxObjetive[index])
+
+        f.close()
+        #self.dictObjetiveMinMax[filename] = filtros
+        self.dictObjetiveMinMaxTem[filename] = dic_aux
+
+
 class ParallelDataFigurePresenter:
     def __init__(self, iview, dir_path):
         self.iview = iview

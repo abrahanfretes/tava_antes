@@ -63,7 +63,7 @@ class GraphicWizardPresenter():
         test = tm().add(test)
 
         pub.sendMessage(T.PROJECT_UPDATE, project)
-        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, test)
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, 2))
 
     def GetIterationsSelected(self, rf):
         iterations = []
