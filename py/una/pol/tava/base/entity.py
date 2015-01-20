@@ -130,6 +130,8 @@ class Iteration(Base):
     execution_start = Column(Float)
     execution_end = Column(Float)
     number_individuals = Column(Integer)
+    objectives_min = Column(String(500))
+    objectives_max = Column(String(500))
     result_id = Column(Integer, ForeignKey('result.id'))
 
     individuals = relationship('Individual', lazy=None,
