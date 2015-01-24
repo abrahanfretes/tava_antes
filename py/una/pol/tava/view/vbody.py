@@ -13,6 +13,7 @@ import py.una.pol.tava.view.vi18n as C
 import py.una.pol.tava.view.vimages as I
 import wx.lib.agw.aui as aui
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
+from py.una.pol.tava.view.vsom import PanelSomConfig
 from py.una.pol.tava.view.vparallelcoordinates import WorkingPageParallel
 from py.una.pol.tava.view.vparallelcoordinatesdata import\
                                                         WorkingPageParallelData
@@ -153,9 +154,12 @@ class AUINotebook(aui.AuiNotebook):
         self.SetArtProvider(aui.ChromeTabArt())
 
     def OnAddPage(self, test, type_g):
-        if type_g == 1:
+        if type_g == 0:
             working_space = WorkingPageParallel(self, test)
             self.AddPage(working_space, test.name, True)
         elif type_g == 2:
             working_space = WorkingPageParallelData(self, test)
+            self.AddPage(working_space, test.name, True)
+        elif type_g == 1:
+            working_space = PanelSomConfig(self, test)
             self.AddPage(working_space, test.name, True)

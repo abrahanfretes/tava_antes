@@ -236,12 +236,35 @@ class TestGraphic(Base):
     __tablename__ = 'test_graphic'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    name_graphic = Column(String(100), nullable=False)
+    id_graphic = Column(Integer)
 
     def __init__(self):
         pass
 
     def __repr__(self):
         return "<TestGraphic()>"
+
+
+class SomConfig(Base):
+    ''''''
+
+    __tablename__ = 'som_config'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    learning_rate = Column(Float)
+    sigma = Column(Float)
+    topology = Column(String(20))
+    columns = Column(Integer)
+    rows = Column(Integer)
+    map_initialization = Column(String(20))
+    neighborhood = Column(String(50))
+    iterations = Column(Integer)
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<SomConfig()>"
 
 
 def createDB():

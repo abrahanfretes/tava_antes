@@ -5,7 +5,8 @@ Created on 21/09/2014
 '''
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.model.miteration import InterationModel as im
-from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig
+from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig,\
+TestGraphic, SomConfig
 from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
 from wx.lib.pubsub import Publisher as pub
 import topic as T
@@ -36,7 +37,7 @@ class GraphicWizardPresenter():
     def GetListItems(self):
         return rm().getNamesResultForProject(self.iview.project)
 
-    def CreateTest(self, name_test, project, data):
+    def CreateTest(self, name_test, data, selection, project):
 
         # Agregar TestConfig a la Base de Datos
         test = TestConfig()
@@ -46,7 +47,7 @@ class GraphicWizardPresenter():
 
         test = tm().add(test)
 
-        #obtener las iteraciones cada archivo
+        #obtener las iteraciones de cada archivo
         for rf in data:
             test_detail = TestDetail()
             test_detail.result_id = rf.result.id
@@ -60,10 +61,41 @@ class GraphicWizardPresenter():
 
             test.test_details.append(test_detail)
 
-        test = tm().add(test)
+        # verificamos la seleccion escogida de grafico
+        test_graphic = TestGraphic()
+        if selection == 0:
+            test_graphic.name_graphic = "parallel"
+        if selection == 1:
+            from py.una.pol.tava.model.msom import SomModel as sm
+            somConfigPanel = self.iview.graphicList.somConfigPanel
+            test_graphic.name_graphic = "som"
+            som = SomConfig()
+            som.learning_rate = somConfigPanel.learning_rate.GetValue()
+            som.sigma = somConfigPanel.sigma.GetValue()
+            if somConfigPanel.hex_topology.GetValue():
+                som.topology = "hexagonal"
+            else:
+                som.topology = "square"
+            som.columns = somConfigPanel.columns.GetValue()
+            som.rows = somConfigPanel.rows.GetValue()
+            if somConfigPanel.lin_map_initialization.GetValue():
+                som.map_initialization = "linear"
+            else:
+                som.map_initialization = "random"
+            if somConfigPanel.gauss_neighborhood.GetValue():
+                som.neighborhood = "gaussian"
+            else:
+                som.neighborhood = "bubble"
+            som.iterations = somConfigPanel.iterations.GetValue()
+            sm().add(som)
+            test_graphic.id_graphic = som.id
+
+        test.test_graphic.append(test_graphic)
+
+        test = tm().upDate(test)
 
         pub.sendMessage(T.PROJECT_UPDATE, project)
-        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, 2))
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, selection))
 
     def GetIterationsSelected(self, rf):
         iterations = []

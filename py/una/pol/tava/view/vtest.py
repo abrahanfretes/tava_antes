@@ -14,7 +14,7 @@ import wx.dataview as dv
 padding = 5
 
 graphList = ["Parallel Coordinates",
-              "Scatter Plot",
+#               "Scatter Plot",
               "Som"]
 
 
@@ -46,7 +46,8 @@ class GraphicWizard(wizmod.Wizard):
 
         # Add third page
         self.page3 = WizardPage(self)
-        self.page3.add_stuff(GraphicList(self.page3))
+        self.graphicList = GraphicList(self.page3)
+        self.page3.add_stuff(self.graphicList)
         self.add_page(self.page3)
 
         self.Bind(wizmod.EVT_WIZARD_PAGE_CHANGED, self.on_page_changed)
@@ -54,7 +55,7 @@ class GraphicWizard(wizmod.Wizard):
 
         self.FitToPage(self.page1)
 
-        # Show the main window
+#         Show the main window
         self.run()
 
         # Cleanup
@@ -98,9 +99,23 @@ class GraphicWizard(wizmod.Wizard):
     def on_finished(self, evt):
         '''Finish button has been pressed.  Clean up and exit.'''
 
+#         children = self.page3.sizer.GetChildren()
+#         graphicList = children[2].GetWindow()
+#         graphicList.somConfigPanel.get
+        # seleccion en el graphicList
+        selection = self.graphicList.GetSelection()
+
+#         for child in children:
+#             widget = child.GetWindow()
+#             print widget
+#             if isinstance(widget, wx.TextCtrl):
+#                 widget.Clear()
+        # Nombre del test
         name_test = self.page1.panel1.name_value_text.GetValue()
+        # Archivos Resultados e iteraciones seleccionadas
         data = self.page2.ldvPanel.data
-        self.presenter.CreateTest(name_test, self.project, data)
+
+        self.presenter.CreateTest(name_test, data, selection, self.project)
 
 
 class WizardPage(wizmod.PyWizardPage):
@@ -207,6 +222,116 @@ class ColoredPanel(wx.Window):
             self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
 
 
+class PanelSomConfig(wx.Panel):
+    def __init__(self, parent):
+        super(PanelSomConfig, self).__init__(parent)
+
+        # Parameters
+        sbox = wx.StaticBox(self, label="Parameters")
+        sboxsp = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+
+        # Attributes
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(wx.StaticText(self, label="Initial learning \nrate:"))
+        self.learning_rate = wx.SpinCtrlDouble(self, value="0.5", min=0.00,
+                                  max=1.00, inc=0.01)
+        self.learning_rate.SetDigits(2)
+        sizer.Add(self.learning_rate)
+        sboxsp.Add(sizer, 0, wx.ALL, 8)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(wx.StaticText(self, label="Sigma:                 "))
+        self.sigma = wx.SpinCtrlDouble(self, value="0.5", min=0.00, max=1.00,
+                                 inc=0.01)
+        self.sigma.SetDigits(2)
+        sizer.Add(self.sigma)
+        sboxsp.Add(sizer, 0, wx.ALL, 8)
+
+        # Layout
+        sbox = wx.StaticBox(self, label="Topology")
+        sboxsz = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+
+        # Add some controls to the box
+        self.hex_topology = wx.RadioButton(self, -1, " Hexagonal Topology ",
+                                style=wx.RB_GROUP)
+        self.hex_topology.SetValue(True)
+        sboxsz.Add(self.hex_topology, 0, wx.ALL, 5)
+
+        self.rect_topology = wx.RadioButton(self, -1, " Rectangular Topology ")
+        self.rect_topology.SetValue(False)
+        sboxsz.Add(self.rect_topology, 0, wx.ALL, 5)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.columns = wx.SpinCtrl(self, value="4", min=4, max=1000)
+        sizer.Add(wx.StaticText(self, label="Columns:    "))
+        sizer.Add(self.columns)
+
+        sboxsz.Add(sizer, 0, wx.ALL, 8)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.rows = wx.SpinCtrl(self, value="4", min=4, max=1000)
+        sizer.Add(wx.StaticText(self, label="Rows:           "))
+        sizer.Add(self.rows)
+        sboxsz.Add(sizer, 0, wx.ALL, 8)
+
+        sbox = wx.StaticBox(self, label="Map Initialization")
+        sboxszm = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+
+        self.lin_map_initialization = wx.RadioButton(self, -1, " Linear ",
+                                style=wx.RB_GROUP)
+        self.lin_map_initialization.SetValue(True)
+        sboxszm.Add(self.lin_map_initialization, 0, wx.ALL, 5)
+
+        self.rand_map_initialization = wx.RadioButton(self, -1, " Random ")
+        self.rand_map_initialization.SetValue(False)
+        sboxszm.Add(self.rand_map_initialization, 0, wx.ALL, 5)
+
+        sbox = wx.StaticBox(self, label="Neighborhood")
+        sboxszn = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+
+        self.gauss_neighborhood = wx.RadioButton(self, -1,
+                                " Gaussian neighborhood ", style=wx.RB_GROUP)
+        self.gauss_neighborhood.SetValue(True)
+        sboxszn.Add(self.gauss_neighborhood, 0, wx.ALL, 5)
+
+        self.bubble_neighborhood = wx.RadioButton(self, -1,
+                                                " Bubble neighborhood ")
+        self.bubble_neighborhood.SetValue(False)
+        sboxszn.Add(self.bubble_neighborhood, 0, wx.ALL, 5)
+
+        sbox = wx.StaticBox(self, label="Stopping Conditions")
+        sboxszs = wx.StaticBoxSizer(sbox, wx.VERTICAL)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.iterations = wx.SpinCtrl(self, value="50", min=1,
+                                 max=1000000)
+        sizer.Add(wx.StaticText(self, label="Iterations:    "))
+        sizer.Add(self.iterations)
+
+        sboxszs.Add(sizer, 0, wx.ALL, 8)
+
+        msizer = wx.BoxSizer(wx.VERTICAL)
+
+        sizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer1.Add(sboxsp, 0, wx.ALL, 8)
+        sizer1.Add(sboxsz, 0, wx.ALL, 8)
+
+        sizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer2.Add(sboxszm, 0, wx.ALL, 8)
+        sizer2.Add(sboxszn, 0, wx.ALL, 8)
+        sizer2.Add(sboxszs, 0, wx.ALL, 8)
+
+        msizer.Add(sizer1, 0, wx.ALL, 7)
+        msizer.Add(sizer2, 0, wx.ALL, 7)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(msizer, 1, wx.EXPAND)
+
+        self.SetSizer(sizer)
+
+
 class GraphicList(wx.Listbook):
     def __init__(self, parent):
         wx.Listbook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT)
@@ -226,11 +351,11 @@ class GraphicList(wx.Listbook):
         win = self.makeColorPanel("Aquamarine")
         self.AddPage(win, graphList[0], imageId=0)
 
-        win = self.makeColorPanel("Red")
-        self.AddPage(win, graphList[1], imageId=1)
+#         win = self.makeColorPanel("Red")
+#         self.AddPage(win, graphList[1], imageId=1)
 
-        win = self.makeColorPanel("Blue")
-        self.AddPage(win, graphList[2], imageId=2)
+        self.somConfigPanel = PanelSomConfig(self)
+        self.AddPage(self.somConfigPanel, graphList[1], imageId=2)
 
         self.SetSelection(0)
 
