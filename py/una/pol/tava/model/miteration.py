@@ -41,3 +41,6 @@ class InterationModel(object):
     def getIterationsByProjectIdAndFileName(self, project_id, file_name):
         result = rm().getResultByProjectIdAndFileName(project_id, file_name)
         return self.getIterationsByResultId(result.id)
+
+    def getIdentifierById(self, id_iteracion):
+        return diteration.getIterationById(id_iteracion).identifier

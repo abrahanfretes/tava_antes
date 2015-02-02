@@ -61,3 +61,6 @@ class ResultModel(object):
 
     def getResultByProjectIdAndFileName(self, project_id, reult_name):
         return dresult.getResultByProjectIdAndFileName(project_id, reult_name)
+
+    def getNameById(self, id_result):
+        return self.getResultById(id_result).name
