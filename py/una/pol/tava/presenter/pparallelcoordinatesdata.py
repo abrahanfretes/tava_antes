@@ -12,6 +12,7 @@ from py.una.pol.tava.presenter.pparallelcoordinates import\
                                                     parallel_coordinatesTava
 
 import os
+import tempfile
 from pandas import read_csv
 
 TEMP_FILE = 'temp'
@@ -128,7 +129,8 @@ class WorkingPageDataPresenter:
         return filename
 
     def  _createTempDirectoryTest(self):
-        path_base = os.getcwd()
+        #path_base = os.getcwd()
+        path_base = tempfile.gettempdir()
         path_temp = os.path.join(TEMP_FILE, self.test.name)
         path_test = os.path.join(path_base, path_temp)
         if not os.path.isdir(path_test):
@@ -163,10 +165,7 @@ class WorkingPageDataPresenter:
         return name_variables
     #-------------------------------------------------------------------------
 
-
 #------------------- ParallelDataFigurePresenter ------------------------------
-
-
     def updateForFilters(self, filtros, filename):
 
         #ordenar la lista de acuerdo al archivo
@@ -199,7 +198,6 @@ class WorkingPageDataPresenter:
         ite_id = self.dictIterationId[filename]
         individuals = inm().getIndividualsByIteracionId(ite_id)
 
-
         key_id = 0
         for ind in individuals:
 
@@ -212,38 +210,23 @@ class WorkingPageDataPresenter:
                     to_write = False
                     break
             if(to_write):
-                print'----true---'
-                print min_o
-                print  ind.objectives
-                print max_o
+
                 linea = ind.objectives + line_aux
                 f.write(linea)
-
-                #linea_var = str(ind.id) + ',' + ind.variables + '\n'
-                linea_var = str(key_id) + ',' + ind.variables + '\n'
-        
+                linea_var = str(ind.id) + ',' + ind.variables + '\n'
                 f_var.write(linea_var)
                 key_id += 1
 
                 #se busca los objetivos minimos y maximos
-
                 if listMinObjetive != []:
                     index = 0
                     for obj_aux in ind.objectives.split(','):
-    
                         if float(obj_aux) < listMinObjetive[index]:
                             listMinObjetive[index] = float(obj_aux)
-    
                         if float(obj_aux) >= listMaxObjetive[index]:
                             listMaxObjetive[index] = float(obj_aux)
                         index += 1
-  
             else:
-                print'----false---'
-                print min_o
-                print  ind.objectives
-                print max_o
-                
                 to_write = True
 
         f.close()

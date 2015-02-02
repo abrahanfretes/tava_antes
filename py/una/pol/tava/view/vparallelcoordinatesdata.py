@@ -47,7 +47,7 @@ class WorkingPageParallelData(wx.Panel):
         self.data_tree = ParallelDataTree(self, main_dic)
         self.b_plot = wx.Button(self, -1, 'Show')
         self.b_filter = wx.Button(self, -1, 'Filtrar')
-        self.data_view = ParallelDataView(self, self.presenter.test_path)
+        self.data_view = ParallelDataVar(self, self.presenter.test_path)
         self.data_figure = ParallelDataFigure(self, self.presenter.test_path)
 
         sizer_vb = wx.BoxSizer(wx.VERTICAL)
@@ -167,7 +167,7 @@ class ParallelDataFigure(wx.Panel):
         self.presenter.newFigureIndividual(filename, self.title_g)
 
 
-class ParallelDataView(ScrolledPanel):
+class ParallelDataVar(ScrolledPanel):
     def __init__(self, parent, dir_path):
         ScrolledPanel.__init__(self, parent, -1)
         self.parent = parent
@@ -335,7 +335,7 @@ class AddFilterObjetives(wx.Panel):
         self.max_value = float(vmax)
         self.name_objetive = nobj
         self.len_digits = self.__getLengDigits()
-        
+
         print '------------'
         print self.name_objetive
         print self.min_value_r

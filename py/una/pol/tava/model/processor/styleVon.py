@@ -151,20 +151,21 @@ def procesarArchivo(listFile, proyecto):
                 individuo.objectives = ",".join(s_obj)
 
                 if list_min_indi != []:
-                    idx = 0
-                    for obj in f_obj:
-                        if obj < list_min_indi[idx]:
-                            list_min_indi[idx] = obj
-                        elif obj > list_max_indi[idx]:
-                            list_max_indi[idx] = obj
+                    for idx in range(len(f_obj)):
+                        if f_obj[idx] < list_min_indi[idx]:
+                            list_min_indi[idx] = f_obj[idx]
+                        elif f_obj[idx] > list_max_indi[idx]:
+                            list_max_indi[idx] = f_obj[idx]
                 else:
-                    list_min_indi = list_max_indi = f_obj
+                    for index in range(len(f_obj)):
+                        list_min_indi.append(f_obj[index])
+                        list_max_indi.append(f_obj[index])
 
                 individuo.identifier = unIndi[1]
                 listIndividuos.append(individuo)
 
             iteracion.objectives_min = __converter(list_min_indi)
-            iteracion.objectives_max = __converter(list_min_indi)
+            iteracion.objectives_max = __converter(list_max_indi)
             iteracion.identifier = unIndi[0]
             iteracion.execution_end = float(
                                     __getValue__(fOpen.readline()))

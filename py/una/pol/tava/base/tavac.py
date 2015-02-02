@@ -26,3 +26,14 @@ style_list = ['Von Lucken']
 #-------------------- pre-establish a file filter -----------------------------
 wildcard = "Riles results |*"
 #---------------------------------------------------------------------------
+
+import os
+import tempfile
+
+
+def  getTavaDirectory():
+    base = tempfile.gettempdir()
+    test = os.path.join(base, 'tava')
+    if not os.path.isdir(test):
+        os.makedirs(test)
+    return test
