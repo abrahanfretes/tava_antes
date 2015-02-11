@@ -26,8 +26,8 @@ class WorkingPageParallelData(wx.Panel):
         self.data_tree = ParallelDataTree(self, test_details)
         self.data_tree_p = self.data_tree.presenter
 
-        self.b_plot = wx.Button(self, -1, 'Show')
-        self.b_clean_filter = wx.Button(self, -1, 'Limpiar Filtro')
+        self.update = wx.Button(self, -1, 'Show')
+        self.clean = wx.Button(self, -1, 'Limpiar Filtro')
 
         self.data_figure = ParallelDataFigure(self, self.mode)
         self.data_figure_p = self.data_figure.presenter
@@ -39,8 +39,8 @@ class WorkingPageParallelData(wx.Panel):
         self.filters_p = self.footer.filters_p
 
         sizer_bf = wx.BoxSizer(wx.VERTICAL)
-        sizer_bf.Add(self.b_plot)
-        sizer_bf.Add(self.b_clean_filter)
+        sizer_bf.Add(self.update)
+        sizer_bf.Add(self.clean)
 
         sizer_vb = wx.BoxSizer(wx.VERTICAL)
         sizer_vb.Add(self.data_tree, 5, wx.EXPAND)
@@ -56,8 +56,8 @@ class WorkingPageParallelData(wx.Panel):
 
         self.SetSizer(sizer_v)
 
-        self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.b_plot)
-        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.b_clean_filter)
+        self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
+        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
 
         self.optionsManger()
         #------------------------------------------------------
@@ -97,11 +97,11 @@ class WorkingPageParallelData(wx.Panel):
     #los dos botones
     def  optionsManger(self):
         if 1 == self.data_tree_p.getLenListChecked():
-            self.b_plot.Enable()
-            self.b_clean_filter.Enable()
+            self.update.Enable()
+            self.clean.Enable()
         else:
-            self.b_plot.Disable()
-            self.b_clean_filter.Disable()
+            self.update.Disable()
+            self.clean.Disable()
 
 
 #------------------- Arbol de Archvivos e Iteraciones -------------------------

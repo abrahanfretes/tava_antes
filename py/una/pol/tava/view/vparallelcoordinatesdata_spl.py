@@ -6,95 +6,118 @@ Created on 02/02/2015
 '''
 import wx
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
-                                                    WorkingPageDataPresenter
+
+#-------------------         Panel Splitter           -------------------------
+#-------------------                                  -------------------------
+class WorkingPageParallelSpl(wx.SplitterWindow):
+    def __init__(self, parent, test, mode):
+        wx.SplitterWindow.__init__(self, parent)
+
+        #------ self customize ----------------------------------------
+
+        self.SetMinimumPaneSize(50)
+        self.SetBackgroundColour('#696969')
+        self.SetBorderSize(1)
+
+        #------ self components --------------------------------------
+        self.mode = str(mode)
+
+        self.top_panel = TopPanel(self, test, self.mode)
+        self.footer = FooterAUINotebook(self, test.test_details, self.mode)
+        self.SplitHorizontally(self.top_panel, self.footer,
+        int(round(self.GetParent().GetSize().GetWidth() * 0.60)))
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer)
+
+    #------ self controls --------------------------------------------
+    def updateFooter(self, ite_list, new):
+        self.footer.data_var_p.updateDatas(ite_list)
+        self.footer.data_obj_p.updateDatas(ite_list)
+        self.footer.filters_p.update(ite_list[0], new)
+
+    def isFilterModified(self):
+        return self.footer.filters_p.isFilterModified()
+
+    def getListValues(self):
+        return self.footer.filters_p.getListValues()
 
 
-class WorkingPageParallelSpl(wx.Panel):
+#-------------------         Panel for top            -------------------------
+#-------------------                                  -------------------------
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
+                                                            TopPanelPresenter
+
+
+class TopPanel(wx.Panel):
+
     def __init__(self, parent, test, mode):
         wx.Panel.__init__(self, parent)
 
-        #------ Definiciones iniciales ----------------------------------------
-        self.mode = str(mode)
-        self.presenter = WorkingPageDataPresenter(self, test)
-        self.InitUI(test.test_details)
-        #----------------------------------------------------
+        #------ self customize ----------------------------------------
 
-    def InitUI(self, test_details):
+        #------ self components --------------------------------------
+        self.parent = parent
+        self.presenter = TopPanelPresenter(self, test, mode)
 
-        self.splitter = wx.SplitterWindow(self, style=wx.SP_3D)
+        self.data_tree = ParallelDataTree(self, test.test_details)
+        self.config = ConfigPanel(self)
+        self.data_figure = ParallelDataFigure(self, mode)
 
-        self.top_panel = TopPanel(self.splitter, test_details, self.mode)
-        self.data_tree_p = self.top_panel.data_tree_p
-        self.data_figure_p = self.top_panel.data_figure_p
+        sizer_vb = wx.BoxSizer(wx.VERTICAL)
+        sizer_vb.Add(self.data_tree, 5, wx.EXPAND)
+        sizer_vb.Add(self.config, 1, wx.EXPAND | wx.TOP, 10)
 
-        self.footer = FooterAUINotebook(self.splitter,
-                                self.presenter.test.test_details, self.mode)
-        self.data_var_p = self.footer.data_var_p
-        self.data_obj_p = self.footer.data_obj_p
-        self.filters_p = self.footer.filters_p
+        sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_h.Add(sizer_vb, 1, wx.EXPAND)
+        sizer_h.Add(self.data_figure, 3, wx.EXPAND)
 
-        self.splitter.SplitHorizontally(self.top_panel, self.footer,
-        int(round(self.GetParent().GetSize().GetWidth() * 0.60)))
-        self.splitter.SetMinimumPaneSize(50)
-        self.splitter.SetBackgroundColour('#696969')
-        self.splitter.SetBorderSize(1)
+        sizer = wx.BoxSizer()
+        sizer.Add(sizer_h, 1, wx.EXPAND | wx.ALL, 1)
+        self.SetSizer(sizer)
 
-        body_sizer = wx.BoxSizer(wx.VERTICAL)
-        body_sizer.Add(self.splitter, 1, wx.EXPAND | wx.ALL, 10)
-
-        self.SetSizer(body_sizer)
-
+        #------ self inicailes executions ---------------------------
         self.optionsManger()
-        #------------------------------------------------------
 
-    #referido a button graficar
+    #------ self controls --------------------------------------------
+    def  optionsManger(self):
+        if 1 == self.data_tree.presenter.getLenListChecked():
+            self.config.enableButtons()
+        else:
+            self.config.disableButtons()
+
     def  upDateGrafic(self):
 
-        ite = self.data_tree_p.getListChecked()[0]
+        ite = self.data_tree.presenter.getListChecked()[0]
 
-        if self.data_tree_p.isChangeChecked():
+        if self.data_tree.presenter.isChangeChecked():
             if(not self.presenter.fileExists(ite)):
                 self.presenter.createFiles(ite)
             self.___updateView()
 
-        elif self.filters_p.isFilterModified():
-            #obtener los valores de filtros
-            filters = self.filters_p.getListValues()
-            #crear archivos
+        elif self.parent.isFilterModified():
+            filters = self.parent.getListValues()
             self.presenter.createFilesWithFilter(ite, filters)
             self.___updateView(False)
 
     def ___updateView(self, new=True):
+        ite_list = self.data_tree.presenter.getListChecked()
+        self.data_figure.presenter.newFigureTest(ite_list)
+        self.parent.updateFooter(ite_list, new)
 
-        ite_list = self.data_tree_p.getListChecked()
-        self.data_figure_p.newFigureTest(ite_list)
-        self.data_var_p.updateDatas(ite_list)
-        self.data_obj_p.updateDatas(ite_list)
-        self.filters_p.update(ite_list[0], new)
-
-    #referido a button filtros
     def cleanFilter(self):
-        ite = self.data_tree_p.getListChecked()[0]
+        ite = self.data_tree.presenter.getListChecked()[0]
         self.presenter.deleteFile(ite)
         self.presenter.createFiles(ite)
         self.___updateView()
-
-    #los dos botones
-    def  optionsManger(self):
-        if 1 == self.data_tree_p.getLenListChecked():
-            self.top_panel.b_plot.Enable()
-            self.top_panel.b_clean_filter.Enable()
-        else:
-            self.top_panel.b_plot.Disable()
-            self.top_panel.b_clean_filter.Disable()
 
 
 #------------------- Arbol de Archvivos e Iteraciones -------------------------
 #-------------------                                  -------------------------
 import wx.lib.agw.customtreectrl as CT
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux\
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl\
                                             import ParallelDataTreePresenter
 
 
@@ -102,25 +125,68 @@ class ParallelDataTree(CT.CustomTreeCtrl):
     def __init__(self, parent, test_details):
         CT.CustomTreeCtrl.__init__(self, parent, agwStyle=CT.TR_HIDE_ROOT)
 
-        #------ Definiciones iniciales -------------------------------
-        self.parent = parent
-        self.presenter = ParallelDataTreePresenter(self, test_details)
-        self.InitUI()
-
-        #------------------------------------------------------------
-
-    def InitUI(self):
-
+        #------ self customize ---------------------------------------
         il = wx.ImageList(16, 16)
         self.file_bmp = il.Add(I.filegraph_png)
         self.AssignImageList(il)
         self.SetBackgroundColour('#D9F0F8')
 
+        #------ self components --------------------------------------
+        self.parent = parent
+        self.presenter = ParallelDataTreePresenter(self, test_details)
+
+        #------ self inicailes executions ----------------------------
         self.Bind(CT.EVT_TREE_ITEM_CHECKED, self.OnChecked)
 
+    #------ self controls -------------------------------------------
     def OnChecked(self, event):
         self.parent.optionsManger()
-#------------------------------------------------------------------------------
+
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
+        #------ self inicailes executions ----------------------------
+    #------ self controls --------------------------------------------
+
+
+#------------------- Panel Control Configuracion      -------------------------
+#-------------------                                  -------------------------
+class ConfigPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
+        self.parent = parent
+        self.SetBackgroundColour('#f8f1d9')
+
+        self.update = wx.Button(self, -1, 'Show')
+        self.clean = wx.Button(self, -1, 'Limpiar Filtro')
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.update)
+        sizer.Add(self.clean)
+
+        self.SetSizer(sizer)
+
+        #------ self inicailes executions ----------------------------
+        self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
+        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
+
+    #------ self controls --------------------------------------------
+    def  OnUpdateGrafic(self, event):
+        self.parent.upDateGrafic()
+
+    def OnCleanFilter(self, event):
+        self.parent.cleanFilter()
+
+    def enableButtons(self):
+        self.update.Enable()
+        self.clean.Enable()
+
+    def disableButtons(self):
+        self.update.Disable()
+        self.clean.Disable()
+
 
 #------------------- Figuras de Coordenadas Paralelas -------------------------
 #-------------------                                  -------------------------
@@ -140,14 +206,10 @@ class ParallelDataFigure(wx.Panel):
     def __init__(self, parent, mode):
         wx.Panel.__init__(self, parent)
 
-        #------ Definiciones iniciales ----------------------------------------
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
         self.mode = mode
         self.title_g = 'TAVA'
-        self.InitUI()
-        self.presenter = ParallelDataFigurePresenter(self)
-        #----------------------------------------------------
-
-    def InitUI(self):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self, -1, self.figure)
@@ -159,68 +221,14 @@ class ParallelDataFigure(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
 
+        self.presenter = ParallelDataFigurePresenter(self)
+
+        #------ self inicailes executions ----------------------------
+
+    #------ self controls --------------------------------------------
     def showNewFigure(self, ite_list):
         self.presenter.newFigureTest(ite_list, self.title_g)
-#------------------------------------------------------------------------------
 
-
-#------------------- AUI Notebook par el footer       -------------------------
-#-------------------                                  -------------------------
-class TopPanel(wx.Panel):
-    '''
-    AUI Notebook class
-    '''
-
-    def __init__(self, parent, details, mode):
-        wx.Panel.__init__(self, parent)
-        self.parent = parent
-        self.mode = mode
-        self.data_tree = ParallelDataTree(self, details)
-        self.data_tree_p = self.data_tree.presenter
-
-        self.SetBackgroundColour('#f8f1d9')
-
-        self.b_plot = wx.Button(self, -1, 'Show')
-        self.b_clean_filter = wx.Button(self, -1, 'Limpiar Filtro')
-
-        self.data_figure = ParallelDataFigure(self, self.mode)
-        self.data_figure_p = self.data_figure.presenter
-
-        sizer_bf = wx.BoxSizer(wx.VERTICAL)
-        sizer_bf.Add(self.b_plot)
-        sizer_bf.Add(self.b_clean_filter)
-
-        sizer_vb = wx.BoxSizer(wx.VERTICAL)
-        sizer_vb.Add(self.data_tree, 5, wx.EXPAND)
-        sizer_vb.Add(sizer_bf, 1, wx.EXPAND | wx.TOP, 10)
-
-        sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_h.Add(sizer_vb, 1, wx.EXPAND)
-        sizer_h.Add(self.data_figure, 3, wx.EXPAND)
-
-        sizer = wx.BoxSizer()
-        sizer.Add(sizer_h, 1, wx.EXPAND | wx.ALL, 1)
-        self.SetSizer(sizer)
-
-        self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.b_plot)
-        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.b_clean_filter)
-
-    def  OnUpdateGrafic(self, event):
-        parent = self.GetParent()
-        parent2 = parent.GetParent()
-        parent2.upDateGrafic()
-
-    #referido a button filtros
-    def OnCleanFilter(self, event):
-        parent = self.GetParent()
-        parent2 = parent.GetParent()
-        parent2.cleanFilter()
-
-    def  optionsManger(self):
-        parent = self.GetParent()
-        parent2 = parent.GetParent()
-        parent2.optionsManger()
-#------------------------------------------------------------------------------
 
 #------------------- AUI Notebook par el footer       -------------------------
 #-------------------                                  -------------------------
@@ -228,9 +236,6 @@ import wx.lib.agw.aui as aui
 
 
 class FooterAUINotebook(aui.AuiNotebook):
-    '''
-    AUI Notebook class
-    '''
 
     def __init__(self, parent, details, mode):
         '''
@@ -238,8 +243,11 @@ class FooterAUINotebook(aui.AuiNotebook):
         :param parent: referencia al objeto padre de la clase.
         '''
         aui.AuiNotebook.__init__(self, parent=parent)
+
+        #------ self customize ---------------------------------------
         self.SetAGWWindowStyleFlag(aui.AUI_NB_BOTTOM)
 
+        #------ self components --------------------------------------
         self.data_var = ParallelDataVar(self, details, mode)
         self.data_var_p = self.data_var.presenter
 
@@ -249,12 +257,15 @@ class FooterAUINotebook(aui.AuiNotebook):
         self.filters = AddFilterObjetivesScroll(self, details, mode)
         self.filters_p = self.filters.presenter
 
+        #------ self inicailes executions ----------------------------
         self.AddPage(self.data_var, 'Variables', True)
         self.AddPage(self.data_obj, 'Objetivos', False)
         self.AddPage(self.filters, 'Filtros', False)
-#------------------------------------------------------------------------------
 
-#------------------- Pagina para visualizar Variables -------------------------
+    #------ self controls --------------------------------------------
+
+
+#------------------- Pagina vizualizador de variables -------------------------
 #-------------------                                  -------------------------
 from  wx.lib.scrolledpanel import ScrolledPanel
 import wx.dataview as dv
@@ -266,6 +277,9 @@ from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
 class ParallelDataVar(ScrolledPanel):
     def __init__(self, parent, details, mode):
         ScrolledPanel.__init__(self, parent, -1)
+
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
 
@@ -278,7 +292,9 @@ class ParallelDataVar(ScrolledPanel):
         self.SetupScrolling()
 
         self.presenter = ParallelDataVarPresenter(self, details)
-#------------------------------------------------------------------------------
+        #------ self inicailes executions ----------------------------
+    #------ self controls --------------------------------------------
+
 
 #------------------- Pagina para visualizar Objetivos -------------------------
 #-------------------                                  -------------------------
@@ -289,6 +305,9 @@ from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
 class ParallelDataObj(ScrolledPanel):
     def __init__(self, parent, details, mode):
         ScrolledPanel.__init__(self, parent, -1)
+
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
 
@@ -301,7 +320,10 @@ class ParallelDataObj(ScrolledPanel):
         self.SetupScrolling()
 
         self.presenter = ParallelDataObjPresenter(self, details)
-#------------------------------------------------------------------------------
+
+        #------ self inicailes executions ----------------------------
+    #------ self controls --------------------------------------------
+
 
 #------------------- Scrolled para los filtros        -------------------------
 #-------------------                                  -------------------------
@@ -313,11 +335,16 @@ class AddFilterObjetivesScroll(ScrolledPanel):
     def __init__(self, parent, details, mode):
         ScrolledPanel.__init__(self, parent, -1)
 
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
         self.presenter = AddFilterObjetivesScrollPresenter(self, details)
         self.sizer = wx.BoxSizer(wx.HORIZONTAL)
 
+        #------ self inicailes executions ----------------------------
+
+    #------ self controls --------------------------------------------
     def addItem(self, vmin, vmax, nobj, min_v_r, max_v_r):
         value = AddFilterObjetives(self, vmin, vmax, nobj, min_v_r, max_v_r)
         self.sizer.Add(value, 1, flag=wx.EXPAND)
@@ -327,9 +354,8 @@ class AddFilterObjetivesScroll(ScrolledPanel):
         self.SetSizer(self.sizer)
         self.SetAutoLayout(1)
         self.SetupScrolling()
-#------------------------------------------------------------------------------
 
-#------------------- Clase que agrega Filtros         -------------------------
+#------------------- Clase contenedor de Filtros      -------------------------
 #-------------------                                  -------------------------
 import py.una.pol.tava.view.vimages as I
 
@@ -341,6 +367,9 @@ class AddFilterObjetives(wx.Panel):
     def __init__(self, parent, vmin, vmax, nobj, min_v_r, max_v_r):
         wx.Panel.__init__(self, parent=parent)
 
+        #------ self customize ---------------------------------------
+
+        #------ self components --------------------------------------
         self.parent = parent
         self.min_value_r = float(min_v_r)
         self.max_value_r = float(max_v_r)
@@ -352,10 +381,8 @@ class AddFilterObjetives(wx.Panel):
         sizer_main = wx.BoxSizer(wx.HORIZONTAL)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        #------ Titulo de Proyecto Tava ---------------------------------------
         s_line = wx.StaticLine(self)
         font_title = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        #font_title.SetWeight(wx.BOLD)
         font_title.SetPointSize(10)
         title = wx.StaticText(self, label=self.name_objetive, style=2)
         title.SetFont(font_title)
@@ -405,30 +432,13 @@ class AddFilterObjetives(wx.Panel):
 
         self.SetSizer(sizer_main)
 
-        self.max_spin.Bind(wx.EVT_SPINCTRLDOUBLE, self.validateValues)
-        self.min_spin.Bind(wx.EVT_SPINCTRLDOUBLE, self.validateValues)
+        #------ self inicailes executions ----------------------------
 
-        self.max_spin.Bind(wx.EVT_KEY_UP, self.validateValues)
-        self.min_spin.Bind(wx.EVT_KEY_UP, self.validateValues)
-
+    #------ self controls --------------------------------------------
     def __getLengDigits(self):
         if len(str(self.min_value_r)) > len(str(self.max_value_r)):
             return len(str(self.min_value_r)) - 2
-
         return len(str(self.max_value_r)) - 2
-
-    def validateValues(self, event):
-        #======================================================================
-        # if self.max_spin.GetValue() > self.min_spin.GetValue():
-        #     self.min_bmp.SetBitmap(I.ok_png)
-        #     self.max_bmp.SetBitmap(I.ok_png)
-        #     #self.parent.parent.ok_button.Enable(True)
-        # else:
-        #     self.min_bmp.SetBitmap(I.errornewproject_png)
-        #     self.max_bmp.SetBitmap(I.errornewproject_png)
-        #     #self.parent.parent.ok_button.Enable(False)
-        #======================================================================
-        pass
 
     def getObjectValues(self):
         return [self.min_spin.GetValue(), self.max_spin.GetValue()]
@@ -442,10 +452,9 @@ class AddFilterObjetives(wx.Panel):
     def getLengDigits(self, min_v, max_v):
         if len(str(min_v)) > len(str(max_v)):
             return len(str(min)) - 2
-
         return len(str(max)) - 2
 
-    def  setValues(self, vmin, vmax):
+    def setValues(self, vmin, vmax):
         self.min_spin.SetValue(float(vmin))
         self.max_spin.SetValue(float(vmax))
 #------------------------------------------------------------------------------

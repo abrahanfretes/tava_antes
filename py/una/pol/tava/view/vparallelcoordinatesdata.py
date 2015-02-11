@@ -45,7 +45,7 @@ class WorkingPageParallelData(wx.Panel):
         main_dic = self.presenter.setDicIterationByResult()
 
         self.data_tree = ParallelDataTree(self, main_dic)
-        self.b_plot = wx.Button(self, -1, 'Show')
+        self.update = wx.Button(self, -1, 'Show')
         self.b_filter = wx.Button(self, -1, 'Filtrar')
         self.data_view = ParallelDataVar(self, self.presenter.test_path)
         self.data_figure = ParallelDataFigure(self, self.presenter.test_path)
@@ -54,7 +54,7 @@ class WorkingPageParallelData(wx.Panel):
         sizer_vb.Add(self.data_tree, 5, wx.EXPAND)
 
         sizer_bf = wx.BoxSizer(wx.VERTICAL)
-        sizer_bf.Add(self.b_plot)
+        sizer_bf.Add(self.update)
         sizer_bf.Add(self.b_filter)
 
         sizer_vb.Add(sizer_bf, 1, wx.EXPAND)
@@ -71,7 +71,7 @@ class WorkingPageParallelData(wx.Panel):
 
         self.optionsManger()
         self.data_view.initDataView(self.presenter.getNameVariables())
-        self.Bind(wx.EVT_BUTTON, self.OnUpDateGrafic, self.b_plot)
+        self.Bind(wx.EVT_BUTTON, self.OnUpDateGrafic, self.update)
         self.Bind(wx.EVT_BUTTON, self.OnUpDateFilter, self.b_filter)
 
     def OnUpDateFilter(self, event):
@@ -101,9 +101,9 @@ class WorkingPageParallelData(wx.Panel):
 
     def  optionsManger(self):
         if 1 == len(self.data_tree.getCurrentListChecked()):
-            self.b_plot.Enable()
+            self.update.Enable()
         else:
-            self.b_plot.Disable()
+            self.update.Disable()
 
     def  individualMangerGrafic(self, id_indivi):
         namefile = self.presenter.getFileForIndividual(id_indivi)
