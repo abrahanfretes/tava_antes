@@ -62,12 +62,13 @@ class TopPanel(wx.Panel):
         self.presenter = TopPanelPresenter(self, test, mode)
 
         self.data_tree = ParallelDataTree(self, test.test_details)
-        self.config = ConfigPanel(self)
+        #self.config = ConfigPanel(self)
         self.data_figure = ParallelDataFigure(self, mode)
+        self.config = self.data_figure.config
 
         sizer_vb = wx.BoxSizer(wx.VERTICAL)
         sizer_vb.Add(self.data_tree, 5, wx.EXPAND)
-        sizer_vb.Add(self.config, 1, wx.EXPAND | wx.TOP, 10)
+        #sizer_vb.Add(self.config, 1, wx.EXPAND | wx.TOP, 10)
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
         sizer_h.Add(sizer_vb, 1, wx.EXPAND)
@@ -159,12 +160,20 @@ class ConfigPanel(wx.Panel):
         self.parent = parent
         self.SetBackgroundColour('#f8f1d9')
 
-        self.update = wx.Button(self, -1, 'Show')
-        self.clean = wx.Button(self, -1, 'Limpiar Filtro')
+        self.update = wx.BitmapButton(self, -1, I.update_figure,
+                                                            style=wx.NO_BORDER)
+        self.update.SetToolTipString("Actualizar Figura.")
+        self.clean = wx.BitmapButton(self, -1, I.clear_filters,
+                                                            style=wx.NO_BORDER)
+        self.clean.SetToolTipString("Limpiar Filtros.")
+        self.config = wx.BitmapButton(self, -1, I.update_config,
+                                                            style=wx.NO_BORDER)
+        self.config.SetToolTipString("Nueva Configuracion.")
 
-        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
         sizer.Add(self.clean)
+        sizer.Add(self.config)
 
         self.SetSizer(sizer)
 
@@ -193,8 +202,9 @@ class ConfigPanel(wx.Panel):
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
+import py.una.pol.tava.view.vimages as I
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
                                                     ParallelDataFigurePresenter
 
 
@@ -208,6 +218,7 @@ class ParallelDataFigure(wx.Panel):
 
         #------ self customize ---------------------------------------
         #------ self components --------------------------------------
+        self.parent = parent
         self.mode = mode
         self.title_g = 'TAVA'
 
@@ -215,9 +226,15 @@ class ParallelDataFigure(wx.Panel):
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.toolbar = Toolbar(self.canvas)
         self.toolbar.Realize()
+        self.config = ConfigPanel(self)
+
+        self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer_h.Add(self.config, 4)
+        self.sizer_h.Add(self.toolbar, 1)
+
         self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer.Add(self.sizer_h, 0, wx.LEFT | wx.EXPAND)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
-        self.sizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
         self.SetSizer(self.sizer)
         self.Fit()
 
@@ -228,6 +245,12 @@ class ParallelDataFigure(wx.Panel):
     #------ self controls --------------------------------------------
     def showNewFigure(self, ite_list):
         self.presenter.newFigureTest(ite_list, self.title_g)
+
+    def  upDateGrafic(self):
+        self.parent.upDateGrafic()
+
+    def cleanFilter(self):
+        self.parent.cleanFilter()
 
 
 #------------------- AUI Notebook par el footer       -------------------------
@@ -245,7 +268,7 @@ class FooterAUINotebook(aui.AuiNotebook):
         aui.AuiNotebook.__init__(self, parent=parent)
 
         #------ self customize ---------------------------------------
-        self.SetAGWWindowStyleFlag(aui.AUI_NB_BOTTOM)
+        self.SetAGWWindowStyleFlag(aui.AUI_NB_TOP)
 
         #------ self components --------------------------------------
         self.data_var = ParallelDataVar(self, details, mode)
@@ -270,7 +293,7 @@ class FooterAUINotebook(aui.AuiNotebook):
 from  wx.lib.scrolledpanel import ScrolledPanel
 import wx.dataview as dv
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
                                                     ParallelDataVarPresenter
 
 
@@ -298,7 +321,7 @@ class ParallelDataVar(ScrolledPanel):
 
 #------------------- Pagina para visualizar Objetivos -------------------------
 #-------------------                                  -------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
                                                     ParallelDataObjPresenter
 
 
@@ -327,7 +350,7 @@ class ParallelDataObj(ScrolledPanel):
 
 #------------------- Scrolled para los filtros        -------------------------
 #-------------------                                  -------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_aux import\
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
                                             AddFilterObjetivesScrollPresenter
 
 
@@ -355,11 +378,9 @@ class AddFilterObjetivesScroll(ScrolledPanel):
         self.SetAutoLayout(1)
         self.SetupScrolling()
 
+
 #------------------- Clase contenedor de Filtros      -------------------------
 #-------------------                                  -------------------------
-import py.una.pol.tava.view.vimages as I
-
-
 from wx import LI_VERTICAL
 
 

@@ -99,6 +99,7 @@ class ParallelDataFigurePresenter:
         self.iview = iview
 
         self.figure_axes = None
+        self.legends = True
 
     #---- Funciones Generales -------------------------------------------------
     def cleanParallelFigure(self):
@@ -132,7 +133,9 @@ class ParallelDataFigurePresenter:
 
             df = inm().getCsv(ite, self.iview.mode)
 
-            axe = parallel_coordinatesTava(df, 'Name', _len, _pos, axe)
+            self.legends = False
+            axe = parallel_coordinatesTava(df, 'Name', _len, _pos, axe,
+                                                            True, self.legends)
             axe.grid(b=True)
             self.iview.canvas.draw()
             _pos += 1
