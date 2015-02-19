@@ -97,9 +97,11 @@ class ParallelDataTreePresenter:
 class ParallelDataFigurePresenter:
     def __init__(self, iview):
         self.iview = iview
-
         self.figure_axes = None
-        self.legends = True
+
+        self.title_g = 'TAVA'
+        self.color_g = ''
+        self.legend_g = True
 
     #---- Funciones Generales -------------------------------------------------
     def cleanParallelFigure(self):
@@ -110,6 +112,7 @@ class ParallelDataFigurePresenter:
     #---- Funciones definidas para ParallelFigure Test ------------------------
     def newFigureTest(self, ite_list, suptitle=''):
         self.cleanParallelFigure()
+        suptitle = self.title_g
         self.figure_axes = self._initFigurePaint(ite_list, suptitle)
     #--------------------------------------------------------------------------
 
@@ -133,9 +136,8 @@ class ParallelDataFigurePresenter:
 
             df = inm().getCsv(ite, self.iview.mode)
 
-            self.legends = False
             axe = parallel_coordinatesTava(df, 'Name', _len, _pos, axe,
-                                                            True, self.legends)
+                                                        True, self.legend_g)
             axe.grid(b=True)
             self.iview.canvas.draw()
             _pos += 1

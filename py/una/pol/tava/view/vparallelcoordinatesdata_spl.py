@@ -149,6 +149,61 @@ class ParallelDataTree(CT.CustomTreeCtrl):
     #------ self controls --------------------------------------------
 
 
+#------------------- Figuras de Coordenadas Paralelas -------------------------
+#-------------------                                  -------------------------
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
+import py.una.pol.tava.view.vimages as I
+
+from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
+                                                    ParallelDataFigurePresenter
+
+
+class ParallelDataFigure(wx.Panel):
+    '''
+    Clase Panel que contiene la configuracion para la visualizacion del
+    componente de coordenadas paralelas.
+    '''
+    def __init__(self, parent, mode):
+        wx.Panel.__init__(self, parent)
+
+        #------ self customize ---------------------------------------
+        #------ self components --------------------------------------
+        self.parent = parent
+        self.mode = mode
+
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self, -1, self.figure)
+        self.toolbar = Toolbar(self.canvas)
+        self.toolbar.Realize()
+        self.config = ConfigPanel(self)
+
+        self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer_h.Add(self.config, 4)
+        self.sizer_h.Add(self.toolbar, 1)
+
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer.Add(self.sizer_h, 0, wx.LEFT | wx.EXPAND)
+        self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
+        self.SetSizer(self.sizer)
+        self.Fit()
+
+        self.presenter = ParallelDataFigurePresenter(self)
+
+        #------ self inicailes executions ----------------------------
+
+    #------ self controls --------------------------------------------
+    def showNewFigure(self, ite_list):
+        self.presenter.newFigureTest(ite_list)
+
+    def  upDateGrafic(self):
+        self.parent.upDateGrafic()
+
+    def cleanFilter(self):
+        self.parent.cleanFilter()
+
+
 #------------------- Panel Control Configuracion      -------------------------
 #-------------------                                  -------------------------
 class ConfigPanel(wx.Panel):
@@ -180,6 +235,7 @@ class ConfigPanel(wx.Panel):
         #------ self inicailes executions ----------------------------
         self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
         self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
+        self.Bind(wx.EVT_BUTTON, self.OnConfigFigure, self.config)
 
     #------ self controls --------------------------------------------
     def  OnUpdateGrafic(self, event):
@@ -187,6 +243,9 @@ class ConfigPanel(wx.Panel):
 
     def OnCleanFilter(self, event):
         self.parent.cleanFilter()
+
+    def OnConfigFigure(self, event):
+        CustomizeFrontFigure(self)
 
     def enableButtons(self):
         self.update.Enable()
@@ -197,60 +256,83 @@ class ConfigPanel(wx.Panel):
         self.clean.Disable()
 
 
-#------------------- Figuras de Coordenadas Paralelas -------------------------
+#------------------- AUI Notebook par el footer       -------------------------
 #-------------------                                  -------------------------
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
-import py.una.pol.tava.view.vimages as I
+class CustomizeFrontFigure(wx.Dialog):
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_spl import\
-                                                    ParallelDataFigurePresenter
-
-
-class ParallelDataFigure(wx.Panel):
-    '''
-    Clase Panel que contiene la configuracion para la visualizacion del
-    componente de coordenadas paralelas.
-    '''
-    def __init__(self, parent, mode):
-        wx.Panel.__init__(self, parent)
+    def __init__(self, parent):
+        super(CustomizeFrontFigure, self).__init__(parent, size=(300, 330))
 
         #------ self customize ---------------------------------------
+
+        self.InitUI()
+
+        self.Centre()
+        self.ShowModal()
+        #----------------------------------------------------
+
+    def InitUI(self):
+
         #------ self components --------------------------------------
-        self.parent = parent
-        self.mode = mode
-        self.title_g = 'TAVA'
+        self.panel = wx.Panel(self)
 
-        self.figure = Figure()
-        self.canvas = FigureCanvas(self, -1, self.figure)
-        self.toolbar = Toolbar(self.canvas)
-        self.toolbar.Realize()
-        self.config = ConfigPanel(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-        self.sizer_h.Add(self.config, 4)
-        self.sizer_h.Add(self.toolbar, 1)
+        label = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
+        sizer.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
 
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(self.sizer_h, 0, wx.LEFT | wx.EXPAND)
-        self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
-        self.SetSizer(self.sizer)
-        self.Fit()
+        box = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.presenter = ParallelDataFigurePresenter(self)
+        label = wx.StaticText(self.panel, -1, "Titulo:")
+        box.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+
+        text = wx.TextCtrl(self.panel, -1, "Tava", size=(80, -1))
+        box.Add(text, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
+
+        sizer.Add(box, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+        cb2 = wx.CheckBox(self.panel, -1, "Legenda")
+        cb2.SetValue(True)
+
+        sizer.Add(cb2, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+        line = wx.StaticLine(self.panel, -1, size=(20, -1),
+                                                        style=wx.LI_HORIZONTAL)
+
+        sizer.Add(line, 0,
+                  wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
+
+        btnsizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        btn_ok = wx.Button(self.panel, label='Aceptar')
+        btn_cancel = wx.Button(self.panel, label='Cancelar')
+        btn_ok.SetDefault()
+
+        btnsizer.Add(btn_cancel)
+        btnsizer.Add(btn_ok)
+
+        sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
+        self.panel.SetSizer(sizer)
 
         #------ self inicailes executions ----------------------------
+        btn_ok.Bind(wx.EVT_BUTTON, self.OnButtonOk)
+        btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
+        self.panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
     #------ self controls --------------------------------------------
-    def showNewFigure(self, ite_list):
-        self.presenter.newFigureTest(ite_list, self.title_g)
+    def OnButtonOk(self, event):
+        print  'se oprimio ok'
+        self.Close(True)
 
-    def  upDateGrafic(self):
-        self.parent.upDateGrafic()
+    def OnButtonCancel(self, event):
+        print  'se oprimio cancel'
+        self.Close(True)
 
-    def cleanFilter(self):
-        self.parent.cleanFilter()
+    def OnKeyDown(self, event):
+        key = event.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
 
 
 #------------------- AUI Notebook par el footer       -------------------------
