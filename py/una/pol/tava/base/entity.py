@@ -7,7 +7,7 @@ Created on 27/06/2014
 
 
 from sqlalchemy import ForeignKey, SmallInteger, Text
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 from sqlalchemy import Float
 from sqlalchemy.orm import relationship
 import base
@@ -213,6 +213,23 @@ class TestDetail(Base):
 
     def __repr__(self):
         return "<TestDetail(id='%i')>" % (self.id)
+
+
+class ParallelAnalizer(Base):
+    ''''''
+
+    __tablename__ = 'parallel_analizer'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name_figure = Column(String(100), nullable=True)
+    legent_figure = Column(Boolean, nullable=False)
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestDetail(id='%i', name_figure='%s, name_figure='%s)>"\
+                             % (self.id, self.name_figure, self.legent_figure)
 
 
 class TestData(Base):
