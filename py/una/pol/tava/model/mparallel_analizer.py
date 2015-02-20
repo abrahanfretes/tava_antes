@@ -29,3 +29,6 @@ class ParallelAnalizerModel():
 
         '''
         return dparallel_analizer.add(parallel_analizer)
+
+    def getParallelAnalizerByIdTest(self, t_id):
+        return dparallel_analizer.getParallelAnalizerByIdTest(t_id)

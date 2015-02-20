@@ -5,10 +5,13 @@ Created on 07/02/2015
 '''
 
 import wx
+from wx.lib.pubsub import Publisher as pub
+import topic as T
 
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.model.miteration import InterationModel as im
 from py.una.pol.tava.model.mindividual import IndividualModel as inm
+from py.una.pol.tava.model.mparallel_analizer import ParallelAnalizerModel
 
 from py.una.pol.tava.presenter.pparallelcoordinates import\
     parallel_coordinatesTava
@@ -20,7 +23,12 @@ class TopPanelPresenter:
         self.test = test
         self.mode = mode
 
+        pub.subscribe(self.updateConfigPAPub, T.PARALLELANALIZER_UPDATE_FIGURE)
+
     # ---- Funciones Generales ------------------------------------------------
+    def updateConfigPAPub(self, message):
+        self.iview.upDateGrafic(True)
+
     def fileExists(self, ite):
         return inm().fileExists(ite, self.mode)
 
@@ -95,10 +103,12 @@ class ParallelDataTreePresenter:
 
 
 class ParallelDataFigurePresenter:
-    def __init__(self, iview):
+    def __init__(self, iview, t_id):
         self.iview = iview
+        self.t_id = t_id
         self.figure_axes = None
 
+        self.parallel_analizer = self.initParallelAnalizer()
         self.customizeFigure()
 
     # ---- Funciones Generales ------------------------------------------------
@@ -106,12 +116,20 @@ class ParallelDataFigurePresenter:
         if not(self.figure_axes is None):
             self.iview.figure.delaxes(self.figure_axes)
 
-    def customizeFigure(self):
-        self.title_g = 'TAVA'
-        self.color_g = ''
-        self.legend_g = True
-        pass
+    def initParallelAnalizer(self):
+        pam = ParallelAnalizerModel()
+        return pam.getParallelAnalizerByIdTest(self.t_id)
 
+    def customizeFigure(self):
+        self.title_g = ''
+        self.color_g = ''
+        self.legend_g = self.parallel_analizer.legent_figure
+
+    def updateConfigPa(self, parallel_analizer):
+        pam = ParallelAnalizerModel()
+        self.parallel_analizer = pam.upDate(parallel_analizer)
+        self.customizeFigure()
+        pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
     # -------------------------------------------------------------------------
 
     # ---- Funciones definidas para ParallelFigure Test -----------------------

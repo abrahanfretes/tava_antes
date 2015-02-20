@@ -64,7 +64,7 @@ class TopPanel(wx.Panel):
 
         self.data_tree = ParallelDataTree(self, test.test_details)
         # self.config = ConfigPanel(self)
-        self.data_figure = ParallelDataFigure(self, mode)
+        self.data_figure = ParallelDataFigure(self, mode, test.id)
         self.config = self.data_figure.config
 
         sizer_vb = wx.BoxSizer(wx.VERTICAL)
@@ -89,11 +89,11 @@ class TopPanel(wx.Panel):
         else:
             self.config.disableButtons()
 
-    def upDateGrafic(self):
+    def upDateGrafic(self, updateConfig=False):
 
         ite = self.data_tree.presenter.getListChecked()[0]
 
-        if self.data_tree.presenter.isChangeChecked():
+        if self.data_tree.presenter.isChangeChecked() or updateConfig:
             if(not self.presenter.fileExists(ite)):
                 self.presenter.createFiles(ite)
             self.___updateView()
@@ -166,7 +166,7 @@ class ParallelDataFigure(wx.Panel):
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
     '''
-    def __init__(self, parent, mode):
+    def __init__(self, parent, mode, t_id):
         wx.Panel.__init__(self, parent)
 
         # ------ self customize ---------------------------------------
@@ -190,7 +190,7 @@ class ParallelDataFigure(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
 
-        self.presenter = ParallelDataFigurePresenter(self)
+        self.presenter = ParallelDataFigurePresenter(self, t_id)
 
         # ------ self inicailes executions ----------------------------
 
@@ -203,6 +203,12 @@ class ParallelDataFigure(wx.Panel):
 
     def cleanFilter(self):
         self.parent.cleanFilter()
+
+    def getConfigPa(self):
+        return self.presenter.parallel_analizer
+
+    def updateConfigPa(self, pa):
+        self.presenter.updateConfigPa(pa)
 
 
 # ------------------- Panel Control Configuracion      ------------------------
@@ -259,13 +265,22 @@ class ConfigPanel(wx.Panel):
 
 # ------------------- AUI Notebook par el footer       ------------------------
 # -------------------                                  ------------------------
+
+    def getConfigPa(self):
+        return self.parent.getConfigPa()
+
+    def updateConfigPa(self, pa):
+        self.parent.updateConfigPa(pa)
+
+
 class CustomizeFrontFigure(wx.Dialog):
 
     def __init__(self, parent):
         super(CustomizeFrontFigure, self).__init__(parent, size=(300, 330))
 
         # ------ self customize ---------------------------------------
-
+        self.parent = parent
+        self.pa = parent.getConfigPa()
         self.InitUI()
 
         self.Centre()
@@ -282,20 +297,11 @@ class CustomizeFrontFigure(wx.Dialog):
         label = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
         sizer.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
 
-        box = wx.BoxSizer(wx.HORIZONTAL)
+        self.legent_figure = wx.CheckBox(self.panel, -1, "Legenda")
+        self.legent_figure.SetValue(self.pa.legent_figure)
 
-        label = wx.StaticText(self.panel, -1, "Titulo:")
-        box.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
-
-        text = wx.TextCtrl(self.panel, -1, "Tava", size=(80, -1))
-        box.Add(text, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
-
-        sizer.Add(box, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
-
-        cb2 = wx.CheckBox(self.panel, -1, "Legenda")
-        cb2.SetValue(True)
-
-        sizer.Add(cb2, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+        sizer.Add(self.legent_figure, 0,
+                  wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         line = wx.StaticLine(self.panel, -1, size=(20, -1),
                              style=wx.LI_HORIZONTAL)
@@ -323,11 +329,12 @@ class CustomizeFrontFigure(wx.Dialog):
 
     # ------ self controls --------------------------------------------
     def OnButtonOk(self, event):
-        print 'se oprimio ok'
+        # self.pa.name_figure = self.name_figure.Value
+        self.pa.legent_figure = self.legent_figure.GetValue()
+        self.parent.updateConfigPa(self.pa)
         self.Close(True)
 
     def OnButtonCancel(self, event):
-        print 'se oprimio cancel'
         self.Close(True)
 
     def OnKeyDown(self, event):
