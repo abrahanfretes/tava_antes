@@ -103,7 +103,7 @@ class ParallelDataFigurePresenter:
 
     # ---- Funciones Generales ------------------------------------------------
     def cleanParallelFigure(self):
-        if self.figure_axesis is not None:
+        if not(self.figure_axes is None):
             self.iview.figure.delaxes(self.figure_axes)
 
     def customizeFigure(self):
