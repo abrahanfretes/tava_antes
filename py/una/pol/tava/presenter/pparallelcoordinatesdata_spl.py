@@ -11,7 +11,7 @@ from py.una.pol.tava.model.miteration import InterationModel as im
 from py.una.pol.tava.model.mindividual import IndividualModel as inm
 
 from py.una.pol.tava.presenter.pparallelcoordinates import\
-                                                    parallel_coordinatesTava
+    parallel_coordinatesTava
 
 
 class TopPanelPresenter:
@@ -20,7 +20,7 @@ class TopPanelPresenter:
         self.test = test
         self.mode = mode
 
-    #---- Funciones Generales -------------------------------------------------
+    # ---- Funciones Generales ------------------------------------------------
     def fileExists(self, ite):
         return inm().fileExists(ite, self.mode)
 
@@ -32,26 +32,26 @@ class TopPanelPresenter:
 
     def deleteFile(self, ite):
         return inm().deleteFile(ite, self.mode)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
 
-#------------------- ParallelDataPresenter -----------------------------------
+# ------------------- ParallelDataPresenter -----------------------------------
 class ParallelDataTreePresenter:
     def __init__(self, iview, test_details):
 
         self.iview = iview
         self.root = self.iview.AddRoot("Test Data")
 
-        #ultimas iteraciones checkeadas ParallelFigure Test
+        # ultimas iteraciones checkeadas ParallelFigure Test
         self.checkeds_last = []
 
         self.InitUI(test_details)
-        #------------------------------------------------------------
+        # ------------------------------------------------------------
 
-        # Inicializacion del arbol de proyectos
+        #  Inicializacion del arbol de proyectos
     def InitUI(self, details):
 
-        #inicializamos el arbol
+        # inicializamos el arbol
         for detail in details:
             r_name = rm().getNameById(detail.result_id)
             td_item = self.iview.AppendItem(self.root, r_name)
@@ -64,14 +64,14 @@ class ParallelDataTreePresenter:
                 self.iview.SetItemPyData(tda_item, data.iteration_id)
                 self.iview.CheckItem(tda_item, False)
 
-        #ordenamos el arbol
+        # ordenamos el arbol
         self.iview.SortChildren(self.root)
 
-        #expandimos el arbol
+        # expandimos el arbol
         for item in self.root.GetChildren():
             self.iview.Expand(item)
 
-        #inicializamos la lista de chequeados
+        # inicializamos la lista de chequeados
         self.checkeds_last = sorted(self.getListChecked())
 
     def getListChecked(self, true=True):
@@ -85,13 +85,13 @@ class ParallelDataTreePresenter:
     def getLenListChecked(self):
         return len(self.getListChecked())
 
-    def  isChangeChecked(self):
+    def isChangeChecked(self):
         aux = sorted(self.getListChecked())
         if self.checkeds_last != aux:
             self.checkeds_last = aux
             return True
         return False
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 
 class ParallelDataFigurePresenter:
@@ -99,29 +99,34 @@ class ParallelDataFigurePresenter:
         self.iview = iview
         self.figure_axes = None
 
+        self.customizeFigure()
+
+    # ---- Funciones Generales ------------------------------------------------
+    def cleanParallelFigure(self):
+        if self.figure_axesis is not None:
+            self.iview.figure.delaxes(self.figure_axes)
+
+    def customizeFigure(self):
         self.title_g = 'TAVA'
         self.color_g = ''
         self.legend_g = True
+        pass
 
-    #---- Funciones Generales -------------------------------------------------
-    def cleanParallelFigure(self):
-        if self.figure_axes != None:
-            self.iview.figure.delaxes(self.figure_axes)
-    #-------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    #---- Funciones definidas para ParallelFigure Test ------------------------
+    # ---- Funciones definidas para ParallelFigure Test -----------------------
     def newFigureTest(self, ite_list, suptitle=''):
         self.cleanParallelFigure()
         suptitle = self.title_g
         self.figure_axes = self._initFigurePaint(ite_list, suptitle)
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
-    #--------------------------------------------------------------------------
-    #    Funciones Bases o comunes para todos los tipos de grafico
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    #     Funciones Bases o comunes para todos los tipos de grafico
+    # --------------------------------------------------------------------------
     def _initFigurePaint(self, ite_list, suptitle='', sp_axe=None):
         axe = None
-        if sp_axe == None:
+        if sp_axe is None:
             axe = self.iview.figure.gca()
         else:
             axe = self.iview.figure.add_subplot(sp_axe)
@@ -137,17 +142,17 @@ class ParallelDataFigurePresenter:
             df = inm().getCsv(ite, self.iview.mode)
 
             axe = parallel_coordinatesTava(df, 'Name', _len, _pos, axe,
-                                                        True, self.legend_g)
+                                           True, self.legend_g)
             axe.grid(b=True)
             self.iview.canvas.draw()
             _pos += 1
         self.iview.canvas.draw()
         return axe
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
 
 class ParallelDataVarPresenter:
-    def  __init__(self, iview, details):
+    def __init__(self, iview, details):
         self.iview = iview
 
         self.InitUI(details)
@@ -169,7 +174,7 @@ class ParallelDataVarPresenter:
 
 
 class ParallelDataObjPresenter:
-    def  __init__(self, iview, details):
+    def __init__(self, iview, details):
         self.iview = iview
 
         self.InitUI(details)
@@ -192,14 +197,14 @@ class ParallelDataObjPresenter:
 
 
 class AddFilterObjetivesScrollPresenter:
-    def  __init__(self, iview, details):
+    def __init__(self, iview, details):
         self.iview = iview
         self.details = details
         self.min_before = []
         self.max_before = []
         self.values = []
 
-    def  update(self, ite, is_new=True):
+    def update(self, ite, is_new=True):
 
         if is_new:
             if self.values != []:
@@ -215,7 +220,8 @@ class AddFilterObjetivesScrollPresenter:
 
             for index in range(len(names)):
                 value = self.iview.addItem(min_s[index], max_s[index],
-                                    names[index], min_s[index], max_s[index])
+                                           names[index], min_s[index],
+                                           max_s[index])
                 self.values.append(value)
             self.iview.addSiserHere()
 
@@ -236,13 +242,13 @@ class AddFilterObjetivesScrollPresenter:
                 return True
         return False
 
-    def  getListValues(self):
+    def getListValues(self):
         toRet = []
         for fil in self.values:
             toRet.append(fil.getObjectValues())
         return toRet
 
-    def  updateBeforeValues(self):
+    def updateBeforeValues(self):
         self.min_before = []
         self.max_before = []
         for value in self.values:
