@@ -262,25 +262,27 @@ class ConfigPanel(wx.Panel):
         self.update.Disable()
         self.clean.Disable()
 
-
-# ------------------- AUI Notebook par el footer       ------------------------
-# -------------------                                  ------------------------
-
     def getConfigPa(self):
         return self.parent.getConfigPa()
 
     def updateConfigPa(self, pa):
         self.parent.updateConfigPa(pa)
 
+# ------------------- CustomizeFrontFigure             ------------------------
+# -------------------                                  ------------------------
+
+import wx.lib.colourselect as csel
+
 
 class CustomizeFrontFigure(wx.Dialog):
 
     def __init__(self, parent):
-        super(CustomizeFrontFigure, self).__init__(parent, size=(300, 330))
+        super(CustomizeFrontFigure, self).__init__(parent, size=(300, 215))
 
         # ------ self customize ---------------------------------------
         self.parent = parent
         self.pa = parent.getConfigPa()
+        self.color_f = []
         self.InitUI()
 
         self.Centre()
@@ -293,43 +295,49 @@ class CustomizeFrontFigure(wx.Dialog):
         self.panel = wx.Panel(self)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-
-        label = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
-        sizer.Add(label, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+        title = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
 
         self.legent_figure = wx.CheckBox(self.panel, -1, "Legenda")
         self.legent_figure.SetValue(self.pa.legent_figure)
 
-        sizer.Add(self.legent_figure, 0,
-                  wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+        colour_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        colour_sizer.Add(wx.StaticText(self.panel, -1, "Color de Lineas: "))
+        self.colourDefaults = csel.ColourSelect(self.panel, -1,
+                                                colour=self.pa.color_figure,
+                                                size=(60, 25))
+        colour_sizer.Add(self.colourDefaults)
 
-        line = wx.StaticLine(self.panel, -1, size=(20, -1),
-                             style=wx.LI_HORIZONTAL)
-
-        sizer.Add(line, 0,
-                  wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
+        line = wx.StaticLine(self.panel, -1, size=(20, -1))
 
         btnsizer = wx.BoxSizer(wx.HORIZONTAL)
-
         btn_ok = wx.Button(self.panel, label='Aceptar')
         btn_cancel = wx.Button(self.panel, label='Cancelar')
         btn_ok.SetDefault()
+        btnsizer.Add(btn_cancel, 0, wx.ALL, 5)
+        btnsizer.Add(btn_ok, 0, wx.ALL, 5)
 
-        btnsizer.Add(btn_cancel)
-        btnsizer.Add(btn_ok)
-
-        sizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+        sizer.Add(title, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
+        sizer.Add(line, 0, wx.EXPAND | wx.ALL, 5)
+        sizer.Add(self.legent_figure, 0, wx.ALIGN_LEFT | wx.ALL, 5)
+        sizer.Add(colour_sizer, 0, wx.ALIGN_LEFT | wx.ALL, 5)
+        sizer.Add(btnsizer, 0, wx.ALIGN_RIGHT | wx.TOP, 20)
 
         self.panel.SetSizer(sizer)
 
         # ------ self inicailes executions ----------------------------
+        self.Bind(csel.EVT_COLOURSELECT, self.OnSelectColour,
+                  id=self.colourDefaults.GetId())
         btn_ok.Bind(wx.EVT_BUTTON, self.OnButtonOk)
         btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
         self.panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
     # ------ self controls --------------------------------------------
+    def OnSelectColour(self, event):
+        self.color_f = list(event.GetValue())
+
     def OnButtonOk(self, event):
-        # self.pa.name_figure = self.name_figure.Value
+        from matplotlib.colors import rgb2hex
+        self.pa.color_figure = rgb2hex(self.normCol(self.color_f))
         self.pa.legent_figure = self.legent_figure.GetValue()
         self.parent.updateConfigPa(self.pa)
         self.Close(True)
@@ -342,7 +350,11 @@ class CustomizeFrontFigure(wx.Dialog):
         if key == wx.WXK_ESCAPE:
             self.Close()
 
-
+    def normCol(self, rgb_c):
+        to_ret = []
+        for c in rgb_c:
+            to_ret.append(c/255.0)
+        return to_ret
 # ------------------- AUI Notebook par el footer       ------------------------
 # -------------------                                  ------------------------
 import wx.lib.agw.aui as aui

@@ -122,7 +122,7 @@ class ParallelDataFigurePresenter:
 
     def customizeFigure(self):
         self.title_g = ''
-        self.color_g = ''
+        self.color_g = (self.parallel_analizer.color_figure,)
         self.legend_g = self.parallel_analizer.legent_figure
 
     def updateConfigPa(self, parallel_analizer):
@@ -160,7 +160,8 @@ class ParallelDataFigurePresenter:
             df = inm().getCsv(ite, self.iview.mode)
 
             axe = parallel_coordinatesTava(df, 'Name', _len, _pos, axe,
-                                           True, self.legend_g)
+                                           True, self.legend_g,
+                                           color=self.color_g)
             axe.grid(b=True)
             self.iview.canvas.draw()
             _pos += 1

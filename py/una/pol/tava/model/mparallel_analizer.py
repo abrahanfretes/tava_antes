@@ -21,6 +21,8 @@ class ParallelAnalizerModel():
         '''
         parallel_analizer.name_figure = 'Tava'
         parallel_analizer.legent_figure = True
+        # '#4ECDC4'
+        parallel_analizer.color_figure = '#d7c16b'
         return dparallel_analizer.add(parallel_analizer)
 
     def upDate(self, parallel_analizer):

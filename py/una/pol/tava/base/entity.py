@@ -221,6 +221,7 @@ class ParallelAnalizer(Base):
     __tablename__ = 'parallel_analizer'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name_figure = Column(String(100), nullable=True)
+    color_figure = Column(String(7), nullable=False)
     legent_figure = Column(Boolean, nullable=False)
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
 
@@ -229,7 +230,7 @@ class ParallelAnalizer(Base):
 
     def __repr__(self):
         return "<TestDetail(id='%i', name_figure='%s, name_figure='%s)>"\
-                             % (self.id, self.name_figure, self.legent_figure)
+            % (self.id, self.name_figure, self.legent_figure)
 
 
 class TestData(Base):
