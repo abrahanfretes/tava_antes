@@ -130,6 +130,12 @@ class ParallelDataFigurePresenter:
         self.parallel_analizer = pam.upDate(parallel_analizer)
         self.customizeFigure()
         pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
+
+    def restartDefaul(self):
+        pam = ParallelAnalizerModel()
+        self.parallel_analizer = pam.restartDefaul(self.parallel_analizer)
+        self.customizeFigure()
+        pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
     # -------------------------------------------------------------------------
 
     # ---- Funciones definidas para ParallelFigure Test -----------------------

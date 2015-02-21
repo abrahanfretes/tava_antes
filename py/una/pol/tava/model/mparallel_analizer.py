@@ -32,5 +32,12 @@ class ParallelAnalizerModel():
         '''
         return dparallel_analizer.add(parallel_analizer)
 
+    def restartDefaul(self, parallel_analizer):
+        '''
+        Función que restablece los valores por defecto.
+
+        '''
+        return self.add(parallel_analizer)
+
     def getParallelAnalizerByIdTest(self, t_id):
         return dparallel_analizer.getParallelAnalizerByIdTest(t_id)

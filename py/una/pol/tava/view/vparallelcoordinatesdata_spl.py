@@ -210,6 +210,9 @@ class ParallelDataFigure(wx.Panel):
     def updateConfigPa(self, pa):
         self.presenter.updateConfigPa(pa)
 
+    def restartDefaul(self):
+        self.presenter.restartDefaul()
+
 
 # ------------------- Panel Control Configuracion      ------------------------
 # -------------------                                  ------------------------
@@ -257,16 +260,21 @@ class ConfigPanel(wx.Panel):
     def enableButtons(self):
         self.update.Enable()
         self.clean.Enable()
+        self.config.Enable()
 
     def disableButtons(self):
         self.update.Disable()
         self.clean.Disable()
+        self.config.Disable()
 
     def getConfigPa(self):
         return self.parent.getConfigPa()
 
     def updateConfigPa(self, pa):
         self.parent.updateConfigPa(pa)
+
+    def restartDefaul(self):
+        self.parent.restartDefaul()
 
 # ------------------- CustomizeFrontFigure             ------------------------
 # -------------------                                  ------------------------
@@ -310,9 +318,11 @@ class CustomizeFrontFigure(wx.Dialog):
         line = wx.StaticLine(self.panel, -1, size=(20, -1))
 
         btnsizer = wx.BoxSizer(wx.HORIZONTAL)
+        btn_restart_d = wx.Button(self.panel, label='Reestablecer')
         btn_ok = wx.Button(self.panel, label='Aceptar')
         btn_cancel = wx.Button(self.panel, label='Cancelar')
         btn_ok.SetDefault()
+        btnsizer.Add(btn_restart_d, 0, wx.ALIGN_LEFT | wx.ALL, 5)
         btnsizer.Add(btn_cancel, 0, wx.ALL, 5)
         btnsizer.Add(btn_ok, 0, wx.ALL, 5)
 
@@ -320,13 +330,14 @@ class CustomizeFrontFigure(wx.Dialog):
         sizer.Add(line, 0, wx.EXPAND | wx.ALL, 5)
         sizer.Add(self.legent_figure, 0, wx.ALIGN_LEFT | wx.ALL, 5)
         sizer.Add(colour_sizer, 0, wx.ALIGN_LEFT | wx.ALL, 5)
-        sizer.Add(btnsizer, 0, wx.ALIGN_RIGHT | wx.TOP, 20)
+        sizer.Add(btnsizer, 0, wx.ALIGN_RIGHT | wx.TOP, 35)
 
         self.panel.SetSizer(sizer)
 
         # ------ self inicailes executions ----------------------------
         self.Bind(csel.EVT_COLOURSELECT, self.OnSelectColour,
                   id=self.colourDefaults.GetId())
+        btn_restart_d.Bind(wx.EVT_BUTTON, self.OnRestartDefaul)
         btn_ok.Bind(wx.EVT_BUTTON, self.OnButtonOk)
         btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
         self.panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
@@ -349,6 +360,10 @@ class CustomizeFrontFigure(wx.Dialog):
         key = event.GetKeyCode()
         if key == wx.WXK_ESCAPE:
             self.Close()
+
+    def OnRestartDefaul(self, event):
+        self.parent.restartDefaul()
+        self.Close(True)
 
     def normCol(self, rgb_c):
         to_ret = []
