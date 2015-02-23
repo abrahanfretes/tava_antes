@@ -64,7 +64,7 @@ class TopPanel(wx.Panel):
 
         self.data_tree = ParallelDataTree(self, test.test_details)
         # self.config = ConfigPanel(self)
-        self.data_figure = ParallelDataFigure(self, mode, test.id)
+        self.data_figure = ParallelDataFigure(self, mode, test)
         self.config = self.data_figure.config
 
         sizer_vb = wx.BoxSizer(wx.VERTICAL)
@@ -166,7 +166,7 @@ class ParallelDataFigure(wx.Panel):
     Clase Panel que contiene la configuracion para la visualizacion del
     componente de coordenadas paralelas.
     '''
-    def __init__(self, parent, mode, t_id):
+    def __init__(self, parent, mode, test):
         wx.Panel.__init__(self, parent)
 
         # ------ self customize ---------------------------------------
@@ -190,7 +190,7 @@ class ParallelDataFigure(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
 
-        self.presenter = ParallelDataFigurePresenter(self, t_id)
+        self.presenter = ParallelDataFigurePresenter(self, test)
 
         # ------ self inicailes executions ----------------------------
 
@@ -212,6 +212,9 @@ class ParallelDataFigure(wx.Panel):
 
     def restartDefaul(self):
         self.presenter.restartDefaul()
+
+    def getConfigOb(self):
+        return self.presenter.getListConfigOb()
 
 
 # ------------------- Panel Control Configuracion      ------------------------
@@ -235,10 +238,15 @@ class ConfigPanel(wx.Panel):
                                       style=wx.NO_BORDER)
         self.config.SetToolTipString("Nueva Configuracion.")
 
+        self.objetives = wx.BitmapButton(self, -1, I.list_objetives,
+                                         style=wx.NO_BORDER)
+        self.objetives.SetToolTipString("Filtrar Objetivos.")
+
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
         sizer.Add(self.clean)
         sizer.Add(self.config)
+        sizer.Add(self.objetives)
 
         self.SetSizer(sizer)
 
@@ -246,6 +254,7 @@ class ConfigPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
         self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
         self.Bind(wx.EVT_BUTTON, self.OnConfigFigure, self.config)
+        self.Bind(wx.EVT_BUTTON, self.OnFilterObjetives, self.objetives)
 
     # ------ self controls --------------------------------------------
     def OnUpdateGrafic(self, event):
@@ -257,15 +266,20 @@ class ConfigPanel(wx.Panel):
     def OnConfigFigure(self, event):
         CustomizeFrontFigure(self)
 
+    def OnFilterObjetives(self, event):
+        CustomizeObjetives(self)
+
     def enableButtons(self):
         self.update.Enable()
         self.clean.Enable()
         self.config.Enable()
+        self.objetives.Enable()
 
     def disableButtons(self):
         self.update.Disable()
         self.clean.Disable()
         self.config.Disable()
+        self.objetives.Disable()
 
     def getConfigPa(self):
         return self.parent.getConfigPa()
@@ -275,6 +289,10 @@ class ConfigPanel(wx.Panel):
 
     def restartDefaul(self):
         self.parent.restartDefaul()
+
+    def getConfigOb(self):
+        return self.parent.getConfigOb()
+
 
 # ------------------- CustomizeFrontFigure             ------------------------
 # -------------------                                  ------------------------
@@ -372,6 +390,79 @@ class CustomizeFrontFigure(wx.Dialog):
         for c in rgb_c:
             to_ret.append(c/255.0)
         return to_ret
+
+
+class CustomizeObjetives(wx.Dialog):
+
+    def __init__(self, parent):
+        super(CustomizeObjetives, self).__init__(parent, size=(300, 400))
+
+        # ------ self customize ---------------------------------------
+        self.parent = parent
+        self.no, self.vo = parent.getConfigOb()
+        self.color_f = []
+        self.InitUI()
+
+        self.Centre()
+        self.ShowModal()
+        # ----------------------------------------------------
+
+    def InitUI(self):
+
+        # ------ self components --------------------------------------
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        title = wx.StaticText(self, -1, "Objetivos Disponibles", (45, 15))
+        sl = wx.StaticLine(self)
+
+        sizerh = wx.BoxSizer(wx.HORIZONTAL)
+        lb = wx.CheckListBox(self, -1, (80, 50), wx.DefaultSize, self.no)
+        self.Bind(wx.EVT_LISTBOX, self.EvtListBox, lb)
+        self.Bind(wx.EVT_CHECKLISTBOX, self.EvtCheckListBox, lb)
+        lb.SetSelection(0)
+        self.lb = lb
+
+        sizerv = wx.BoxSizer(wx.VERTICAL)
+        btn_cancel = wx.Button(self, label='Cancelar')
+        btn_ok = wx.Button(self, label='Aceptar')
+
+        sizerv.Add(btn_ok)
+        sizerv.Add(btn_cancel)
+
+        sizerh.Add(self.lb, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
+        sizerh.Add(sizerv, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
+
+        sizer.Add(title, 1, wx.ALIGN_CENTRE | wx.ALL, 5)
+        sizer.Add(sl, 1, wx.EXPAND | wx.ALL, 5)
+        sizer.Add(sizerh, 5, wx.ALIGN_CENTRE | wx.ALL, 5)
+
+        self.SetSizer(sizer)
+
+        for i in range(len(self.vo)):
+            if self.vo[i] == '1':
+                lb.Check(i)
+
+        btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
+
+    def EvtListBox(self, event):
+        print ('EvtListBox: %s\n' % event.GetString())
+
+    def EvtCheckListBox(self, event):
+        index = event.GetSelection()
+        label = self.lb.GetString(index)
+        status = 'un'
+        if self.lb.IsChecked(index):
+            status = ''
+        print ('Box %s is %schecked \n' % (label, status))
+        self.lb.SetSelection(index)
+
+        # ------ self components --------------------------------------
+        # ------ self controls --------------------------------------------
+    def OnButtonCancel(self, event):
+        self.Close(True)
+        # ------ self inicailes executions ----------------------------
+
 # ------------------- AUI Notebook par el footer       ------------------------
 # -------------------                                  ------------------------
 import wx.lib.agw.aui as aui

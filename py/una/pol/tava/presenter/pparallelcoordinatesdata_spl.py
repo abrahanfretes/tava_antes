@@ -103,9 +103,9 @@ class ParallelDataTreePresenter:
 
 
 class ParallelDataFigurePresenter:
-    def __init__(self, iview, t_id):
+    def __init__(self, iview, test):
         self.iview = iview
-        self.t_id = t_id
+        self.test = test
         self.figure_axes = None
 
         self.parallel_analizer = self.initParallelAnalizer()
@@ -118,7 +118,7 @@ class ParallelDataFigurePresenter:
 
     def initParallelAnalizer(self):
         pam = ParallelAnalizerModel()
-        return pam.getParallelAnalizerByIdTest(self.t_id)
+        return pam.getParallelAnalizerByIdTest(self.test.id)
 
     def customizeFigure(self):
         self.title_g = ''
@@ -130,6 +130,11 @@ class ParallelDataFigurePresenter:
         self.parallel_analizer = pam.upDate(parallel_analizer)
         self.customizeFigure()
         pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
+
+    def getListConfigOb(self):
+        no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
+        vo = self.parallel_analizer.views_objectives
+        return no.split(','), vo.split(',')
 
     def restartDefaul(self):
         pam = ParallelAnalizerModel()

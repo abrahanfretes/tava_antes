@@ -67,3 +67,6 @@ class ResultModel(object):
 
     def getNumberObjetivetById(self, id_result):
         return dresult.getResultById(id_result).number_objectives
+
+    def getNamesObjetivestById(self, r_id):
+        return dresult.getResultById(r_id).name_objectives
