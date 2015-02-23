@@ -347,8 +347,10 @@ class CustomizeFrontFigure(wx.Dialog):
         self.color_f = list(event.GetValue())
 
     def OnButtonOk(self, event):
-        from matplotlib.colors import rgb2hex
-        self.pa.color_figure = rgb2hex(self.normCol(self.color_f))
+
+        if not (self.color_f == []):
+            from matplotlib.colors import rgb2hex
+            self.pa.color_figure = rgb2hex(self.normCol(self.color_f))
         self.pa.legent_figure = self.legent_figure.GetValue()
         self.parent.updateConfigPa(self.pa)
         self.Close(True)

@@ -223,6 +223,7 @@ class ParallelAnalizer(Base):
     name_figure = Column(String(100), nullable=True)
     color_figure = Column(String(7), nullable=False)
     legent_figure = Column(Boolean, nullable=False)
+    views_objectives = Column(String(100))
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
 
     def __init__(self):

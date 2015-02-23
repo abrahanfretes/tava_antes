@@ -64,3 +64,6 @@ class ResultModel(object):
 
     def getNameById(self, id_result):
         return self.getResultById(id_result).name
+
+    def getNumberObjetivetById(self, id_result):
+        return dresult.getResultById(id_result).number_objectives

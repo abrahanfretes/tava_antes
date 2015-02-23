@@ -45,7 +45,7 @@ class GraphicWizardPresenter():
         test.project_id = project.id
         test.creation_date = time.strftime("%d/%m/%y")
 
-        test = tm().add(test)
+        #test = tm().add(test)
 
         #obtener las iteraciones de cada archivo
         for rf in data:
@@ -92,7 +92,9 @@ class GraphicWizardPresenter():
 
         test.test_graphic.append(test_graphic)
 
-        test = tm().upDate(test)
+        test = tm().add(test)
+        
+       #test = tm().upDate(test)
 
         pub.sendMessage(T.PROJECT_UPDATE, project)
         pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, selection))

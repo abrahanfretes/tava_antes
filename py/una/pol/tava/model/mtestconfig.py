@@ -5,7 +5,6 @@ Created on 23/09/2014
 @author: abrahan
 '''
 from py.una.pol.tava.dao import dtestconfig
-from py.una.pol.tava.base.entity import ParallelAnalizer
 from py.una.pol.tava.model.mparallel_analizer import ParallelAnalizerModel
 from datetime import date
 
@@ -27,11 +26,7 @@ class TestConfigModel():
         '''
         test_config.creation_date = date.today()
         new_test_config = dtestconfig.add(test_config)
-
-        new_parallel_analizer = ParallelAnalizer()
-        new_parallel_analizer.test_config_id = new_test_config.id
-        ParallelAnalizerModel().add(new_parallel_analizer)
-
+        ParallelAnalizerModel().add(new_test_config)
         return new_test_config
 
     def upDate(self, test):

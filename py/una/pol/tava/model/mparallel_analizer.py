@@ -5,6 +5,8 @@ Created on 19/2/2015
 @author: abrahan
 '''
 from py.una.pol.tava.dao import dparallel_analizer
+from py.una.pol.tava.model.mresult import ResultModel
+from py.una.pol.tava.base.entity import ParallelAnalizer
 
 
 class ParallelAnalizerModel():
@@ -14,16 +16,23 @@ class ParallelAnalizerModel():
         Constructor
         '''
 
-    def add(self, parallel_analizer):
+    def add(self, test):
         '''
         Función que agrega un ParallelAnalizer a la base de datos.
 
         '''
-        parallel_analizer.name_figure = 'Tava'
-        parallel_analizer.legent_figure = True
-        # '#4ECDC4'
-        parallel_analizer.color_figure = '#d7c16b'
-        return dparallel_analizer.add(parallel_analizer)
+
+        r_id = test.test_details[0].result_id
+        ner = ResultModel().getNumberObjetivetById(r_id)
+
+        pa = ParallelAnalizer()
+        pa.name_figure = 'Tava'
+        pa.legent_figure = True
+        pa.color_figure = '#d7c16b'  # '#4ECDC4'
+        pa.views_objectives = ','.join([str(1) for _ in range(ner)])
+        pa.test_config_id = test.id
+
+        return dparallel_analizer.add(pa)
 
     def upDate(self, parallel_analizer):
         '''
@@ -41,3 +50,9 @@ class ParallelAnalizerModel():
 
     def getParallelAnalizerByIdTest(self, t_id):
         return dparallel_analizer.getParallelAnalizerByIdTest(t_id)
+
+    def updateByFigure(self, pa):
+        pa.name_figure = 'Tava'
+        pa.legent_figure = True
+        pa.color_figure = '#d7c16b'  # '#4ECDC4'
+        return dparallel_analizer.add(pa)
