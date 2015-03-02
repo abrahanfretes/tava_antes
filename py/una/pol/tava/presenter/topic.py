@@ -90,3 +90,11 @@ TESTCONFIG_ADD_PAGE = 'TESTCONFIG.ADDPAGE'
 # Send = pparallelcoordinatesdata_spl
 # Subscribe = pparallelcoordinatesdata_spl
 PARALLELANALIZER_UPDATE_FIGURE = 'PARALLELANALIZER.UPDATE_FIGURE'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_TREE_CHECK_FIGURE = 'PARALLEL.TREE_CHECK_FIGURE'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE = 'PARALLEL.UPDATE_FIGURE'

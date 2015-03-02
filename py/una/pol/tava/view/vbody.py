@@ -19,6 +19,8 @@ from py.una.pol.tava.view.vparallelcoordinatesdata_aux import\
                                                         WorkingPageParallelData
 from py.una.pol.tava.view.vparallelcoordinatesdata_spl import\
                                                         WorkingPageParallelSpl
+from py.una.pol.tava.view.vparallelcoordinatesdata_fnl import\
+    WorkingPageParallelFnl
 
 
 class MainPanel(wx.Panel):
@@ -163,8 +165,12 @@ class AUINotebook(aui.AuiNotebook):
             working_space = WorkingPageParallel(self, test)
             self.AddPage(working_space, test.name, True)
         elif mode == 2:
-            working_space = WorkingPageParallelSpl(self, test, mode)
+            working_space = WorkingPageParallelFnl(self, test, mode)
             self.AddPage(working_space, test.name, True)
+            #===================================================================
+            # working_space = WorkingPageParallelSpl(self, test, mode)
+            # self.AddPage(working_space, test.name, True)
+            #===================================================================
         elif mode == 3:
             working_space = WorkingPageParallelData(self, test, mode)
             self.AddPage(working_space, test.name, True)
