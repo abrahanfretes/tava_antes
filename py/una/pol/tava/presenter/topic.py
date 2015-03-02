@@ -98,3 +98,7 @@ PARALLEL_TREE_CHECK_FIGURE = 'PARALLEL.TREE_CHECK_FIGURE'
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
 PARALLEL_UPDATE_FIGURE = 'PARALLEL.UPDATE_FIGURE'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE_LIST_OBJ = 'PARALLEL.UPDATE_FIGURE_LIST_OBJ'

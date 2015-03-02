@@ -93,6 +93,8 @@ class TopPanel(wx.Panel):
         self.presenter.createFiles(ite)
         self.___updateView()
 
+    def getCurrentIteChecked(self):
+        return self.data_tree.presenter.getListChecked()[0]
 
 # ------------------- Arbol de Archvivos e Iteraciones ------------------------
 # -------------------                                  ------------------------
@@ -156,7 +158,7 @@ class ParallelDataFigure(wx.Panel):
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.toolbar = Toolbar(self.canvas)
         self.toolbar.Realize()
-        self.button_tolbar = ButtonsTollFigure(self)
+        self.button_tolbar = ButtonsTollFigure(self, test)
 
         self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
         self.sizer_h.Add(self.button_tolbar, 4)
@@ -188,9 +190,6 @@ class ParallelDataFigure(wx.Panel):
     def restartDefaul(self):
         self.presenter.restartDefaul()
 
-    def getConfigOb(self):
-        return self.presenter.getListConfigOb()
-
 
 # ------------------- Panel Control Configuracion      ------------------------
 # -------------------                                  ------------------------
@@ -201,7 +200,7 @@ from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
 
 
 class ButtonsTollFigure(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, test):
         wx.Panel.__init__(self, parent)
 
         # ------ self customize ---------------------------------------
@@ -231,7 +230,7 @@ class ButtonsTollFigure(wx.Panel):
 
         self.SetSizer(sizer)
 
-        self.presenter = ButtonsTollFigurePresenter(self)
+        self.presenter = ButtonsTollFigurePresenter(self, test)
         # ------ self inicailes executions ----------------------------
         self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
         self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
@@ -241,7 +240,6 @@ class ButtonsTollFigure(wx.Panel):
     # ------ self controls --------------------------------------------
     def OnUpdateGrafic(self, event):
         self.presenter.updateGrafic()
-        #self.parent.upDateGrafic()
 
     def OnCleanFilter(self, event):
         self.parent.cleanFilter()
@@ -273,8 +271,11 @@ class ButtonsTollFigure(wx.Panel):
     def restartDefaul(self):
         self.parent.restartDefaul()
 
-    def getConfigOb(self):
-        return self.parent.getConfigOb()
+    def getConfigObV(self):
+        return self.presenter.getStatesObjetives()
+
+    def getUpdateListObjetiveV(self, list_obj):
+        return self.presenter.getUpdateListObjetive(list_obj)
 
 
 # ------------------- CustomizeFrontFigure             ------------------------
@@ -371,7 +372,7 @@ class CustomizeFrontFigure(wx.Dialog):
     def normCol(self, rgb_c):
         to_ret = []
         for c in rgb_c:
-            to_ret.append(c/255.0)
+            to_ret.append(c / 255.0)
         return to_ret
 
 
@@ -382,7 +383,7 @@ class CustomizeObjetives(wx.Dialog):
 
         # ------ self customize ---------------------------------------
         self.parent = parent
-        self.no, self.vo = parent.getConfigOb()
+        self.no, self.vo = parent.getConfigObV()
         self.color_f = []
         self.InitUI()
 
@@ -401,7 +402,6 @@ class CustomizeObjetives(wx.Dialog):
 
         sizerh = wx.BoxSizer(wx.HORIZONTAL)
         lb = wx.CheckListBox(self, -1, (80, 50), wx.DefaultSize, self.no)
-        self.Bind(wx.EVT_LISTBOX, self.EvtListBox, lb)
         self.Bind(wx.EVT_CHECKLISTBOX, self.EvtCheckListBox, lb)
         lb.SetSelection(0)
         self.lb = lb
@@ -426,23 +426,23 @@ class CustomizeObjetives(wx.Dialog):
             if self.vo[i] == '1':
                 lb.Check(i)
 
+        btn_ok.Bind(wx.EVT_BUTTON, self.OnButtonOk)
         btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
-
-    def EvtListBox(self, event):
-        print ('EvtListBox: %s\n' % event.GetString())
 
     def EvtCheckListBox(self, event):
         index = event.GetSelection()
-        label = self.lb.GetString(index)
-        status = 'un'
+        self.vo[index] = '0'
         if self.lb.IsChecked(index):
-            status = ''
-        print ('Box %s is %schecked \n' % (label, status))
+            self.vo[index] = '1'
         self.lb.SetSelection(index)
 
         # ------ self components --------------------------------------
         # ------ self controls --------------------------------------------
     def OnButtonCancel(self, event):
+        self.Close(True)
+
+    def OnButtonOk(self, event):
+        self.parent.getUpdateListObjetiveV(','.join(self.vo))
         self.Close(True)
         # ------ self inicailes executions ----------------------------
 

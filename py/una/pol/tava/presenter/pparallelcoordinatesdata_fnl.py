@@ -24,9 +24,15 @@ class TopPanelPresenter:
 
         pub.subscribe(self.updateConfigPAPub, T.PARALLELANALIZER_UPDATE_FIGURE)
         pub.subscribe(self.updateFigurePub, T.PARALLEL_UPDATE_FIGURE)
+        pub.subscribe(self.updateListObjetivesPub,
+                      T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
 
     # ---- Funciones Generales ------------------------------------------------
     def updateConfigPAPub(self, message):
+        self.iview.upDateGrafic(True)
+
+    def updateListObjetivesPub(self, message):
+        self.fileDelete(self.iview.getCurrentIteChecked())
         self.iview.upDateGrafic(True)
 
     def updateFigurePub(self, message):
@@ -35,8 +41,13 @@ class TopPanelPresenter:
     def fileExists(self, ite):
         return inm().fileExists(ite, self.mode)
 
+    def fileDelete(self, ite):
+        return inm().fileDelete(ite, self.mode)
+
     def createFiles(self, ite):
-        return inm().createFiles(ite, self.mode)
+        pam = ParallelAnalizerModel()
+        p_analizer = pam.getParallelAnalizerByIdTest(self.test.id)
+        return inm().createFiles(ite, self.mode, p_analizer.views_objectives)
 
     def createFilesWithFilter(self, ite, filters):
         return inm().createFilesWithFilter(ite, self.mode, filters)
@@ -141,11 +152,6 @@ class ParallelDataFigurePresenter:
         self.customizeFigure()
         pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
 
-    def getListConfigOb(self):
-        no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
-        vo = self.parallel_analizer.views_objectives
-        return no.split(','), vo.split(',')
-
     def restartDefaul(self):
         pam = ParallelAnalizerModel()
         self.parallel_analizer = pam.updateByFigure(self.parallel_analizer)
@@ -192,8 +198,9 @@ class ParallelDataFigurePresenter:
 
 
 class ButtonsTollFigurePresenter:
-    def __init__(self, iview):
+    def __init__(self, iview, test):
         self.iview = iview
+        self.test = test
 
         pub.subscribe(self.checkedTreePub, T.PARALLEL_TREE_CHECK_FIGURE)
 
@@ -210,6 +217,22 @@ class ButtonsTollFigurePresenter:
 
     def updateGrafic(self):
         pub.sendMessage(T.PARALLEL_UPDATE_FIGURE)
+
+    def getStatesObjetives(self):
+        no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
+        vo = self.getParallelAnalizer().views_objectives
+        return no.split(','), vo.split(',')
+
+    def getParallelAnalizer(self):
+        pam = ParallelAnalizerModel()
+        return pam.getParallelAnalizerByIdTest(self.test.id)
+
+    def getUpdateListObjetive(self, list_obj):
+        parallel_analizer = self.getParallelAnalizer()
+        parallel_analizer.views_objectives = list_obj
+        pam = ParallelAnalizerModel()
+        pam.upDate(parallel_analizer)
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
 
 
 class ParallelDataVarPresenter:

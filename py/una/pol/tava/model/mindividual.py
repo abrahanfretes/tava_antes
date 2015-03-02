@@ -92,7 +92,7 @@ class IndividualModel(object):
 
         return res.name_objectives, ite.identifier, to_ret_obj, to_ret_var
 
-    def  createFiles(self, ite, mode):
+    def createFiles(self, ite, mode, v_objectives):
 
         #crear el archivo y
         file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
@@ -105,20 +105,41 @@ class IndividualModel(object):
         #obtengo lista y cabecera
         obj_name, ident, obj_list, var_list = self.getObjByIteration(ite)
 
-        #agrego cabecera
-        f.write(obj_name + ',Name\n')
-        #agrego la lista
-        for index in range(len(obj_list)):
-
-            f.write(obj_list[index] + ',' + str(ident) + '\n')
-            f_obj.write(str(index) + ',' + obj_list[index] + '\n')
-            f_var.write(str(index) + ',' + var_list[index] + '\n')
+        list_obj = v_objectives.split(',')
+        if list_obj.count('0'):
+            index_one = []
+            for i in range(len(list_obj)):
+                if list_obj[i] == '1':
+                    index_one.append(i)
+            #agrego cabecera
+            f.write(self.getLineObj(obj_name, index_one) + ',Name\n')
+            #agrego la lista
+            for index in range(len(obj_list)):
+                f.write(self.getLineObj(obj_list[index], index_one)
+                        + ',' + str(ident) + '\n')
+                f_obj.write(str(index) + ',' + obj_list[index] + '\n')
+                f_var.write(str(index) + ',' + var_list[index] + '\n')
+        else:
+            #agrego cabecera
+            f.write(obj_name + ',Name\n')
+            #agrego la lista
+            for index in range(len(obj_list)):
+                f.write(obj_list[index] + ',' + str(ident) + '\n')
+                f_obj.write(str(index) + ',' + obj_list[index] + '\n')
+                f_var.write(str(index) + ',' + var_list[index] + '\n')
 
         f.close()
         f_var.close()
         f_obj.close()
 
-    def  deleteFile(self, ite_id, mode):
+    def getLineObj(self, var, list_obj):
+        var_aux = var.split(',')
+        to_ret = []
+        for i in list_obj:
+            to_ret.append(var_aux[i])
+        return ','.join(to_ret)
+
+    def deleteFile(self, ite_id, mode):
 
         file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
         if os.path.isfile(file_obj):
@@ -152,7 +173,12 @@ class IndividualModel(object):
         file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
         return os.path.isfile(file_obj)
 
-    def  createFilesWithFilter(self, ite, mode, filters):
+    def fileDelete(self, ite_id, mode):
+        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
+        if os.path.isfile(file_obj):
+            os.remove(file_obj)
+
+    def createFilesWithFilter(self, ite, mode, filters):
 
         #crear el archivo y
         file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
