@@ -22,7 +22,7 @@ class WorkingPageParallelFnl(wx.SplitterWindow):
         #  ------ self components --------------------------------------
         self.mode = str(mode)
         self.top_panel = TopPanel(self, test, self.mode)
-        self.footer = FooterAUINotebook(self, test.test_details, self.mode)
+        self.footer = FooterAUINotebook(self, test, self.mode)
         self.SplitHorizontally(self.top_panel, self.footer,
                                int(round(self.GetParent().GetSize().
                                          GetWidth() * 0.50)))
@@ -31,7 +31,7 @@ class WorkingPageParallelFnl(wx.SplitterWindow):
     def updateFooter(self, ite_list, new):
         self.footer.data_var_p.updateDatas(ite_list)
         self.footer.data_obj_p.updateDatas(ite_list)
-        self.footer.filters_p.update(ite_list[0], new)
+        #self.footer.filters_p.update(ite_list[0], new)
 
     def isFilterModified(self):
         return self.footer.filters_p.isFilterModified()
@@ -77,10 +77,12 @@ class TopPanel(wx.Panel):
                 self.presenter.createFiles(ite)
             self.___updateView()
 
-        elif self.parent.isFilterModified():
-            filters = self.parent.getListValues()
-            self.presenter.createFilesWithFilter(ite, filters)
-            self.___updateView(False)
+        #=======================================================================
+        # elif self.parent.isFilterModified():
+        #     filters = self.parent.getListValues()
+        #     self.presenter.createFilesWithFilter(ite, filters)
+        #     self.___updateView(False)
+        #=======================================================================
 
     def ___updateView(self, new=True):
         ite_list = self.data_tree.presenter.getListChecked()
@@ -222,11 +224,16 @@ class ButtonsTollFigure(wx.Panel):
                                          style=wx.NO_BORDER)
         self.objetives.SetToolTipString("Filtrar Objetivos.")
 
+        self.sort_objetive = wx.BitmapButton(self, -1, I.sort_objetive,
+                                             style=wx.NO_BORDER)
+        self.sort_objetive.SetToolTipString("Ordenar Objetivos.")
+
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
         sizer.Add(self.clean)
         sizer.Add(self.config)
         sizer.Add(self.objetives)
+        sizer.Add(self.sort_objetive)
 
         self.SetSizer(sizer)
 
@@ -236,6 +243,7 @@ class ButtonsTollFigure(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
         self.Bind(wx.EVT_BUTTON, self.OnConfigFigure, self.config)
         self.Bind(wx.EVT_BUTTON, self.OnFilterObjetives, self.objetives)
+        self.Bind(wx.EVT_BUTTON, self.OnSortObjetives, self.sort_objetive)
 
     # ------ self controls --------------------------------------------
     def OnUpdateGrafic(self, event):
@@ -250,17 +258,23 @@ class ButtonsTollFigure(wx.Panel):
     def OnFilterObjetives(self, event):
         CustomizeObjetives(self)
 
+    def OnSortObjetives(self, event):
+        d = SortObjetiveDialog(self, self.presenter.getObjetivesForSort())
+        d.ShowModal()
+
     def enableButtons(self):
         self.update.Enable()
         self.clean.Enable()
         self.config.Enable()
         self.objetives.Enable()
+        self.sort_objetive.Enable()
 
     def disableButtons(self):
         self.update.Disable()
         self.clean.Disable()
         self.config.Disable()
         self.objetives.Disable()
+        self.sort_objetive.Disable()
 
     def getConfigPa(self):
         return self.parent.getConfigPa()
@@ -277,6 +291,57 @@ class ButtonsTollFigure(wx.Panel):
     def getUpdateListObjetiveV(self, list_obj):
         return self.presenter.getUpdateListObjetive(list_obj)
 
+    def updateSortV(self, new_order_list):
+        self.presenter.updateSort(new_order_list)
+
+# ------------------- SortObjetiveDialog               ------------------------
+# -------------------                                  ------------------------
+
+from wx.lib.itemspicker import ItemsPicker, EVT_IP_SELECTION_CHANGED
+
+
+class SortObjetiveDialog(wx.Dialog):
+    def __init__(self, parent, list_obj):
+        wx.Dialog.__init__(self, parent)
+
+        self.parent = parent
+        self.list_obj = list_obj
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.ip = ItemsPicker(self, -1, self.list_obj,
+                              'Orden Actual:', 'Nuevo Orden:')
+        self.ip._source.SetMinSize((-1, 150))
+        sizer.Add(self.ip, 0, wx.ALL, 10)
+
+        sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+
+        b_cancel = wx.Button(self, -1, "Cancelar")
+        b_cancel.Bind(wx.EVT_BUTTON, self.OnCancel)
+        self.b_ok = wx.Button(self, -1, "Aceptar")
+        self.b_ok.Disable()
+        self.b_ok.Bind(wx.EVT_BUTTON, self.OnOk)
+        sizer_h.Add(b_cancel, 0, wx.ALL, 10)
+        sizer_h.Add(self.b_ok, 0, wx.ALL, 10)
+
+        sizer.Add(sizer_h, 0, wx.ALL, 10)
+
+        self.SetSizer(sizer)
+
+        self.ip.Bind(EVT_IP_SELECTION_CHANGED, self.OnSelectionChange)
+
+        self.Fit()
+
+    def OnSelectionChange(self, e):
+        self.b_ok.Disable()
+        if len(self.list_obj) == len(e.GetItems()):
+            self.list_obj = e.GetItems()
+            self.b_ok.Enable()
+
+    def OnOk(self, event):
+        self.parent.updateSortV(self.list_obj)
+        self.Close()
+
+    def OnCancel(self, event):
+        self.Close()
 
 # ------------------- CustomizeFrontFigure             ------------------------
 # -------------------                                  ------------------------
@@ -442,7 +507,7 @@ class CustomizeObjetives(wx.Dialog):
         self.Close(True)
 
     def OnButtonOk(self, event):
-        self.parent.getUpdateListObjetiveV(','.join(self.vo))
+        self.parent.getUpdateListObjetiveV(self.vo)
         self.Close(True)
         # ------ self inicailes executions ----------------------------
 
@@ -453,7 +518,7 @@ import wx.lib.agw.aui as aui
 
 class FooterAUINotebook(aui.AuiNotebook):
 
-    def __init__(self, parent, details, mode):
+    def __init__(self, parent, test, mode):
         '''
         Método de inicialización de la clase AUINotebook.
         :param parent: referencia al objeto padre de la clase.
@@ -464,19 +529,23 @@ class FooterAUINotebook(aui.AuiNotebook):
         self.SetAGWWindowStyleFlag(aui.AUI_NB_TOP)
 
         # ------ self components --------------------------------------
-        self.data_var = ParallelDataVar(self, details, mode)
+        self.data_var = ParallelDataVar(self, test.test_details, mode)
         self.data_var_p = self.data_var.presenter
 
-        self.data_obj = ParallelDataObj(self, details, mode)
+        self.data_obj = ParallelDataObj(self, test, mode)
         self.data_obj_p = self.data_obj.presenter
 
-        self.filters = AddFilterObjetivesScroll(self, details, mode)
-        self.filters_p = self.filters.presenter
+        #=======================================================================
+        # self.filters = AddFilterObjetivesScroll(self, details, mode)
+        # self.filters_p = self.filters.presenter
+        #=======================================================================
 
         # ------ self inicailes executions ----------------------------
         self.AddPage(self.data_var, 'Variables', True)
         self.AddPage(self.data_obj, 'Objetivos', False)
-        self.AddPage(self.filters, 'Filtros', False)
+        #=======================================================================
+        # self.AddPage(self.filters, 'Filtros', False)
+        #=======================================================================
 
     # ------ self controls --------------------------------------------
 
@@ -519,14 +588,28 @@ from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
 
 
 class ParallelDataObj(ScrolledPanel):
-    def __init__(self, parent, details, mode):
+    def __init__(self, parent, test, mode):
         ScrolledPanel.__init__(self, parent, -1)
 
         # ------ self customize ---------------------------------------
         # ------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
+        self.InitUI()
 
+#===============================================================================
+#         l_sizer = wx.BoxSizer(wx.VERTICAL)
+#         self.dvlc = dv.DataViewListCtrl(self)
+#         l_sizer.Add(self.dvlc, 1, flag=wx.EXPAND)
+# 
+#         self.SetSizer(l_sizer)
+#         self.SetAutoLayout(1)
+#         self.SetupScrolling()
+#===============================================================================
+
+        self.presenter = ParallelDataObjPresenter(self, test)
+
+    def InitUI(self):
         l_sizer = wx.BoxSizer(wx.VERTICAL)
         self.dvlc = dv.DataViewListCtrl(self)
         l_sizer.Add(self.dvlc, 1, flag=wx.EXPAND)
@@ -534,8 +617,6 @@ class ParallelDataObj(ScrolledPanel):
         self.SetSizer(l_sizer)
         self.SetAutoLayout(1)
         self.SetupScrolling()
-
-        self.presenter = ParallelDataObjPresenter(self, details)
 
         # ------ self inicailes executions ----------------------------
     # ------ self controls --------------------------------------------

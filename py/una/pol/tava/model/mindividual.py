@@ -92,9 +92,63 @@ class IndividualModel(object):
 
         return res.name_objectives, ite.identifier, to_ret_obj, to_ret_var
 
-    def createFiles(self, ite, mode, v_objectives):
+    def createFiles(self, ite, mode, v_objectives, v_order):
 
-        #crear el archivo y
+        obj_orders_var = []
+
+        # obtengo lista y cabecera de la base de datos
+        obj_name, ident, obj_list, var_list = self.getObjByIteration(ite)
+
+        # obtiene los datos filtratdos por objetivos
+        list_obj = v_objectives.split(',')
+        obj_filters = []
+        if list_obj.count('0'):
+            index_one = []
+            for i in range(len(list_obj)):
+                if list_obj[i] == '1':
+                    index_one.append(i)
+                    obj_orders_var.append(i)
+
+            obj_name = self.getLineFilters(obj_name, index_one)
+
+            for index in range(len(obj_list)):
+                obj_filters.append(self.getLineFilters(obj_list[index],
+                                                       index_one))
+        else:
+            obj_filters = obj_list
+
+        # obtiene los datos ordenados
+        orders = [int(i) for i in v_order.split(',')]
+        obj_orders = []
+        if(not orders == sorted(orders)):
+            obj_name = self.getLineOrders(obj_name, obj_orders_var, orders)
+            for obj in obj_filters:
+                obj_orders.append(self.getLineOrders(obj,
+                                                     obj_orders_var, orders))
+        else:
+            obj_orders = obj_filters
+
+        # escribe los datos en archivo
+
+        #=======================================================================
+        # list_obj = v_objectives.split(',')
+        # if list_obj.count('0'):
+        #     index_one = []
+        #     for i in range(len(list_obj)):
+        #         if list_obj[i] == '1':
+        #             index_one.append(i)
+        #     # agrego cabecera
+        #     f.write(self.getLineFilters(obj_name, index_one) + ',Name\n')
+        #     # agrego la lista
+        #     for index in range(len(obj_list)):
+        #         f.write(self.getLineFilters(obj_list[index], index_one)
+        #                 + ',' + str(ident) + '\n')
+        #         f_obj.write(str(index) + ',' + obj_list[index] + '\n')
+        #         f_var.write(str(index) + ',' + var_list[index] + '\n')
+        # else:
+        #=======================================================================
+
+        # crear el archivo y
         file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
         file_var_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.var')
         file_obj_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.obj')
@@ -102,41 +156,31 @@ class IndividualModel(object):
         f_var = open(file_var_d, 'w')
         f_obj = open(file_obj_d, 'w')
 
-        #obtengo lista y cabecera
-        obj_name, ident, obj_list, var_list = self.getObjByIteration(ite)
-
-        list_obj = v_objectives.split(',')
-        if list_obj.count('0'):
-            index_one = []
-            for i in range(len(list_obj)):
-                if list_obj[i] == '1':
-                    index_one.append(i)
-            #agrego cabecera
-            f.write(self.getLineObj(obj_name, index_one) + ',Name\n')
-            #agrego la lista
-            for index in range(len(obj_list)):
-                f.write(self.getLineObj(obj_list[index], index_one)
-                        + ',' + str(ident) + '\n')
-                f_obj.write(str(index) + ',' + obj_list[index] + '\n')
-                f_var.write(str(index) + ',' + var_list[index] + '\n')
-        else:
-            #agrego cabecera
-            f.write(obj_name + ',Name\n')
-            #agrego la lista
-            for index in range(len(obj_list)):
-                f.write(obj_list[index] + ',' + str(ident) + '\n')
-                f_obj.write(str(index) + ',' + obj_list[index] + '\n')
-                f_var.write(str(index) + ',' + var_list[index] + '\n')
+        # agrego cabecera
+        f.write(obj_name + ',Name\n')
+        # agrego la lista
+        for index in range(len(obj_orders)):
+            f.write(obj_orders[index] + ',' + str(ident) + '\n')
+            f_obj.write(str(index) + ',' + obj_orders[index] + '\n')
+            f_var.write(str(index) + ',' + var_list[index] + '\n')
 
         f.close()
         f_var.close()
         f_obj.close()
 
-    def getLineObj(self, var, list_obj):
+    def getLineFilters(self, var, list_obj):
         var_aux = var.split(',')
         to_ret = []
         for i in list_obj:
             to_ret.append(var_aux[i])
+        return ','.join(to_ret)
+
+    def getLineOrders(self, var, ordered, for_order):
+        var_aux = var.split(',')
+        to_ret = []
+        for i in for_order:
+            to_ret.append(var_aux[ordered.index(i)])
+
         return ','.join(to_ret)
 
     def deleteFile(self, ite_id, mode):
@@ -145,14 +189,14 @@ class IndividualModel(object):
         if os.path.isfile(file_obj):
             os.remove(file_obj)
 
-    def  getCsv(self, ite_id, mode):
+    def getCsv(self, ite_id, mode):
         file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
         return read_csv(file_obj)
 
-    def  getVar(self, ite, mode):
+    def getVar(self, ite, mode):
         return self.redFile(ite, mode, 'var')
 
-    def  getObj(self, ite, mode):
+    def getObj(self, ite, mode):
         return self.redFile(ite, mode, 'obj')
 
     def redFile(self, ite, mode, ext):
@@ -180,7 +224,7 @@ class IndividualModel(object):
 
     def createFilesWithFilter(self, ite, mode, filters):
 
-        #crear el archivo y
+        # crear el archivo y
         file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
         file_var_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.var')
         file_obj_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.obj')
@@ -188,12 +232,12 @@ class IndividualModel(object):
         f_var = open(file_var_d, 'w')
         f_obj = open(file_obj_d, 'w')
 
-        #obtengo lista y cabecera
+        # obtengo lista y cabecera
         obj_name, ident, objs, vars_r = self.getObjByIteration(ite)
 
-        #agrego cabecera
+        # agrego cabecera
         f.write(obj_name + ',Name\n')
-        #agrego la lista
+        # agrego la lista
 
         ind = 0
         for index in range(len(objs)):

@@ -47,7 +47,8 @@ class TopPanelPresenter:
     def createFiles(self, ite):
         pam = ParallelAnalizerModel()
         p_analizer = pam.getParallelAnalizerByIdTest(self.test.id)
-        return inm().createFiles(ite, self.mode, p_analizer.views_objectives)
+        return inm().createFiles(ite, self.mode, p_analizer.enable_objectives,
+                                 p_analizer.order_objective)
 
     def createFilesWithFilter(self, ite, filters):
         return inm().createFilesWithFilter(ite, self.mode, filters)
@@ -220,7 +221,7 @@ class ButtonsTollFigurePresenter:
 
     def getStatesObjetives(self):
         no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
-        vo = self.getParallelAnalizer().views_objectives
+        vo = self.getParallelAnalizer().enable_objectives
         return no.split(','), vo.split(',')
 
     def getParallelAnalizer(self):
@@ -229,7 +230,37 @@ class ButtonsTollFigurePresenter:
 
     def getUpdateListObjetive(self, list_obj):
         parallel_analizer = self.getParallelAnalizer()
-        parallel_analizer.views_objectives = list_obj
+        parallel_analizer.enable_objectives = ','.join(list_obj)
+        names = parallel_analizer.name_objetive.split(',')
+
+        obj_orders_var = []
+        obj_orders_name = []
+        order_name_obj = []
+        for i in range(len(list_obj)):
+            if list_obj[i] == '1':
+                obj_orders_var.append(str(i))
+                obj_orders_name.append(names[i])
+                order_name_obj.append(names[i])
+
+        parallel_analizer.order_objective = ','.join(obj_orders_var)
+        parallel_analizer.order_name_obj = ','.join(order_name_obj)
+        pam = ParallelAnalizerModel()
+        pam.upDate(parallel_analizer)
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+
+    def getObjetivesForSort(self):
+        return self.getParallelAnalizer().order_name_obj.split(',')
+
+    def updateSort(self, order_name_obj):
+        parallel_analizer = self.getParallelAnalizer()
+        names = parallel_analizer.name_objetive.split(',')
+
+        obj_orders_var = []
+        for obj_name in order_name_obj:
+            obj_orders_var.append(str(names.index(obj_name)))
+
+        parallel_analizer.order_objective = ','.join(obj_orders_var)
+        parallel_analizer.order_name_obj = ','.join(order_name_obj)
         pam = ParallelAnalizerModel()
         pam.upDate(parallel_analizer)
         pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
@@ -258,14 +289,15 @@ class ParallelDataVarPresenter:
 
 
 class ParallelDataObjPresenter:
-    def __init__(self, iview, details):
+    def __init__(self, iview, test):
         self.iview = iview
+        self.test = test
+        self.InitUI()
 
-        self.InitUI(details)
+    def InitUI(self):
+        pa = ParallelAnalizerModel().getParallelAnalizerByIdTest(self.test.id)
 
-    def InitUI(self, details):
-        r = rm().getResultById(details[0].result_id)
-        o_names = 'key,' + r.name_objectives
+        o_names = 'key,' + pa.order_name_obj
         columns = o_names.split(',')
         self.countColumn = len(columns)
         for name in columns:
@@ -273,7 +305,9 @@ class ParallelDataObjPresenter:
 
     def updateDatas(self, ite_list):
 
-        self.iview.dvlc.DeleteAllItems()
+        self.iview.dvlc.Destroy()
+        self.iview.InitUI()
+        self.InitUI()
 
         for ite in ite_list:
             for var in inm().getObj(ite, self.iview.mode):
@@ -310,6 +344,7 @@ class AddFilterObjetivesScrollPresenter:
             self.iview.addSiserHere()
 
         else:
+            
             vmin, vmax = inm().getMinMax(ite, self.iview.mode)
             for aux in range(len(vmin)):
                 filtro = self.values[aux]

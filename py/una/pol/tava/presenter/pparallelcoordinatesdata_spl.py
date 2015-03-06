@@ -133,7 +133,7 @@ class ParallelDataFigurePresenter:
 
     def getListConfigOb(self):
         no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
-        vo = self.parallel_analizer.views_objectives
+        vo = self.parallel_analizer.enable_objectives
         return no.split(','), vo.split(',')
 
     def restartDefaul(self):

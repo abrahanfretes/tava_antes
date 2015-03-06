@@ -24,12 +24,16 @@ class ParallelAnalizerModel():
 
         r_id = test.test_details[0].result_id
         ner = ResultModel().getNumberObjetivetById(r_id)
+        name_obj = ResultModel().getNamesObjetivestById(r_id)
 
         pa = ParallelAnalizer()
         pa.name_figure = 'Tava'
         pa.legent_figure = True
         pa.color_figure = '#d7c16b'  # '#4ECDC4'
-        pa.views_objectives = ','.join([str(1) for _ in range(ner)])
+        pa.enable_objectives = ','.join(['1']*ner)
+        pa.order_objective = ','.join([str(i) for i in range(ner)])
+        pa.order_name_obj = name_obj
+        pa.name_objetive = name_obj
         pa.test_config_id = test.id
 
         return dparallel_analizer.add(pa)
