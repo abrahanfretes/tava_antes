@@ -50,22 +50,24 @@ class TopPanelPresenter:
         pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG_SHOW, self.ite_list)
 
     def updateListObjectPub(self, message):
-        ite = self.ite_list[0]
-        self.fileDelete(ite)
-        self.createFiles(ite)
-        # mensaje de actualizacion de figura
-        # mensaje de actualizacion de variables
-        # mensaje de actualizacion de objetivos
-        pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
+        if self.ite_list != []:
+            ite = self.ite_list[0]
+            self.fileDelete(ite)
+            self.createFiles(ite)
+            # mensaje de actualizacion de figura
+            # mensaje de actualizacion de variables
+            # mensaje de actualizacion de objetivos
+            pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
 
     def updateSortObjectPub(self, message):
-        ite = self.ite_list[0]
-        self.fileDelete(ite)
-        self.createFiles(ite)
-        # mensaje de actualizacion de figura
-        # mensaje de actualizacion de variables
-        # mensaje de actualizacion de objetivos
-        pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
+        if self.ite_list != []:
+            ite = self.ite_list[0]
+            self.fileDelete(ite)
+            self.createFiles(ite)
+            # mensaje de actualizacion de figura
+            # mensaje de actualizacion de variables
+            # mensaje de actualizacion de objetivos
+            pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
 
     def fileExists(self, ite):
         return inm().fileExists(ite, self.mode)
@@ -231,6 +233,7 @@ class ButtonsTollFigurePresenter:
     def __init__(self, iview, test):
         self.iview = iview
         self.test = test
+        self.parallel_analizer = None
 
         pub.subscribe(self.checkedTreePub, T.PARALLEL_TREE_CHECK_FIGURE)
 
@@ -254,45 +257,56 @@ class ButtonsTollFigurePresenter:
         return no.split(','), vo.split(',')
 
     def getParallelAnalizer(self):
-        pam = ParallelAnalizerModel()
-        return pam.getParallelAnalizerByIdTest(self.test.id)
+        if self.parallel_analizer is None:
+            pam = ParallelAnalizerModel()
+            self.parallel_analizer = pam.\
+                getParallelAnalizerByIdTest(self.test.id)
+        return self.parallel_analizer
 
-    def getUpdateListObjetive(self, list_obj):
+    def setParallelAnalizer(self, parallel_analizer):
+        self.parallel_analizer = parallel_analizer
+
+    def setUpdateListObjetive(self, list_obj):
         parallel_analizer = self.getParallelAnalizer()
-        parallel_analizer.enable_objectives = ','.join(list_obj)
-        names = parallel_analizer.name_objetive.split(',')
+        list_obj_less = parallel_analizer.enable_objectives.split(',')
 
-        obj_orders_var = []
-        obj_orders_name = []
-        order_name_obj = []
-        for i in range(len(list_obj)):
-            if list_obj[i] == '1':
-                obj_orders_var.append(str(i))
-                obj_orders_name.append(names[i])
-                order_name_obj.append(names[i])
+        if not sorted(list_obj) == sorted(list_obj_less):
+            parallel_analizer.enable_objectives = ','.join(list_obj)
+            names = parallel_analizer.name_objetive.split(',')
 
-        parallel_analizer.order_objective = ','.join(obj_orders_var)
-        parallel_analizer.order_name_obj = ','.join(order_name_obj)
-        pam = ParallelAnalizerModel()
-        pam.upDate(parallel_analizer)
-        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+            obj_orders_var = []
+            obj_orders_name = []
+            order_name_obj = []
+            for i in range(len(list_obj)):
+                if list_obj[i] == '1':
+                    obj_orders_var.append(str(i))
+                    obj_orders_name.append(names[i])
+                    order_name_obj.append(names[i])
 
-    def getObjetivesForSort(self):
+            parallel_analizer.order_objective = ','.join(obj_orders_var)
+            parallel_analizer.order_name_obj = ','.join(order_name_obj)
+            pam = ParallelAnalizerModel()
+            self.setParallelAnalizer(pam.upDate(parallel_analizer))
+            pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+
+    def getUpdateSort(self):
         return self.getParallelAnalizer().order_name_obj.split(',')
 
-    def updateSort(self, order_name_obj):
+    def setUpdateSort(self, order_name_obj):
         parallel_analizer = self.getParallelAnalizer()
         names = parallel_analizer.name_objetive.split(',')
+        order_name_obj_less = parallel_analizer.order_name_obj.split(',')
 
-        obj_orders_var = []
-        for obj_name in order_name_obj:
-            obj_orders_var.append(str(names.index(obj_name)))
+        if self.isListDiferentOrder(order_name_obj, order_name_obj_less):
+            obj_orders_var = []
+            for obj_name in order_name_obj:
+                obj_orders_var.append(str(names.index(obj_name)))
 
-        parallel_analizer.order_objective = ','.join(obj_orders_var)
-        parallel_analizer.order_name_obj = ','.join(order_name_obj)
-        pam = ParallelAnalizerModel()
-        pam.upDate(parallel_analizer)
-        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
+            parallel_analizer.order_objective = ','.join(obj_orders_var)
+            parallel_analizer.order_name_obj = ','.join(order_name_obj)
+            pam = ParallelAnalizerModel()
+            self.setParallelAnalizer(pam.upDate(parallel_analizer))
+            pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
 
     def updateConfigPa(self, legent_figure, color_figure):
         pa = self.getParallelAnalizer()
@@ -306,6 +320,12 @@ class ButtonsTollFigurePresenter:
         pam = ParallelAnalizerModel()
         pam.updateByFigure(self.getParallelAnalizer())
         pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG)
+
+    def isListDiferentOrder(self, now_list, less_list):
+        for i in range(len(now_list)):
+            if now_list[i] != less_list[i]:
+                return True
+        return False
 
 
 class ParallelDataVarPresenter:

@@ -210,7 +210,7 @@ class ButtonsTollFigure(wx.Panel):
         CustomizeObjetives(self)
 
     def OnSortObjetives(self, event):
-        d = SortObjetiveDialog(self, self.presenter.getObjetivesForSort())
+        d = SortObjetiveDialog(self, self.presenter.getUpdateSort())
         d.ShowModal()
 
     def enableButtons(self):
@@ -236,11 +236,11 @@ class ButtonsTollFigure(wx.Panel):
     def getConfigObV(self):
         return self.presenter.getStatesObjetives()
 
-    def getUpdateListObjetiveV(self, list_obj):
-        return self.presenter.getUpdateListObjetive(list_obj)
+    def setUpdateListObjetiveV(self, list_obj):
+        return self.presenter.setUpdateListObjetive(list_obj)
 
-    def updateSortV(self, new_order_list):
-        self.presenter.updateSort(new_order_list)
+    def setUpdateSortV(self, new_order_list):
+        self.presenter.setUpdateSort(new_order_list)
 
 # ------------------- SortObjetiveDialog               ------------------------
 # -------------------                                  ------------------------
@@ -285,7 +285,7 @@ class SortObjetiveDialog(wx.Dialog):
             self.b_ok.Enable()
 
     def OnOk(self, event):
-        self.parent.updateSortV(self.list_obj)
+        self.parent.setUpdateSortV(self.list_obj)
         self.Close()
 
     def OnCancel(self, event):
@@ -452,7 +452,7 @@ class CustomizeObjetives(wx.Dialog):
         self.Close(True)
 
     def OnButtonOk(self, event):
-        self.parent.getUpdateListObjetiveV(self.vo)
+        self.parent.setUpdateListObjetiveV(self.vo)
         self.Close(True)
         # ------ self inicailes executions ----------------------------
 
