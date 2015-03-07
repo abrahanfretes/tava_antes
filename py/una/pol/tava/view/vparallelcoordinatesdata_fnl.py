@@ -26,18 +26,7 @@ class WorkingPageParallelFnl(wx.SplitterWindow):
         self.SplitHorizontally(self.top_panel, self.footer,
                                int(round(self.GetParent().GetSize().
                                          GetWidth() * 0.50)))
-
-    # ------ self controls --------------------------------------------
-    def updateFooter(self, ite_list, new):
-        self.footer.data_var_p.updateDatas(ite_list)
-        self.footer.data_obj_p.updateDatas(ite_list)
-        #self.footer.filters_p.update(ite_list[0], new)
-
-    def isFilterModified(self):
-        return self.footer.filters_p.isFilterModified()
-
-    def getListValues(self):
-        return self.footer.filters_p.getListValues()
+        # ------ self controls -----------------------------------------
 
 
 # -------------------         Panel for top            ------------------------
@@ -65,38 +54,9 @@ class TopPanel(wx.Panel):
         sizer = wx.BoxSizer()
         sizer.Add(sizer_h, 1, wx.EXPAND | wx.ALL, 1)
         self.SetSizer(sizer)
-        # ------ self inicailes executions ---------------------------
+        # ------ self inicailes executions -----------------------------
+        # ------ self controls -----------------------------------------
 
-    # ------ self controls --------------------------------------------
-    def upDateGrafic(self, updateConfig=False):
-
-        ite = self.data_tree.presenter.getListChecked()[0]
-
-        if self.data_tree.presenter.isChangeChecked() or updateConfig:
-            if(not self.presenter.fileExists(ite)):
-                self.presenter.createFiles(ite)
-            self.___updateView()
-
-        #=======================================================================
-        # elif self.parent.isFilterModified():
-        #     filters = self.parent.getListValues()
-        #     self.presenter.createFilesWithFilter(ite, filters)
-        #     self.___updateView(False)
-        #=======================================================================
-
-    def ___updateView(self, new=True):
-        ite_list = self.data_tree.presenter.getListChecked()
-        self.data_figure.presenter.newFigureTest(ite_list)
-        self.parent.updateFooter(ite_list, new)
-
-    def cleanFilter(self):
-        ite = self.data_tree.presenter.getListChecked()[0]
-        self.presenter.deleteFile(ite)
-        self.presenter.createFiles(ite)
-        self.___updateView()
-
-    def getCurrentIteChecked(self):
-        return self.data_tree.presenter.getListChecked()[0]
 
 # ------------------- Arbol de Archvivos e Iteraciones ------------------------
 # -------------------                                  ------------------------
@@ -175,22 +135,12 @@ class ParallelDataFigure(wx.Panel):
         self.presenter = ParallelDataFigurePresenter(self, test)
 
         # ------ self inicailes executions ----------------------------
-
     # ------ self controls --------------------------------------------
     def showNewFigure(self, ite_list):
         self.presenter.newFigureTest(ite_list)
 
     def cleanFilter(self):
         self.parent.cleanFilter()
-
-    def getConfigPa(self):
-        return self.presenter.parallel_analizer
-
-    def updateConfigPa(self, pa):
-        self.presenter.updateConfigPa(pa)
-
-    def restartDefaul(self):
-        self.presenter.restartDefaul()
 
 
 # ------------------- Panel Control Configuracion      ------------------------
@@ -206,10 +156,10 @@ class ButtonsTollFigure(wx.Panel):
         wx.Panel.__init__(self, parent)
 
         # ------ self customize ---------------------------------------
-        # ------ self components --------------------------------------
-        self.parent = parent
         self.SetBackgroundColour('# f8f1d9')
 
+        # ------ self components --------------------------------------
+        self.parent = parent
         self.update = wx.BitmapButton(self, -1, I.update_figure,
                                       style=wx.NO_BORDER)
         self.update.SetToolTipString("Actualizar Figura.")
@@ -239,21 +189,22 @@ class ButtonsTollFigure(wx.Panel):
 
         self.presenter = ButtonsTollFigurePresenter(self, test)
         # ------ self inicailes executions ----------------------------
-        self.Bind(wx.EVT_BUTTON, self.OnUpdateGrafic, self.update)
+        self.Bind(wx.EVT_BUTTON, self.OnClickUpdateGrafic, self.update)
         self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
-        self.Bind(wx.EVT_BUTTON, self.OnConfigFigure, self.config)
+        self.Bind(wx.EVT_BUTTON, self.OnClickConfiguration, self.config)
         self.Bind(wx.EVT_BUTTON, self.OnFilterObjetives, self.objetives)
         self.Bind(wx.EVT_BUTTON, self.OnSortObjetives, self.sort_objetive)
 
     # ------ self controls --------------------------------------------
-    def OnUpdateGrafic(self, event):
-        self.presenter.updateGrafic()
+    def OnClickUpdateGrafic(self, event):
+        self.presenter.verifyTreeCheckeo()
 
     def OnCleanFilter(self, event):
         self.parent.cleanFilter()
 
-    def OnConfigFigure(self, event):
-        CustomizeFrontFigure(self)
+    def OnClickConfiguration(self, event):
+        pa = self.presenter.getParallelAnalizer()
+        CustomizeFrontFigure(self, pa.legent_figure, pa.color_figure)
 
     def OnFilterObjetives(self, event):
         CustomizeObjetives(self)
@@ -276,14 +227,11 @@ class ButtonsTollFigure(wx.Panel):
         self.objetives.Disable()
         self.sort_objetive.Disable()
 
-    def getConfigPa(self):
-        return self.parent.getConfigPa()
-
-    def updateConfigPa(self, pa):
-        self.parent.updateConfigPa(pa)
+    def updateConfigPa(self, legent_figure, color_figure):
+        self.presenter.updateConfigPa(legent_figure, color_figure)
 
     def restartDefaul(self):
-        self.parent.restartDefaul()
+        self.presenter.restartDefaul()
 
     def getConfigObV(self):
         return self.presenter.getStatesObjetives()
@@ -351,20 +299,13 @@ import wx.lib.colourselect as csel
 
 class CustomizeFrontFigure(wx.Dialog):
 
-    def __init__(self, parent):
+    def __init__(self, parent, legent_figure, color_figure):
         super(CustomizeFrontFigure, self).__init__(parent, size=(300, 215))
 
         # ------ self customize ---------------------------------------
         self.parent = parent
-        self.pa = parent.getConfigPa()
         self.color_f = []
-        self.InitUI()
-
-        self.Centre()
-        self.ShowModal()
-        # ----------------------------------------------------
-
-    def InitUI(self):
+        self.color_figure = color_figure
 
         # ------ self components --------------------------------------
         self.panel = wx.Panel(self)
@@ -373,12 +314,12 @@ class CustomizeFrontFigure(wx.Dialog):
         title = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
 
         self.legent_figure = wx.CheckBox(self.panel, -1, "Legenda")
-        self.legent_figure.SetValue(self.pa.legent_figure)
+        self.legent_figure.SetValue(legent_figure)
 
         colour_sizer = wx.BoxSizer(wx.HORIZONTAL)
         colour_sizer.Add(wx.StaticText(self.panel, -1, "Color de Lineas: "))
         self.colourDefaults = csel.ColourSelect(self.panel, -1,
-                                                colour=self.pa.color_figure,
+                                                colour=color_figure,
                                                 size=(60, 25))
         colour_sizer.Add(self.colourDefaults)
 
@@ -409,6 +350,10 @@ class CustomizeFrontFigure(wx.Dialog):
         btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
         self.panel.Bind(wx.EVT_CHAR, self.OnKeyDown)
 
+        self.Centre()
+        self.ShowModal()
+        # ----------------------------------------------------
+
     # ------ self controls --------------------------------------------
     def OnSelectColour(self, event):
         self.color_f = list(event.GetValue())
@@ -417,9 +362,9 @@ class CustomizeFrontFigure(wx.Dialog):
 
         if not (self.color_f == []):
             from matplotlib.colors import rgb2hex
-            self.pa.color_figure = rgb2hex(self.normCol(self.color_f))
-        self.pa.legent_figure = self.legent_figure.GetValue()
-        self.parent.updateConfigPa(self.pa)
+            self.color_figure = rgb2hex(self.normCol(self.color_f))
+        self.parent.updateConfigPa(self.legent_figure.GetValue(),
+                                   self.color_figure)
         self.Close(True)
 
     def OnButtonCancel(self, event):
@@ -529,11 +474,8 @@ class FooterAUINotebook(aui.AuiNotebook):
         self.SetAGWWindowStyleFlag(aui.AUI_NB_TOP)
 
         # ------ self components --------------------------------------
-        self.data_var = ParallelDataVar(self, test.test_details, mode)
-        self.data_var_p = self.data_var.presenter
-
-        self.data_obj = ParallelDataObj(self, test, mode)
-        self.data_obj_p = self.data_obj.presenter
+        data_var = ParallelDataVar(self, test.test_details, mode)
+        data_obj = ParallelDataObj(self, test, mode)
 
         #=======================================================================
         # self.filters = AddFilterObjetivesScroll(self, details, mode)
@@ -541,8 +483,8 @@ class FooterAUINotebook(aui.AuiNotebook):
         #=======================================================================
 
         # ------ self inicailes executions ----------------------------
-        self.AddPage(self.data_var, 'Variables', True)
-        self.AddPage(self.data_obj, 'Objetivos', False)
+        self.AddPage(data_var, 'Variables', True)
+        self.AddPage(data_obj, 'Objetivos', False)
         #=======================================================================
         # self.AddPage(self.filters, 'Filtros', False)
         #=======================================================================
@@ -596,17 +538,6 @@ class ParallelDataObj(ScrolledPanel):
         self.parent = parent
         self.mode = mode
         self.InitUI()
-
-#===============================================================================
-#         l_sizer = wx.BoxSizer(wx.VERTICAL)
-#         self.dvlc = dv.DataViewListCtrl(self)
-#         l_sizer.Add(self.dvlc, 1, flag=wx.EXPAND)
-# 
-#         self.SetSizer(l_sizer)
-#         self.SetAutoLayout(1)
-#         self.SetupScrolling()
-#===============================================================================
-
         self.presenter = ParallelDataObjPresenter(self, test)
 
     def InitUI(self):

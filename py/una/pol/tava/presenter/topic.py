@@ -87,6 +87,9 @@ GRAPHIC_WIZARD = 'GRAPHIC.WIZARD'
 # Subscribe = pbody
 TESTCONFIG_ADD_PAGE = 'TESTCONFIG.ADDPAGE'
 
+# -------------------------------
+# Verificar para eliminar luego
+# ------------------------------
 # Send = pparallelcoordinatesdata_spl
 # Subscribe = pparallelcoordinatesdata_spl
 PARALLELANALIZER_UPDATE_FIGURE = 'PARALLELANALIZER.UPDATE_FIGURE'
@@ -97,8 +100,28 @@ PARALLEL_TREE_CHECK_FIGURE = 'PARALLEL.TREE_CHECK_FIGURE'
 
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
-PARALLEL_UPDATE_FIGURE = 'PARALLEL.UPDATE_FIGURE'
+PARALLEL_UPDATE_FIGURE_FOR_TREE = 'PARALLEL.UPDATE_FIGURE_FOR_TREE'
 
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
 PARALLEL_UPDATE_FIGURE_LIST_OBJ = 'PARALLEL.UPDATE_FIGURE_LIST_OBJ'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_VERIFY_TREE_CHECKEO = 'PARALLEL.VERIFY_TREE_CHECKEO'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_ALL = 'PARALLEL.UPDATE_ALL'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE_CONFIG = 'PARALLEL.UPDATE_FIGURE_CONFIG'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE_CONFIG_SHOW = 'PARALLEL.UPDATE_FIGURE_CONFIG_SHOW'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE_SORT_OBJ = 'PARALLEL.UPDATE_FIGURE_SORT_OBJ'

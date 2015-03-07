@@ -21,22 +21,51 @@ class TopPanelPresenter:
         self.iview = iview
         self.test = test
         self.mode = mode
+        self.ite_list = []
 
-        pub.subscribe(self.updateConfigPAPub, T.PARALLELANALIZER_UPDATE_FIGURE)
-        pub.subscribe(self.updateFigurePub, T.PARALLEL_UPDATE_FIGURE)
-        pub.subscribe(self.updateListObjetivesPub,
+        pub.subscribe(self.updateFigureForChangeTreePub,
+                      T.PARALLEL_UPDATE_FIGURE_FOR_TREE)
+        pub.subscribe(self.updateFigureConfigPub,
+                      T.PARALLEL_UPDATE_FIGURE_CONFIG)
+        pub.subscribe(self.updateListObjectPub,
                       T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+        pub.subscribe(self.updateSortObjectPub,
+                      T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
 
     # ---- Funciones Generales ------------------------------------------------
-    def updateConfigPAPub(self, message):
-        self.iview.upDateGrafic(True)
 
-    def updateListObjetivesPub(self, message):
-        self.fileDelete(self.iview.getCurrentIteChecked())
-        self.iview.upDateGrafic(True)
+    def updateFigureForChangeTreePub(self, message):
+        ite_tuple = message.data
+        self.ite_list = list(ite_tuple)
+        ite = self.ite_list[0]
+        self.fileDelete(ite)
+        self.createFiles(ite)
+        # mensaje de actualizacion de figura
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
 
-    def updateFigurePub(self, message):
-        self.iview.upDateGrafic()
+    def updateFigureConfigPub(self, message):
+        # mensaje de actualizacion de figura
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG_SHOW, self.ite_list)
+
+    def updateListObjectPub(self, message):
+        ite = self.ite_list[0]
+        self.fileDelete(ite)
+        self.createFiles(ite)
+        # mensaje de actualizacion de figura
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
+
+    def updateSortObjectPub(self, message):
+        ite = self.ite_list[0]
+        self.fileDelete(ite)
+        self.createFiles(ite)
+        # mensaje de actualizacion de figura
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
 
     def fileExists(self, ite):
         return inm().fileExists(ite, self.mode)
@@ -64,9 +93,9 @@ class ParallelDataTreePresenter:
 
         self.iview = iview
         self.root = self.iview.AddRoot("Test Data")
-
-        # ultimas iteraciones checkeadas ParallelFigure Test
         self.checkeds_last = []
+
+        pub.subscribe(self.verifyChangeChecked, T.PARALLEL_VERIFY_TREE_CHECKEO)
 
         self.InitUI(test_details)
         # ------------------------------------------------------------
@@ -121,6 +150,10 @@ class ParallelDataTreePresenter:
     def getOneChecked(self):
         return 1 == self.getLenListChecked()
 
+    def verifyChangeChecked(self, message):
+        if self.isChangeChecked():
+            pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_FOR_TREE,
+                            tuple(self.getListChecked()))
 # ------------------------------------------------------------------------------
 
 
@@ -129,39 +162,35 @@ class ParallelDataFigurePresenter:
         self.iview = iview
         self.test = test
         self.figure_axes = None
+        self.title_g = ''
 
-        self.parallel_analizer = self.initParallelAnalizer()
-        self.customizeFigure()
+        pub.subscribe(self.newFigureTestPub, T.PARALLEL_UPDATE_ALL)
+        pub.subscribe(self.newFigureTestShowPub,
+                      T.PARALLEL_UPDATE_FIGURE_CONFIG_SHOW)
 
     # ---- Funciones Generales ------------------------------------------------
+    def newFigureTestPub(self, message):
+        ite_list = message.data
+        self.newFigureTest(ite_list)
+
+    def newFigureTestShowPub(self, message):
+        ite_list = message.data
+        self.newFigureTest(ite_list)
+
     def cleanParallelFigure(self):
         if not(self.figure_axes is None):
             self.iview.figure.delaxes(self.figure_axes)
 
-    def initParallelAnalizer(self):
+    def getParallelAnalizer(self):
         pam = ParallelAnalizerModel()
         return pam.getParallelAnalizerByIdTest(self.test.id)
-
-    def customizeFigure(self):
-        self.title_g = ''
-        self.color_g = (self.parallel_analizer.color_figure,)
-        self.legend_g = self.parallel_analizer.legent_figure
-
-    def updateConfigPa(self, parallel_analizer):
-        pam = ParallelAnalizerModel()
-        self.parallel_analizer = pam.upDate(parallel_analizer)
-        self.customizeFigure()
-        pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE)
-
-    def restartDefaul(self):
-        pam = ParallelAnalizerModel()
-        self.parallel_analizer = pam.updateByFigure(self.parallel_analizer)
-        self.customizeFigure()
-        pub.sendMessage(T.PARALLELANALIZER_UPDATE_FIGURE, (True))
     # -------------------------------------------------------------------------
 
     # ---- Funciones definidas para ParallelFigure Test -----------------------
     def newFigureTest(self, ite_list, suptitle=''):
+        pa = self.getParallelAnalizer()
+        self.color_g = (pa.color_figure,)
+        self.legend_g = pa.legent_figure
         self.cleanParallelFigure()
         suptitle = self.title_g
         self.figure_axes = self._initFigurePaint(ite_list, suptitle)
@@ -216,8 +245,8 @@ class ButtonsTollFigurePresenter:
         else:
             self.iview.disableButtons()
 
-    def updateGrafic(self):
-        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE)
+    def verifyTreeCheckeo(self):
+        pub.sendMessage(T.PARALLEL_VERIFY_TREE_CHECKEO)
 
     def getStatesObjetives(self):
         no = rm().getNamesObjetivestById(self.test.test_details[0].result_id)
@@ -263,12 +292,28 @@ class ButtonsTollFigurePresenter:
         parallel_analizer.order_name_obj = ','.join(order_name_obj)
         pam = ParallelAnalizerModel()
         pam.upDate(parallel_analizer)
-        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
+
+    def updateConfigPa(self, legent_figure, color_figure):
+        pa = self.getParallelAnalizer()
+        pa.legent_figure = legent_figure
+        pa.color_figure = color_figure
+        pam = ParallelAnalizerModel()
+        pam.upDate(pa)
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG)
+
+    def restartDefaul(self):
+        pam = ParallelAnalizerModel()
+        pam.updateByFigure(self.getParallelAnalizer())
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG)
 
 
 class ParallelDataVarPresenter:
     def __init__(self, iview, details):
         self.iview = iview
+        self.ite_list = []
+
+        pub.subscribe(self.updateDatasPub, T.PARALLEL_UPDATE_ALL)
 
         self.InitUI(details)
 
@@ -280,8 +325,12 @@ class ParallelDataVarPresenter:
         for name in columns:
             self.iview.dvlc.AppendTextColumn(name, width=110)
 
-    def updateDatas(self, ite_list):
+    def updateDatasPub(self, message):
+        ite_list = message.data
+        self.ite_list = list(ite_list)
+        self.updateDatas(self.ite_list)
 
+    def updateDatas(self, ite_list):
         self.iview.dvlc.DeleteAllItems()
         for ite in ite_list:
             for var in inm().getVar(ite, self.iview.mode):
@@ -292,6 +341,10 @@ class ParallelDataObjPresenter:
     def __init__(self, iview, test):
         self.iview = iview
         self.test = test
+        self.ite_list = []
+
+        pub.subscribe(self.updateDatasPub, T.PARALLEL_UPDATE_ALL)
+
         self.InitUI()
 
     def InitUI(self):
@@ -303,8 +356,12 @@ class ParallelDataObjPresenter:
         for name in columns:
             self.iview.dvlc.AppendTextColumn(name, width=150)
 
-    def updateDatas(self, ite_list):
+    def updateDatasPub(self, message):
+        ite_list = message.data
+        self.ite_list = list(ite_list)
+        self.updateDatas(self.ite_list)
 
+    def updateDatas(self, ite_list):
         self.iview.dvlc.Destroy()
         self.iview.InitUI()
         self.InitUI()
