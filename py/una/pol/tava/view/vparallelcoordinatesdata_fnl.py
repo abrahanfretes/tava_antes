@@ -160,9 +160,11 @@ class ButtonsTollFigure(wx.Panel):
 
         # ------ self components --------------------------------------
         self.parent = parent
-        self.update = wx.BitmapButton(self, -1, I.update_figure,
+        self.update = wx.BitmapButton(self, -1, I.graficar_parallel,
                                       style=wx.NO_BORDER)
         self.update.SetToolTipString("Actualizar Figura.")
+
+        s_line_update = wx.StaticLine(self, style=LI_VERTICAL)
 
         self.config = wx.BitmapButton(self, -1, I.update_config,
                                       style=wx.NO_BORDER)
@@ -188,6 +190,7 @@ class ButtonsTollFigure(wx.Panel):
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
+        sizer.Add(s_line_update, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=4)
         sizer.Add(self.config)
         sizer.Add(self.objetives)
         sizer.Add(self.sort_objetive)
