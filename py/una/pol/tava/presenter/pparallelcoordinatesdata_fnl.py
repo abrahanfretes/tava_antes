@@ -29,8 +29,8 @@ class TopPanelPresenter:
                       T.PARALLEL_UPDATE_FIGURE_CONFIG)
         pub.subscribe(self.updateListObjectPub,
                       T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
-        pub.subscribe(self.updateSortObjectPub,
-                      T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
+        pub.subscribe(self.updateFiltersObjectPub,
+                      T.PARALLEL_SET_FILTERS_OBJ)
 
     # ---- Funciones Generales ------------------------------------------------
 
@@ -59,11 +59,13 @@ class TopPanelPresenter:
             # mensaje de actualizacion de objetivos
             pub.sendMessage(T.PARALLEL_UPDATE_ALL, self.ite_list)
 
-    def updateSortObjectPub(self, message):
+    def updateFiltersObjectPub(self, message):
         if self.ite_list != []:
+            filter_tuple = message.data
+
             ite = self.ite_list[0]
             self.fileDelete(ite)
-            self.createFiles(ite)
+            self.createFiles(ite, filter_tuple[0], filter_tuple[1])
             # mensaje de actualizacion de figura
             # mensaje de actualizacion de variables
             # mensaje de actualizacion de objetivos
@@ -75,17 +77,12 @@ class TopPanelPresenter:
     def fileDelete(self, ite):
         return inm().fileDelete(ite, self.mode)
 
-    def createFiles(self, ite):
+    def createFiles(self, ite, max_objetive=None, min_objetive=None):
         pam = ParallelAnalizerModel()
         p_analizer = pam.getParallelAnalizerByIdTest(self.test.id)
         return inm().createFiles(ite, self.mode, p_analizer.enable_objectives,
-                                 p_analizer.order_objective)
-
-    def createFilesWithFilter(self, ite, filters):
-        return inm().createFilesWithFilter(ite, self.mode, filters)
-
-    def deleteFile(self, ite):
-        return inm().deleteFile(ite, self.mode)
+                                 p_analizer.order_objective,
+                                 max_objetive, min_objetive)
     # -------------------------------------------------------------------------
 
 
@@ -306,7 +303,8 @@ class ButtonsTollFigurePresenter:
             parallel_analizer.order_name_obj = ','.join(order_name_obj)
             pam = ParallelAnalizerModel()
             self.setParallelAnalizer(pam.upDate(parallel_analizer))
-            pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
+            pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_SORT_OBJ,
+                            tuple(order_name_obj))
 
     def updateConfigPa(self, legent_figure, color_figure):
         pa = self.getParallelAnalizer()
@@ -326,6 +324,12 @@ class ButtonsTollFigurePresenter:
             if now_list[i] != less_list[i]:
                 return True
         return False
+
+    def setFilters(self):
+        pub.sendMessage(T.PARALLEL_ON_SET_FILTERS_OBJ)
+
+    def cleanFilter(self):
+        pub.sendMessage(T.PARALLEL_ON_CLEAN_FILTERS_OBJ)
 
 
 class ParallelDataVarPresenter:
@@ -361,7 +365,6 @@ class ParallelDataObjPresenter:
     def __init__(self, iview, test):
         self.iview = iview
         self.test = test
-        self.ite_list = []
 
         pub.subscribe(self.updateDatasPub, T.PARALLEL_UPDATE_ALL)
 
@@ -377,9 +380,8 @@ class ParallelDataObjPresenter:
             self.iview.dvlc.AppendTextColumn(name, width=150)
 
     def updateDatasPub(self, message):
-        ite_list = message.data
-        self.ite_list = list(ite_list)
-        self.updateDatas(self.ite_list)
+        ite_list = list(message.data)
+        self.updateDatas(ite_list)
 
     def updateDatas(self, ite_list):
         self.iview.dvlc.Destroy()
@@ -392,41 +394,63 @@ class ParallelDataObjPresenter:
 
 
 class AddFilterObjetivesScrollPresenter:
-    def __init__(self, iview, details):
+    def __init__(self, iview, test):
         self.iview = iview
-        self.details = details
+        self.test = test
         self.min_before = []
         self.max_before = []
         self.values = []
 
-    def update(self, ite, is_new=True):
+        pub.subscribe(self.updateDatasPub, T.PARALLEL_UPDATE_ALL)
+        pub.subscribe(self.setFiltersNowPub, T.PARALLEL_ON_SET_FILTERS_OBJ)
+        pub.subscribe(self.updateSortObjectPub,
+                      T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
+        pub.subscribe(self.setFiltersCleanPub, T.PARALLEL_ON_CLEAN_FILTERS_OBJ)
 
-        if is_new:
-            if self.values != []:
-                for aux in range(len(self.values)):
-                    self.values[aux].Destroy()
-                self.values = []
+    def updateDatasPub(self, message):
+        ite_list = list(message.data)
+        self.updateFiltros(ite_list)
 
-            i = im().getIterationById(ite)
-            min_s = i.objectives_min.split(',')
-            max_s = i.objectives_max.split(',')
-            r = rm().getResultById(i.result_id)
-            names = r.name_objectives.split(',')
+    def setFiltersNowPub(self, message):
+        if self.isFilterModified():
+            pub.sendMessage(T.PARALLEL_SET_FILTERS_OBJ,
+                            tuple(self.getListValues()))
 
+    def setFiltersCleanPub(self, message):
+        # if self.isFilterModified():
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+
+    def updateSortObjectPub(self, message):
+        tuple_names = message.data
+        pub.sendMessage(T.PARALLEL_SET_FILTERS_OBJ,
+                        tuple(self.getFiltersByNames(tuple_names)))
+
+    def updateFiltros(self, ite_list):
+
+        # destruir el anterior
+        if self.values != []:
+            for aux in range(len(self.values)):
+                self.values[aux].Destroy()
+            self.values = []
+
+        # filtro las variables correspondientes
+        vmin, vmax = inm().getMinMax(ite_list[0], self.iview.mode)
+
+        # obtengo los nombres
+        pam = ParallelAnalizerModel()
+        pa = pam.getParallelAnalizerByIdTest(self.test.id)
+        names = pa.order_name_obj.split(',')
+
+        # creo los filtros
+        if len(names) == len(vmin):
             for index in range(len(names)):
-                value = self.iview.addItem(min_s[index], max_s[index],
-                                           names[index], min_s[index],
-                                           max_s[index])
+                value = self.iview.addItem(vmin[index], vmax[index],
+                                           names[index], vmin[index],
+                                           vmax[index])
                 self.values.append(value)
-            self.iview.addSiserHere()
 
-        else:
-            
-            vmin, vmax = inm().getMinMax(ite, self.iview.mode)
-            for aux in range(len(vmin)):
-                filtro = self.values[aux]
-                filtro.setValues(vmin[aux], vmax[aux])
-
+        # actualizo la vista
+        self.iview.addSiserHere()
         self.updateBeforeValues()
 
     def isFilterModified(self):
@@ -439,10 +463,12 @@ class AddFilterObjetivesScrollPresenter:
         return False
 
     def getListValues(self):
-        toRet = []
+        min_list = []
+        max_list = []
         for fil in self.values:
-            toRet.append(fil.getObjectValues())
-        return toRet
+            min_list.append(fil.getMinValue())
+            max_list.append(fil.getMaxValue())
+        return max_list, min_list
 
     def updateBeforeValues(self):
         self.min_before = []
@@ -450,3 +476,14 @@ class AddFilterObjetivesScrollPresenter:
         for value in self.values:
             self.min_before.append(value.getMinValue())
             self.max_before.append(value.getMaxValue())
+
+    def getFiltersByNames(self, tuple_names):
+        min_list = []
+        max_list = []
+        for name in tuple_names:
+            for value in self.values:
+                if name == value.name_objetive:
+                    min_list.append(value.getMinValue())
+                    max_list.append(value.getMaxValue())
+                    break
+        return max_list, min_list

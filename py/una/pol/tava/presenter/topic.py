@@ -125,3 +125,15 @@ PARALLEL_UPDATE_FIGURE_CONFIG_SHOW = 'PARALLEL.UPDATE_FIGURE_CONFIG_SHOW'
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
 PARALLEL_UPDATE_FIGURE_SORT_OBJ = 'PARALLEL.UPDATE_FIGURE_SORT_OBJ'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_ON_SET_FILTERS_OBJ = 'PARALLEL.ON_SET_FILTERS_OBJ'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_SET_FILTERS_OBJ = 'PARALLEL.SET_FILTERS_OBJ'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_ON_CLEAN_FILTERS_OBJ = 'PARALLEL.ON_CLEAN_FILTERS_OBJ'

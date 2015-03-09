@@ -10,6 +10,7 @@ from py.una.pol.tava.dao import dindividual
 from py.una.pol.tava.model.miteration import InterationModel as im
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.base.tavac import getTavaDirectory as gtd
+from numpy.distutils.npy_pkg_config import VariableSet
 
 
 class IndividualModel(object):
@@ -92,7 +93,8 @@ class IndividualModel(object):
 
         return res.name_objectives, ite.identifier, to_ret_obj, to_ret_var
 
-    def createFiles(self, ite, mode, v_objectives, v_order):
+    def createFiles(self, ite, mode, v_objectives, v_order,
+                    max_objetive, min_objetive):
 
         obj_orders_var = []
 
@@ -128,27 +130,28 @@ class IndividualModel(object):
         else:
             obj_orders = obj_filters
 
+        # agrego filtros si es distinto a None(debe modifiar todos los archivo)
+        # debe modificar tanto los valores objetivos como los de Variables
+        obj_order_filter = []
+        var_order_filter = []
+        if(not (max_objetive is None) and not (min_objetive is None)):
+            for index in range(len(obj_orders)):
+                to_write = True
+                value = [float(i) for i in obj_orders[index].split(',')]
+                for i in range(len(value)):
+                    if min_objetive[i] > value[i] or\
+                            value[i] > max_objetive[i]:
+                        to_write = False
+                        break
+
+                if(to_write):
+                    obj_order_filter.append(obj_orders[index])
+                    var_order_filter.append(var_list[index])
+        else:
+            obj_order_filter = obj_orders
+            var_order_filter = var_list
+
         # escribe los datos en archivo
-
-        #=======================================================================
-        # list_obj = v_objectives.split(',')
-        # if list_obj.count('0'):
-        #     index_one = []
-        #     for i in range(len(list_obj)):
-        #         if list_obj[i] == '1':
-        #             index_one.append(i)
-        #     # agrego cabecera
-        #     f.write(self.getLineFilters(obj_name, index_one) + ',Name\n')
-        #     # agrego la lista
-        #     for index in range(len(obj_list)):
-        #         f.write(self.getLineFilters(obj_list[index], index_one)
-        #                 + ',' + str(ident) + '\n')
-        #         f_obj.write(str(index) + ',' + obj_list[index] + '\n')
-        #         f_var.write(str(index) + ',' + var_list[index] + '\n')
-        # else:
-        #=======================================================================
-
-        # crear el archivo y
         file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
         file_var_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.var')
         file_obj_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.obj')
@@ -159,10 +162,10 @@ class IndividualModel(object):
         # agrego cabecera
         f.write(obj_name + ',Name\n')
         # agrego la lista
-        for index in range(len(obj_orders)):
-            f.write(obj_orders[index] + ',' + str(ident) + '\n')
-            f_obj.write(str(index) + ',' + obj_orders[index] + '\n')
-            f_var.write(str(index) + ',' + var_list[index] + '\n')
+        for index in range(len(obj_order_filter)):
+            f.write(obj_order_filter[index] + ',' + str(ident) + '\n')
+            f_obj.write(str(index) + ',' + obj_order_filter[index] + '\n')
+            f_var.write(str(index) + ',' + var_order_filter[index] + '\n')
 
         f.close()
         f_var.close()
@@ -182,12 +185,6 @@ class IndividualModel(object):
             to_ret.append(var_aux[ordered.index(i)])
 
         return ','.join(to_ret)
-
-    def deleteFile(self, ite_id, mode):
-
-        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
-        if os.path.isfile(file_obj):
-            os.remove(file_obj)
 
     def getCsv(self, ite_id, mode):
         file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
@@ -222,48 +219,6 @@ class IndividualModel(object):
         if os.path.isfile(file_obj):
             os.remove(file_obj)
 
-    def createFilesWithFilter(self, ite, mode, filters):
-
-        # crear el archivo y
-        file_obj = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.csv')
-        file_var_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.var')
-        file_obj_d = os.path.join(gtd(), str(ite) + '.mode.' + mode + '.obj')
-        f = open(file_obj, 'w')
-        f_var = open(file_var_d, 'w')
-        f_obj = open(file_obj_d, 'w')
-
-        # obtengo lista y cabecera
-        obj_name, ident, objs, vars_r = self.getObjByIteration(ite)
-
-        # agrego cabecera
-        f.write(obj_name + ',Name\n')
-        # agrego la lista
-
-        ind = 0
-        for index in range(len(objs)):
-
-            to_write = True
-
-            i = 0
-            for obj in objs[index].split(','):
-                if float(obj) < filters[i][0] or float(obj) > filters[i][1]:
-                    to_write = False
-                    break
-                i += 1
-
-            if(to_write):
-                f.write(objs[index] + ',' + str(ident) + '\n')
-                f_obj.write(str(ind) + ',' + objs[index] + '\n')
-                f_var.write(str(ind) + ',' + vars_r[index] + '\n')
-                ind += 1
-
-            else:
-                to_write = True
-
-        f.close()
-        f_var.close()
-        f_obj.close()
-
     def getMinMax(self, ite_id, mode):
         min_v = []
         max_v = []
@@ -271,23 +226,21 @@ class IndividualModel(object):
         filepath = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.obj')
         f = open(filepath)
 
-        #======================================================================
-        # f.readline()
-        #======================================================================
+        ind = f.readline()
+        if ind != '':
+            for obj in ind.split(',')[1:]:
+                min_v.append(float(obj))
+                max_v.append(float(obj))
+
         ind = f.readline()
         while ind != '':
-            if min_v != []:
-                index = 0
-                for obj_aux in ind.split(',')[1:]:
-                    if float(obj_aux) < min_v[index]:
-                        min_v[index] = float(obj_aux)
-                    if float(obj_aux) > max_v[index]:
-                        max_v[index] = float(obj_aux)
-                    index += 1
-            else:
-                for obj in ind.split(',')[1:]:
-                    min_v.append(float(obj))
-                    max_v.append(float(obj))
+            index = 0
+            for obj_aux in ind.split(',')[1:]:
+                if float(obj_aux) < min_v[index]:
+                    min_v[index] = float(obj_aux)
+                if float(obj_aux) > max_v[index]:
+                    max_v[index] = float(obj_aux)
+                index += 1
             ind = f.readline()
 
         f.close()

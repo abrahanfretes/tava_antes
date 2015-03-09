@@ -163,9 +163,7 @@ class ButtonsTollFigure(wx.Panel):
         self.update = wx.BitmapButton(self, -1, I.update_figure,
                                       style=wx.NO_BORDER)
         self.update.SetToolTipString("Actualizar Figura.")
-        self.clean = wx.BitmapButton(self, -1, I.clear_filters,
-                                     style=wx.NO_BORDER)
-        self.clean.SetToolTipString("Limpiar Filtros.")
+
         self.config = wx.BitmapButton(self, -1, I.update_config,
                                       style=wx.NO_BORDER)
         self.config.SetToolTipString("Nueva Configuracion.")
@@ -178,29 +176,39 @@ class ButtonsTollFigure(wx.Panel):
                                              style=wx.NO_BORDER)
         self.sort_objetive.SetToolTipString("Ordenar Objetivos.")
 
+        s_line = wx.StaticLine(self, style=LI_VERTICAL)
+
+        self.filters = wx.BitmapButton(self, -1, I.update_figure,
+                                       style=wx.NO_BORDER)
+        self.filters.SetToolTipString("Filtrar Objetivos.")
+
+        self.clean = wx.BitmapButton(self, -1, I.clear_filters,
+                                     style=wx.NO_BORDER)
+        self.clean.SetToolTipString("Limpiar Filtros.")
+
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
-        sizer.Add(self.clean)
         sizer.Add(self.config)
         sizer.Add(self.objetives)
         sizer.Add(self.sort_objetive)
+        sizer.Add(s_line, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=4)
+        sizer.Add(self.filters)
+        sizer.Add(self.clean)
 
         self.SetSizer(sizer)
 
         self.presenter = ButtonsTollFigurePresenter(self, test)
         # ------ self inicailes executions ----------------------------
         self.Bind(wx.EVT_BUTTON, self.OnClickUpdateGrafic, self.update)
-        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
         self.Bind(wx.EVT_BUTTON, self.OnClickConfiguration, self.config)
         self.Bind(wx.EVT_BUTTON, self.OnFilterObjetives, self.objetives)
         self.Bind(wx.EVT_BUTTON, self.OnSortObjetives, self.sort_objetive)
+        self.Bind(wx.EVT_BUTTON, self.OnFilterObjetive, self.filters)
+        self.Bind(wx.EVT_BUTTON, self.OnCleanFilter, self.clean)
 
     # ------ self controls --------------------------------------------
     def OnClickUpdateGrafic(self, event):
         self.presenter.verifyTreeCheckeo()
-
-    def OnCleanFilter(self, event):
-        self.parent.cleanFilter()
 
     def OnClickConfiguration(self, event):
         pa = self.presenter.getParallelAnalizer()
@@ -213,12 +221,19 @@ class ButtonsTollFigure(wx.Panel):
         d = SortObjetiveDialog(self, self.presenter.getUpdateSort())
         d.ShowModal()
 
+    def OnFilterObjetive(self, event):
+        self.presenter.setFilters()
+
+    def OnCleanFilter(self, event):
+        self.presenter.cleanFilter()
+
     def enableButtons(self):
         self.update.Enable()
         self.clean.Enable()
         self.config.Enable()
         self.objetives.Enable()
         self.sort_objetive.Enable()
+        self.filters.Enable()
 
     def disableButtons(self):
         self.update.Disable()
@@ -226,6 +241,7 @@ class ButtonsTollFigure(wx.Panel):
         self.config.Disable()
         self.objetives.Disable()
         self.sort_objetive.Disable()
+        self.filters.Disable()
 
     def updateConfigPa(self, legent_figure, color_figure):
         self.presenter.updateConfigPa(legent_figure, color_figure)
@@ -476,18 +492,12 @@ class FooterAUINotebook(aui.AuiNotebook):
         # ------ self components --------------------------------------
         data_var = ParallelDataVar(self, test.test_details, mode)
         data_obj = ParallelDataObj(self, test, mode)
-
-        #=======================================================================
-        # self.filters = AddFilterObjetivesScroll(self, details, mode)
-        # self.filters_p = self.filters.presenter
-        #=======================================================================
+        filters = AddFilterObjetivesScroll(self, test, mode)
 
         # ------ self inicailes executions ----------------------------
         self.AddPage(data_var, 'Variables', True)
         self.AddPage(data_obj, 'Objetivos', False)
-        #=======================================================================
-        # self.AddPage(self.filters, 'Filtros', False)
-        #=======================================================================
+        self.AddPage(filters, 'Filtros', False)
 
     # ------ self controls --------------------------------------------
 
@@ -560,14 +570,14 @@ from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
 
 
 class AddFilterObjetivesScroll(ScrolledPanel):
-    def __init__(self, parent, details, mode):
+    def __init__(self, parent, test, mode):
         ScrolledPanel.__init__(self, parent, -1)
 
         # ------ self customize ---------------------------------------
         # ------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
-        self.presenter = AddFilterObjetivesScrollPresenter(self, details)
+        self.presenter = AddFilterObjetivesScrollPresenter(self, test)
         self.sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         # ------ self inicailes executions ----------------------------
