@@ -82,6 +82,7 @@ class TopPanelPresenter:
         p_analizer = pam.getParallelAnalizerByIdTest(self.test.id)
         return inm().createFiles(ite, self.mode, p_analizer.enable_objectives,
                                  p_analizer.order_objective,
+                                 p_analizer.order_name_obj,
                                  max_objetive, min_objetive)
     # -------------------------------------------------------------------------
 
@@ -331,6 +332,26 @@ class ButtonsTollFigurePresenter:
     def cleanFilter(self):
         pub.sendMessage(T.PARALLEL_ON_CLEAN_FILTERS_OBJ)
 
+    def getNamesObjetives(self):
+        pa = self.getParallelAnalizer()
+        to_ret = []
+        for name in pa.name_objetive.split(','):
+            to_ret.append([name, name])
+        return to_ret
+
+    def setUpdateNamesObjetives(self, new_names):
+        pa = self.getParallelAnalizer()
+        indexs = [int(i) for i in pa.order_objective.split(',')]
+        order_name_obj = []
+        for i in indexs:
+            order_name_obj.append(new_names[i])
+        pa.name_objetive = ','.join(new_names)
+        pa.order_name_obj = ','.join(order_name_obj)
+        pam = ParallelAnalizerModel()
+        pam.upDate(pa)
+        self.setParallelAnalizer(pam.upDate(pa))
+        pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_RENAME_OBJ)
+
 
 class ParallelDataVarPresenter:
     def __init__(self, iview, details):
@@ -406,6 +427,8 @@ class AddFilterObjetivesScrollPresenter:
         pub.subscribe(self.updateSortObjectPub,
                       T.PARALLEL_UPDATE_FIGURE_SORT_OBJ)
         pub.subscribe(self.setFiltersCleanPub, T.PARALLEL_ON_CLEAN_FILTERS_OBJ)
+        pub.subscribe(self.updateRenameObjectPub,
+                      T.PARALLEL_UPDATE_FIGURE_RENAME_OBJ)
 
     def updateDatasPub(self, message):
         ite_list = list(message.data)
@@ -424,6 +447,10 @@ class AddFilterObjetivesScrollPresenter:
         tuple_names = message.data
         pub.sendMessage(T.PARALLEL_SET_FILTERS_OBJ,
                         tuple(self.getFiltersByNames(tuple_names)))
+
+    def updateRenameObjectPub(self, message):
+        pub.sendMessage(T.PARALLEL_SET_FILTERS_OBJ,
+                        tuple(self.getListValues()))
 
     def updateFiltros(self, ite_list):
 

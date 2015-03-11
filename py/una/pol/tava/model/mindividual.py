@@ -94,7 +94,7 @@ class IndividualModel(object):
         return res.name_objectives, ite.identifier, to_ret_obj, to_ret_var
 
     def createFiles(self, ite, mode, v_objectives, v_order,
-                    max_objetive, min_objetive):
+                    order_name_obj, max_objetive, min_objetive):
 
         obj_orders_var = []
 
@@ -160,7 +160,7 @@ class IndividualModel(object):
         f_obj = open(file_obj_d, 'w')
 
         # agrego cabecera
-        f.write(obj_name + ',Name\n')
+        f.write(order_name_obj + ',Name\n')
         # agrego la lista
         for index in range(len(obj_order_filter)):
             f.write(obj_order_filter[index] + ',' + str(ident) + '\n')

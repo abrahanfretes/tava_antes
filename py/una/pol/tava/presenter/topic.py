@@ -137,3 +137,7 @@ PARALLEL_SET_FILTERS_OBJ = 'PARALLEL.SET_FILTERS_OBJ'
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
 PARALLEL_ON_CLEAN_FILTERS_OBJ = 'PARALLEL.ON_CLEAN_FILTERS_OBJ'
+
+# Send = pparallelcoordinatesdata_fnl
+# Subscribe = pparallelcoordinatesdata_fnl
+PARALLEL_UPDATE_FIGURE_RENAME_OBJ = 'PARALLEL.UPDATE_FIGURE_RENAME_OBJ'

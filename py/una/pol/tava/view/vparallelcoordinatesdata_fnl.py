@@ -166,6 +166,10 @@ class ButtonsTollFigure(wx.Panel):
 
         s_line_update = wx.StaticLine(self, style=LI_VERTICAL)
 
+        self.rename_obj = wx.BitmapButton(self, -1, I.rename_png,
+                                          style=wx.NO_BORDER)
+        self.rename_obj.SetToolTipString("Renombrar Objetivos.")
+
         self.config = wx.BitmapButton(self, -1, I.update_config,
                                       style=wx.NO_BORDER)
         self.config.SetToolTipString("Nueva Configuracion.")
@@ -191,6 +195,7 @@ class ButtonsTollFigure(wx.Panel):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
         sizer.Add(s_line_update, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=4)
+        sizer.Add(self.rename_obj)
         sizer.Add(self.config)
         sizer.Add(self.objetives)
         sizer.Add(self.sort_objetive)
@@ -203,6 +208,7 @@ class ButtonsTollFigure(wx.Panel):
         self.presenter = ButtonsTollFigurePresenter(self, test)
         # ------ self inicailes executions ----------------------------
         self.Bind(wx.EVT_BUTTON, self.OnClickUpdateGrafic, self.update)
+        self.Bind(wx.EVT_BUTTON, self.OnClickRename, self.rename_obj)
         self.Bind(wx.EVT_BUTTON, self.OnClickConfiguration, self.config)
         self.Bind(wx.EVT_BUTTON, self.OnFilterObjetives, self.objetives)
         self.Bind(wx.EVT_BUTTON, self.OnSortObjetives, self.sort_objetive)
@@ -212,6 +218,9 @@ class ButtonsTollFigure(wx.Panel):
     # ------ self controls --------------------------------------------
     def OnClickUpdateGrafic(self, event):
         self.presenter.verifyTreeCheckeo()
+
+    def OnClickRename(self, event):
+        RenameObjetivoDialog(self, self.presenter.getNamesObjetives())
 
     def OnClickConfiguration(self, event):
         pa = self.presenter.getParallelAnalizer()
@@ -237,6 +246,7 @@ class ButtonsTollFigure(wx.Panel):
         self.objetives.Enable()
         self.sort_objetive.Enable()
         self.filters.Enable()
+        self.rename_obj.Enable()
 
     def disableButtons(self):
         self.update.Disable()
@@ -245,6 +255,7 @@ class ButtonsTollFigure(wx.Panel):
         self.objetives.Disable()
         self.sort_objetive.Disable()
         self.filters.Disable()
+        self.rename_obj.Disable()
 
     def updateConfigPa(self, legent_figure, color_figure):
         self.presenter.updateConfigPa(legent_figure, color_figure)
@@ -260,6 +271,9 @@ class ButtonsTollFigure(wx.Panel):
 
     def setUpdateSortV(self, new_order_list):
         self.presenter.setUpdateSort(new_order_list)
+
+    def updateNamesObjetives(self, new_names):
+        self.presenter.setUpdateNamesObjetives(new_names)
 
 # ------------------- SortObjetiveDialog               ------------------------
 # -------------------                                  ------------------------
@@ -309,6 +323,127 @@ class SortObjetiveDialog(wx.Dialog):
 
     def OnCancel(self, event):
         self.Close()
+
+
+class RenameObjetivoDialog(wx.Dialog):
+    def __init__(self, parent, list_obj):
+        super(RenameObjetivoDialog, self).__init__(parent, size=(500, 400))
+        self.parent = parent
+
+        # ------ self customize ---------------------------------------
+        tID = wx.NewId()
+
+        sb = wx.StaticBox(self, label="Renombrar Objetivos")
+        boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
+
+        sizer_h = wx.BoxSizer(wx.HORIZONTAL)
+        b_cancel = wx.Button(self, -1, "Cancelar")
+        self.b_ok = wx.Button(self, -1, "Aceptar")
+        sizer_h.Add(b_cancel, 0, wx.ALL, 10)
+        sizer_h.Add(self.b_ok, 0, wx.ALL, 10)
+
+        self.list = TestListCtrl(self, tID, list_obj)
+        boxsizer.Add(self.list, 1, wx.EXPAND)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(boxsizer, 1, flag=wx.EXPAND | wx.ALL, border=10)
+        sizer.Add(sizer_h, 0, flag=wx.ALL, border=10)
+        self.SetSizer(sizer)
+        self.SetAutoLayout(True)
+
+        b_cancel.Bind(wx.EVT_BUTTON, self.OnCancel)
+        self.b_ok.Bind(wx.EVT_BUTTON, self.OnOk)
+        self.Bind(wx.EVT_CHAR, self.OnKeyDown)
+
+        self.Centre()
+        self.ShowModal()
+
+    def OnKeyDown(self, event):
+        key = event.GetKeyCode()
+        if key == wx.WXK_ESCAPE:
+            self.Close()
+
+    def OnOk(self, event):
+        self.parent.updateNamesObjetives(self.list.getDatas())
+        self.Close()
+
+    def OnCancel(self, event):
+        self.Close()
+
+
+import wx.dataview as dv
+# ---------------------------------------------------------------------------
+
+
+class TestListCtrl(dv.DataViewListCtrl):
+
+    def __init__(self, parent, ID, list_obj, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=0):
+        dv.DataViewListCtrl.__init__(self, parent, ID, pos, size, style)
+        self.parent = parent
+        self.count_objetive = len(list_obj)
+
+        self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.verificNames)
+
+        self.AppendTextColumn("Nombre Actual", width=250)
+        self.AppendTextColumn("Nuevo Nombre",
+                              mode=dv.DATAVIEW_CELL_EDITABLE, width=250)
+
+        for data in list_obj:
+            self.AppendItem(data)
+
+        self.parent.b_ok.Disable()
+
+    def getDatas(self):
+        to_ret = []
+        for row in range(self.count_objetive):
+            to_ret.append(self.GetTextValue(row, 1))
+        return to_ret
+
+    def verificNames(self, event):
+        row = event.GetItem().GetID() - 1
+        name = self.GetTextValue(row, 1)
+
+        self.parent.b_ok.Enable()
+        if not self.isValidName(name) or self.isRepeatName(name, row)\
+                or self.isRepeatNameOthers() or not self.isModificSomeName():
+            self.parent.b_ok.Disable()
+
+    def isValidName(self, name):
+        if len(name.strip(' ')) == 0:
+            return False
+        elif '/' in name:
+            return False
+        elif '.' in name:
+            return False
+        if len(name.strip(' ')) > 100:
+            return False
+        return True
+
+    def isRepeatName(self, name, current_row):
+        for row in range(self.count_objetive):
+            if row != current_row:
+                if name == self.GetTextValue(row, 1):
+                    return True
+
+        return False
+
+    def isRepeatNameOthers(self):
+        for row in range(self.count_objetive):
+            for row_ in range(self.count_objetive):
+                if row != row_:
+                    if self.GetTextValue(row, 1) == self.GetTextValue(row_, 1):
+                        return True
+
+        return False
+
+    def isModificSomeName(self):
+        for row in range(self.count_objetive):
+            name = self.GetTextValue(row, 1)
+            if self.GetTextValue(row, 0) != name.strip(' '):
+                return True
+        return False
+    # ---------------------------------------------
 
 # ------------------- CustomizeFrontFigure             ------------------------
 # -------------------                                  ------------------------
