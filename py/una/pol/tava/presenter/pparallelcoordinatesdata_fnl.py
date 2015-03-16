@@ -335,11 +335,17 @@ class ButtonsTollFigurePresenter:
     def getNamesObjetives(self):
         pa = self.getParallelAnalizer()
         to_ret = []
+
         for name in pa.name_objetive.split(','):
             to_ret.append([name, name])
-        return to_ret
 
-    def setUpdateNamesObjetives(self, new_names):
+        to_ret1 = []
+        for name in pa.name_variable.split(','):
+            to_ret1.append([name, name])
+
+        return to_ret, to_ret1
+
+    def setUpdateNamesObjetives(self, new_names, new_name_var):
         pa = self.getParallelAnalizer()
         indexs = [int(i) for i in pa.order_objective.split(',')]
         order_name_obj = []
@@ -347,6 +353,7 @@ class ButtonsTollFigurePresenter:
             order_name_obj.append(new_names[i])
         pa.name_objetive = ','.join(new_names)
         pa.order_name_obj = ','.join(order_name_obj)
+        pa.name_variable = ','.join(new_name_var)
         pam = ParallelAnalizerModel()
         pam.upDate(pa)
         self.setParallelAnalizer(pam.upDate(pa))
@@ -354,29 +361,31 @@ class ButtonsTollFigurePresenter:
 
 
 class ParallelDataVarPresenter:
-    def __init__(self, iview, details):
+    def __init__(self, iview, test):
         self.iview = iview
-        self.ite_list = []
+        self.test = test
 
         pub.subscribe(self.updateDatasPub, T.PARALLEL_UPDATE_ALL)
 
-        self.InitUI(details)
+        self.InitUI()
 
-    def InitUI(self, details):
-        r = rm().getResultById(details[0].result_id)
-        v_names = 'key,' + r.name_variables
+    def InitUI(self):
+        pa = ParallelAnalizerModel().getParallelAnalizerByIdTest(self.test.id)
+        v_names = 'key,' + pa.name_variable
         columns = v_names.split(',')
         self.countColumn = len(columns)
         for name in columns:
             self.iview.dvlc.AppendTextColumn(name, width=110)
 
     def updateDatasPub(self, message):
-        ite_list = message.data
-        self.ite_list = list(ite_list)
-        self.updateDatas(self.ite_list)
+        ite_list = list(message.data)
+        self.updateDatasVar(ite_list)
 
-    def updateDatas(self, ite_list):
-        self.iview.dvlc.DeleteAllItems()
+    def updateDatasVar(self, ite_list):
+        self.iview.dvlc.Destroy()
+        self.iview.InitUI()
+        self.InitUI()
+
         for ite in ite_list:
             for var in inm().getVar(ite, self.iview.mode):
                 self.iview.dvlc.AppendItem(var)

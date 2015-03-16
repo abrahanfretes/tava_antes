@@ -23,8 +23,8 @@ class ParallelAnalizerModel():
         '''
 
         r_id = test.test_details[0].result_id
-        ner = ResultModel().getNumberObjetivetById(r_id)
-        name_obj = ResultModel().getNamesObjetivestById(r_id)
+        re = ResultModel().getResultById(r_id)
+        ner = re.number_objectives
 
         pa = ParallelAnalizer()
         pa.name_figure = 'Tava'
@@ -32,9 +32,10 @@ class ParallelAnalizerModel():
         pa.color_figure = '#d7c16b'  # '#4ECDC4'
         pa.enable_objectives = ','.join(['1']*ner)
         pa.order_objective = ','.join([str(i) for i in range(ner)])
-        pa.order_name_obj = name_obj
-        pa.name_objetive = name_obj
+        pa.order_name_obj = re.name_objectives
+        pa.name_objetive = re.name_objectives
         pa.test_config_id = test.id
+        pa.name_variable = re.name_variables
 
         return dparallel_analizer.add(pa)
 

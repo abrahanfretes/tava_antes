@@ -220,7 +220,8 @@ class ButtonsTollFigure(wx.Panel):
         self.presenter.verifyTreeCheckeo()
 
     def OnClickRename(self, event):
-        RenameObjetivoDialog(self, self.presenter.getNamesObjetives())
+        list_obj, list_var = self.presenter.getNamesObjetives()
+        RenameObjetivoDialog(self, list_obj, list_var)
 
     def OnClickConfiguration(self, event):
         pa = self.presenter.getParallelAnalizer()
@@ -272,8 +273,8 @@ class ButtonsTollFigure(wx.Panel):
     def setUpdateSortV(self, new_order_list):
         self.presenter.setUpdateSort(new_order_list)
 
-    def updateNamesObjetives(self, new_names):
-        self.presenter.setUpdateNamesObjetives(new_names)
+    def updateNamesObjetives(self, new_names, new_name_var):
+        self.presenter.setUpdateNamesObjetives(new_names, new_name_var)
 
 # ------------------- SortObjetiveDialog               ------------------------
 # -------------------                                  ------------------------
@@ -326,28 +327,46 @@ class SortObjetiveDialog(wx.Dialog):
 
 
 class RenameObjetivoDialog(wx.Dialog):
-    def __init__(self, parent, list_obj):
-        super(RenameObjetivoDialog, self).__init__(parent, size=(500, 400))
+    def __init__(self, parent, list_obj, list_var):
+        super(RenameObjetivoDialog, self).__init__(parent, size=(450, 500))
         self.parent = parent
 
         # ------ self customize ---------------------------------------
         tID = wx.NewId()
 
-        sb = wx.StaticBox(self, label="Renombrar Objetivos")
-        boxsizer = wx.StaticBoxSizer(sb, wx.VERTICAL)
+        sizer_title = wx.BoxSizer(wx.HORIZONTAL)
+        text_title = wx.StaticText(self, label='Renombrar Objetivos')
+        line_s = wx.StaticLine(self, style=LI_HORIZONTAL)
+        sizer_title.Add(text_title, 0)
+        sizer_title.Add(line_s, 1,
+                        flag=wx.EXPAND | wx.RIGHT | wx.LEFT, border=10)
+
+        sizer_title1 = wx.BoxSizer(wx.HORIZONTAL)
+        text_title1 = wx.StaticText(self, label='Renombrar Variables')
+        line_s1 = wx.StaticLine(self, style=LI_HORIZONTAL)
+        sizer_title1.Add(text_title1, 0)
+        sizer_title1.Add(line_s1, 1,
+                         flag=wx.EXPAND | wx.RIGHT | wx.LEFT, border=10)
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
         b_cancel = wx.Button(self, -1, "Cancelar")
         self.b_ok = wx.Button(self, -1, "Aceptar")
-        sizer_h.Add(b_cancel, 0, wx.ALL, 10)
-        sizer_h.Add(self.b_ok, 0, wx.ALL, 10)
+        sizer_h.Add(b_cancel, 0, wx.ALL | wx.ALIGN_LEFT, 10)
+        sizer_h.Add(self.b_ok, 0, wx.ALL | wx.ALIGN_LEFT, 10)
 
         self.list = TestListCtrl(self, tID, list_obj)
-        boxsizer.Add(self.list, 1, wx.EXPAND)
+        self.list1 = TestListCtrl(self, -1, list_var)
+        # boxsizer.Add(self.list, 1, wx.EXPAND)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(boxsizer, 1, flag=wx.EXPAND | wx.ALL, border=10)
-        sizer.Add(sizer_h, 0, flag=wx.ALL, border=10)
+        # sizer.Add(boxsizer, 1, flag=wx.EXPAND | wx.ALL, border=10)
+        sizer.Add(sizer_title, 0,
+                  flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border=10)
+        sizer.Add(self.list, 2, flag=wx.EXPAND | wx.ALL, border=10)
+        sizer.Add(sizer_title1, 0,
+                  flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+        sizer.Add(self.list1, 2, flag=wx.EXPAND | wx.ALL, border=10)
+        sizer.Add(sizer_h, 0, flag=wx.BOTTOM | wx.LEFT | wx.RIGHT, border=10)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
 
@@ -364,7 +383,8 @@ class RenameObjetivoDialog(wx.Dialog):
             self.Close()
 
     def OnOk(self, event):
-        self.parent.updateNamesObjetives(self.list.getDatas())
+        self.parent.updateNamesObjetives(self.list.getDatas(),
+                                         self.list1.getDatas())
         self.Close()
 
     def OnCancel(self, event):
@@ -628,7 +648,7 @@ class FooterAUINotebook(aui.AuiNotebook):
         self.SetAGWWindowStyleFlag(aui.AUI_NB_TOP)
 
         # ------ self components --------------------------------------
-        data_var = ParallelDataVar(self, test.test_details, mode)
+        data_var = ParallelDataVar(self, test, mode)
         data_obj = ParallelDataObj(self, test, mode)
         filters = AddFilterObjetivesScroll(self, test, mode)
 
@@ -643,20 +663,23 @@ class FooterAUINotebook(aui.AuiNotebook):
 # ------------------- Pagina vizualizador de variables ------------------------
 # -------------------                                  ------------------------
 from wx.lib.scrolledpanel import ScrolledPanel
-import wx.dataview as dv
 
 from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
     ParallelDataVarPresenter
 
 
 class ParallelDataVar(ScrolledPanel):
-    def __init__(self, parent, details, mode):
+    def __init__(self, parent, test, mode):
         ScrolledPanel.__init__(self, parent, -1)
 
         # ------ self customize ---------------------------------------
         # ------ self components --------------------------------------
         self.parent = parent
         self.mode = mode
+        self.InitUI()
+        self.presenter = ParallelDataVarPresenter(self, test)
+
+    def InitUI(self):
 
         l_sizer = wx.BoxSizer(wx.VERTICAL)
         self.dvlc = dv.DataViewListCtrl(self)
@@ -666,7 +689,6 @@ class ParallelDataVar(ScrolledPanel):
         self.SetAutoLayout(1)
         self.SetupScrolling()
 
-        self.presenter = ParallelDataVarPresenter(self, details)
         # ------ self inicailes executions ----------------------------
     # ------ self controls --------------------------------------------
 
@@ -734,7 +756,7 @@ class AddFilterObjetivesScroll(ScrolledPanel):
 
 # ------------------- Clase contenedor de Filtros      ------------------------
 # -------------------                                  ------------------------
-from wx import LI_VERTICAL
+from wx import LI_VERTICAL, LI_HORIZONTAL
 
 
 class AddFilterObjetives(wx.Panel):

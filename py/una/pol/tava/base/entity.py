@@ -227,6 +227,7 @@ class ParallelAnalizer(Base):
     order_objective = Column(String(100))
     order_name_obj = Column(String(100))
     name_objetive = Column(String(100))
+    name_variable = Column(String(100))
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
 
     def __init__(self):
