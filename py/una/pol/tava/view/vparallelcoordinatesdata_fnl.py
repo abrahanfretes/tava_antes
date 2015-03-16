@@ -6,6 +6,10 @@ Created on 25/2/2015
 '''
 import wx
 
+from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
+# _(C.NPD_TP)
+
 
 # -------------------         Panel Splitter           ------------------------
 # -------------------                                  ------------------------
@@ -16,7 +20,7 @@ class WorkingPageParallelFnl(wx.SplitterWindow):
         #  ------ self customize ----------------------------------------
 
         self.SetMinimumPaneSize(50)
-        self.SetBackgroundColour('# 696969')
+        self.SetBackgroundColour("#696969")
         self.SetBorderSize(1)
 
         #  ------ self components --------------------------------------
@@ -74,7 +78,7 @@ class ParallelDataTree(CT.CustomTreeCtrl):
         il = wx.ImageList(16, 16)
         self.file_bmp = il.Add(I.filegraph_png)
         self.AssignImageList(il)
-        self.SetBackgroundColour('# D9F0F8')
+        self.SetBackgroundColour('#D9F0F8')
 
         # ------ self components --------------------------------------
         self.parent = parent
@@ -156,41 +160,41 @@ class ButtonsTollFigure(wx.Panel):
         wx.Panel.__init__(self, parent)
 
         # ------ self customize ---------------------------------------
-        self.SetBackgroundColour('# f8f1d9')
+        self.SetBackgroundColour('#f8f1d9')
 
         # ------ self components --------------------------------------
         self.parent = parent
         self.update = wx.BitmapButton(self, -1, I.graficar_parallel,
                                       style=wx.NO_BORDER)
-        self.update.SetToolTipString("Actualizar Figura.")
+        self.update.SetToolTipString(_(C.BTF_UF))
 
         s_line_update = wx.StaticLine(self, style=LI_VERTICAL)
 
         self.rename_obj = wx.BitmapButton(self, -1, I.rename_png,
                                           style=wx.NO_BORDER)
-        self.rename_obj.SetToolTipString("Renombrar Objetivos.")
+        self.rename_obj.SetToolTipString(_(C.BTF_RN))
 
         self.config = wx.BitmapButton(self, -1, I.update_config,
                                       style=wx.NO_BORDER)
-        self.config.SetToolTipString("Nueva Configuracion.")
+        self.config.SetToolTipString(_(C.BTF_NC))
 
         self.objetives = wx.BitmapButton(self, -1, I.list_objetives,
                                          style=wx.NO_BORDER)
-        self.objetives.SetToolTipString("Filtrar Objetivos.")
+        self.objetives.SetToolTipString(_(C.BTF_FO))
 
         self.sort_objetive = wx.BitmapButton(self, -1, I.sort_objetive,
                                              style=wx.NO_BORDER)
-        self.sort_objetive.SetToolTipString("Ordenar Objetivos.")
+        self.sort_objetive.SetToolTipString(_(C.BTF_OO))
 
         s_line = wx.StaticLine(self, style=LI_VERTICAL)
 
         self.filters = wx.BitmapButton(self, -1, I.update_figure,
                                        style=wx.NO_BORDER)
-        self.filters.SetToolTipString("Filtrar Objetivos.")
+        self.filters.SetToolTipString(_(C.BTF_ESF))
 
         self.clean = wx.BitmapButton(self, -1, I.clear_filters,
                                      style=wx.NO_BORDER)
-        self.clean.SetToolTipString("Limpiar Filtros.")
+        self.clean.SetToolTipString(_(C.BTF_CF))
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.update)
@@ -290,15 +294,15 @@ class SortObjetiveDialog(wx.Dialog):
         self.list_obj = list_obj
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.ip = ItemsPicker(self, -1, self.list_obj,
-                              'Orden Actual:', 'Nuevo Orden:')
+                              _(C.SOD_ITC), _(C.SOD_IPN))
         self.ip._source.SetMinSize((-1, 150))
         sizer.Add(self.ip, 0, wx.ALL, 10)
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
 
-        b_cancel = wx.Button(self, -1, "Cancelar")
+        b_cancel = wx.Button(self, -1, _(C.SOD_BC))
         b_cancel.Bind(wx.EVT_BUTTON, self.OnCancel)
-        self.b_ok = wx.Button(self, -1, "Aceptar")
+        self.b_ok = wx.Button(self, -1, _(C.SOD_BO))
         self.b_ok.Disable()
         self.b_ok.Bind(wx.EVT_BUTTON, self.OnOk)
         sizer_h.Add(b_cancel, 0, wx.ALL, 10)
@@ -335,22 +339,22 @@ class RenameObjetivoDialog(wx.Dialog):
         tID = wx.NewId()
 
         sizer_title = wx.BoxSizer(wx.HORIZONTAL)
-        text_title = wx.StaticText(self, label='Renombrar Objetivos')
+        text_title = wx.StaticText(self, label=_(C.ROD_RO))
         line_s = wx.StaticLine(self, style=LI_HORIZONTAL)
         sizer_title.Add(text_title, 0)
         sizer_title.Add(line_s, 1,
                         flag=wx.EXPAND | wx.RIGHT | wx.LEFT, border=10)
 
         sizer_title1 = wx.BoxSizer(wx.HORIZONTAL)
-        text_title1 = wx.StaticText(self, label='Renombrar Variables')
+        text_title1 = wx.StaticText(self, label=_(C.ROD_RV))
         line_s1 = wx.StaticLine(self, style=LI_HORIZONTAL)
         sizer_title1.Add(text_title1, 0)
         sizer_title1.Add(line_s1, 1,
                          flag=wx.EXPAND | wx.RIGHT | wx.LEFT, border=10)
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-        b_cancel = wx.Button(self, -1, "Cancelar")
-        self.b_ok = wx.Button(self, -1, "Aceptar")
+        b_cancel = wx.Button(self, -1, _(C.ROD_BC))
+        self.b_ok = wx.Button(self, -1, _(C.ROD_BO))
         sizer_h.Add(b_cancel, 0, wx.ALL | wx.ALIGN_LEFT, 10)
         sizer_h.Add(self.b_ok, 0, wx.ALL | wx.ALIGN_LEFT, 10)
 
@@ -405,8 +409,8 @@ class TestListCtrl(dv.DataViewListCtrl):
 
         self.Bind(dv.EVT_DATAVIEW_ITEM_VALUE_CHANGED, self.verificNames)
 
-        self.AppendTextColumn("Nombre Actual", width=250)
-        self.AppendTextColumn("Nuevo Nombre",
+        self.AppendTextColumn(_(C.TLC_NC), width=250)
+        self.AppendTextColumn(_(C.TLC_NN),
                               mode=dv.DATAVIEW_CELL_EDITABLE, width=250)
 
         for data in list_obj:
@@ -485,13 +489,13 @@ class CustomizeFrontFigure(wx.Dialog):
         self.panel = wx.Panel(self)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        title = wx.StaticText(self.panel, -1, "Personalizar Configuracion")
+        title = wx.StaticText(self.panel, -1, _(C.CFF_CC))
 
-        self.legent_figure = wx.CheckBox(self.panel, -1, "Legenda")
+        self.legent_figure = wx.CheckBox(self.panel, -1, _(C.CFF_L))
         self.legent_figure.SetValue(legent_figure)
 
         colour_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        colour_sizer.Add(wx.StaticText(self.panel, -1, "Color de Lineas: "))
+        colour_sizer.Add(wx.StaticText(self.panel, -1, _(C.CFF_LC)))
         self.colourDefaults = csel.ColourSelect(self.panel, -1,
                                                 colour=color_figure,
                                                 size=(60, 25))
@@ -500,9 +504,9 @@ class CustomizeFrontFigure(wx.Dialog):
         line = wx.StaticLine(self.panel, -1, size=(20, -1))
 
         btnsizer = wx.BoxSizer(wx.HORIZONTAL)
-        btn_restart_d = wx.Button(self.panel, label='Reestablecer')
-        btn_ok = wx.Button(self.panel, label='Aceptar')
-        btn_cancel = wx.Button(self.panel, label='Cancelar')
+        btn_restart_d = wx.Button(self.panel, label=_(C.CFF_RC))
+        btn_ok = wx.Button(self.panel, label=_(C.CFF_BO))
+        btn_cancel = wx.Button(self.panel, label=_(C.CFF_BC))
         btn_ok.SetDefault()
         btnsizer.Add(btn_restart_d, 0, wx.ALIGN_LEFT | wx.ALL, 5)
         btnsizer.Add(btn_cancel, 0, wx.ALL, 5)
@@ -581,7 +585,7 @@ class CustomizeObjetives(wx.Dialog):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        title = wx.StaticText(self, -1, "Objetivos Disponibles", (45, 15))
+        title = wx.StaticText(self, -1, _(C.CO_OD), (45, 15))
         sl = wx.StaticLine(self)
 
         sizerh = wx.BoxSizer(wx.HORIZONTAL)
@@ -591,8 +595,8 @@ class CustomizeObjetives(wx.Dialog):
         self.lb = lb
 
         sizerv = wx.BoxSizer(wx.VERTICAL)
-        btn_cancel = wx.Button(self, label='Cancelar')
-        btn_ok = wx.Button(self, label='Aceptar')
+        btn_cancel = wx.Button(self, label=_(C.CO_BC))
+        btn_ok = wx.Button(self, label=_(C.CO_BO))
 
         sizerv.Add(btn_ok)
         sizerv.Add(btn_cancel)
@@ -653,9 +657,9 @@ class FooterAUINotebook(aui.AuiNotebook):
         filters = AddFilterObjetivesScroll(self, test, mode)
 
         # ------ self inicailes executions ----------------------------
-        self.AddPage(data_var, 'Variables', True)
-        self.AddPage(data_obj, 'Objetivos', False)
-        self.AddPage(filters, 'Filtros', False)
+        self.AddPage(data_var, _(C.FAN_V), True)
+        self.AddPage(data_obj, _(C.FAN_O), False)
+        self.AddPage(filters, _(C.FAN_F), False)
 
     # ------ self controls --------------------------------------------
 

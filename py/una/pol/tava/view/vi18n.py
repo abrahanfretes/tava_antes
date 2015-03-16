@@ -84,9 +84,9 @@ class I18nLocale(wx.Locale):
             if os.path.exists(langPOfileName):
                 if not os.path.exists(mo_targetDir):
                     self.mkdir(mo_targetDir)
-                cmd = 'msgfmt --output-file="%s/%s_%s.mo" "%s/%s_%s.po"' % (
-                mo_targetDir, applicationName, langCode, mo_targetDir,
-                applicationName, langCode)
+                cmd = 'msgfmt --output-file="%s/%s_%s.mo" "%s/%s_%s.po"' %\
+                    (mo_targetDir, applicationName, langCode, mo_targetDir,
+                     applicationName, langCode)
                 if verbose:
                     print cmd
                 os.system(cmd)
@@ -303,3 +303,46 @@ PPD_NA = "PROPERTIES_PROJECT_NAME"
 PPD_CD = "PROPERTIES_PROJECT_CREATION_DATE"
 PPD_OK = "PROPERTIES_PROJECT_OK"
 PPD_CAN = "PROPERTIES_PROJECT_CANCEL"
+
+# ----------- ButtonsTollFigure - vparallelcoordinatesdata --------------------
+BTF_UF = "BUTTON_TOLL_FIGURE_UPDATE_FIGURE"
+BTF_RN = "BUTTON_TOLL_FIGURE_RENAME_FIGURE"
+BTF_NC = "BUTTON_TOLL_FIGURE_NEW_CONFIGURATION"
+BTF_FO = "BUTTON_TOLL_FIGURE_FILTER_OBJETIVE"
+BTF_OO = "BUTTON_TOLL_FIGURE_ORDERS_OBJETIVE"
+BTF_ESF = "BUTTON_TOLL_FIGURE_EXECUTE_SELECTION_OBJETIVE"
+BTF_CF = "BUTTON_TOLL_FIGURE_CLEAN_FILTERS"
+
+# -------- SortObjetiveDialog - vparallelcoordinatesdata  ---------------------
+SOD_ITC = "SORT_OBJECTIVE_DIALPG_ITEM_PICKER_CURRENT"
+SOD_IPN = "SORT_OBJECTIVE_DIALPG_ITEM_PICKER_NEW"
+SOD_BC = "SORT_OBJECTIVE_DIALPG_BUTTON_CANCEL"
+SOD_BO = "SORT_OBJECTIVE_DIALPG_BUTTON_OK"
+
+# -------- RenameObjetivoDialog - vparallelcoordinatesdata --------------------
+ROD_RO = "RENAME_OBJETIVE_DIALOG_RENAME_OBJETIVE"
+ROD_RV = "RENAME_OBJETIVE_DIALOG_RENAME_VAR"
+ROD_BC = "RENAME_OBJETIVE_DIALOG_BUTTON_CANCEL"
+ROD_BO = "RENAME_OBJETIVE_DIALOG_BUTTON_OK"
+
+# -------- TestListCtrl - vparallelcoordinatesdata --------------------
+TLC_NC = "TEST_LIST_CTRL_CURRENT_NAME"
+TLC_NN = "TEST_LIST_CTRL_NEW_NAME"
+
+# -------- CustomizeFrontFigure - vparallelcoordinatesdata --------------------
+CFF_CC = "CUSTOME_FRONT_FIGURE_CUSTOME_CONFIGURATION"
+CFF_L = "CUSTOME_FRONT_FIGURE_LEGENT"
+CFF_LC = "CUSTOME_FRONT_FIGURE_LINE_COLOR"
+CFF_RC = "CUSTOME_FRONT_FIGURE_RELOAD_CONFIGURATION"
+CFF_BO = "CUSTOME_FRONT_FIGURE_BUTTON_OK"
+CFF_BC = "CUSTOME_FRONT_FIGURE_BUTTON_CANCEL"
+
+# -------- CustomizeObjetives - vparallelcoordinatesdata --------------------
+CO_OD = "CUSTOME_OBJECTIVE_OBJECTIVE_DISPONIBLE"
+CO_BC = "CUSTOME_OBJECTIVE_BUTTON_CANCEL"
+CO_BO = "CUSTOME_OBJECTIVE_BUTTON_OK"
+
+# -------- FooterAUINotebook - vparallelcoordinatesdata --------------------
+FAN_V = "FOOTER_AUI_NOTE_VARIABLE"
+FAN_O = "FOOTER_AUI_NOTE_OBJECTIVE"
+FAN_F = "FOOTER_AUI_NOTE_FILTROS"

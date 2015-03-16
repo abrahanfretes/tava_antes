@@ -287,3 +287,97 @@ msgstr "OK"
 
 msgid "PROPERTIES_PROJECT_CANCEL"
 msgstr "Cancelar"
+
+# ------------------------------- ButtonsTollFigure ---------------------
+msgid "BUTTON_TOLL_FIGURE_UPDATE_FIGURE"
+msgstr "Actualizar Figura"
+
+msgid "BUTTON_TOLL_FIGURE_RENAME_FIGURE"
+msgstr "Renombrar Objetivos"
+
+msgid "BUTTON_TOLL_FIGURE_NEW_CONFIGURATION"
+msgstr "Nueva Configuracion"
+
+msgid "BUTTON_TOLL_FIGURE_FILTER_OBJETIVE"
+msgstr "Filtrar Objetivos"
+
+msgid "BUTTON_TOLL_FIGURE_ORDERS_OBJETIVE"
+msgstr "Ordenar Objetivos"
+
+msgid "BUTTON_TOLL_FIGURE_EXECUTE_SELECTION_OBJETIVE"
+msgstr "Ejecutar selecion de filtro"
+
+msgid "BUTTON_TOLL_FIGURE_CLEAN_FILTERS"
+msgstr "Limpiar Filtros"
+
+# -------- SortObjetiveDialog - vparallelcoordinatesdata  ---------------------
+msgid "SORT_OBJECTIVE_DIALPG_ITEM_PICKER_CURRENT"
+msgstr "Orden Actual:"
+
+msgid "SORT_OBJECTIVE_DIALPG_ITEM_PICKER_NEW"
+msgstr "Nuevo Orden:"
+
+msgid "SORT_OBJECTIVE_DIALPG_BUTTON_CANCEL"
+msgstr "Cancelar"
+
+msgid "SORT_OBJECTIVE_DIALPG_BUTTON_OK"
+msgstr "Aceptar"
+
+# -------- SortObjetiveDialog - vparallelcoordinatesdata  ---------------------
+msgid "RENAME_OBJETIVE_DIALOG_RENAME_OBJETIVE"
+msgstr "Renombrar Objetivos"
+
+msgid "RENAME_OBJETIVE_DIALOG_RENAME_VAR"
+msgstr "Renombrar Variables"
+
+msgid "RENAME_OBJETIVE_DIALOG_BUTTON_CANCEL"
+msgstr "Cancelar"
+
+msgid "RENAME_OBJETIVE_DIALOG_BUTTON_OK"
+msgstr "Aceptar"
+
+# -------- TestListCtrl - vparallelcoordinatesdata --------------------
+msgid "TEST_LIST_CTRL_CURRENT_NAME"
+msgstr "Nombre Actual"
+
+msgid "TEST_LIST_CTRL_NEW_NAME"
+msgstr "Nuevo Nombre"
+
+# -------- CustomizeFrontFigure - vparallelcoordinatesdata --------------------
+msgid "CUSTOME_FRONT_FIGURE_CUSTOME_CONFIGURATION"
+msgstr "Personalizar Configuracion"
+
+msgid "CUSTOME_FRONT_FIGURE_LEGENT"
+msgstr "Legenda"
+
+msgid "CUSTOME_FRONT_FIGURE_LINE_COLOR"
+msgstr "Color de Lineas: "
+
+msgid "CUSTOME_FRONT_FIGURE_RELOAD_CONFIGURATION"
+msgstr "Reestablecer"
+
+msgid "CUSTOME_FRONT_FIGURE_BUTTON_OK"
+msgstr "Aceptar"
+
+msgid "CUSTOME_FRONT_FIGURE_BUTTON_CANCEL"
+msgstr "Cancelar"
+
+# -------- CustomizeObjetives - vparallelcoordinatesdata --------------------
+msgid "CUSTOME_OBJECTIVE_OBJECTIVE_DISPONIBLE"
+msgstr "Objetivos Disponibles"
+
+msgid "CUSTOME_OBJECTIVE_BUTTON_CANCEL"
+msgstr "Cancelar"
+
+msgid "CUSTOME_OBJECTIVE_BUTTON_OK"
+msgstr "Aceptar"
+
+# -------- FooterAUINotebook - vparallelcoordinatesdata --------------------
+msgid "FOOTER_AUI_NOTE_VARIABLE"
+msgstr "Variables"
+
+msgid "FOOTER_AUI_NOTE_OBJECTIVE"
+msgstr "Objetivos"
+
+msgid "FOOTER_AUI_NOTE_FILTROS"
+msgstr "Filtros"
