@@ -65,27 +65,23 @@ class GraphicWizardPresenter():
         test_graphic = TestGraphic()
         if selection == 0:
             test_graphic.name_graphic = "parallel"
+            #TODO
+            selection = 1
         if selection == 1:
+            #TODO
+            selection = 0
             from py.una.pol.tava.model.msom import SomModel as sm
             somConfigPanel = self.iview.graphicList.somConfigPanel
             test_graphic.name_graphic = "som"
             som = SomConfig()
             som.learning_rate = somConfigPanel.learning_rate.GetValue()
             som.sigma = somConfigPanel.sigma.GetValue()
-            if somConfigPanel.hex_topology.GetValue():
-                som.topology = "hexagonal"
-            else:
-                som.topology = "square"
             som.columns = somConfigPanel.columns.GetValue()
             som.rows = somConfigPanel.rows.GetValue()
             if somConfigPanel.lin_map_initialization.GetValue():
                 som.map_initialization = "linear"
             else:
                 som.map_initialization = "random"
-            if somConfigPanel.gauss_neighborhood.GetValue():
-                som.neighborhood = "gaussian"
-            else:
-                som.neighborhood = "bubble"
             som.iterations = somConfigPanel.iterations.GetValue()
             sm().add(som)
             test_graphic.id_graphic = som.id

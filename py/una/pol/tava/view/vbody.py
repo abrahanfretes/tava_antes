@@ -160,10 +160,10 @@ class AUINotebook(aui.AuiNotebook):
     def OnAddPage(self, test, mode):
         if mode == 0:
             working_space = PanelSomConfig(self, test)
-            self.AddPage(working_space, test.name, True)
-        elif mode == 1:
+            self.AddPage(working_space, test.name + "- SOM", True)
+        elif mode == 3:
             working_space = WorkingPageParallel(self, test)
-            self.AddPage(working_space, test.name, True)
+            self.AddPage(working_space, test.name + "- Parallel", True)
         elif mode == 2:
             working_space = WorkingPageParallelFnl(self, test, mode)
             self.AddPage(working_space, test.name, True)
@@ -171,6 +171,6 @@ class AUINotebook(aui.AuiNotebook):
             # working_space = WorkingPageParallelSpl(self, test, mode)
             # self.AddPage(working_space, test.name, True)
             #===================================================================
-        elif mode == 3:
+        elif mode == 1:
             working_space = WorkingPageParallelData(self, test, mode)
             self.AddPage(working_space, test.name, True)

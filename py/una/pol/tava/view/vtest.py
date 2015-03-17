@@ -248,18 +248,8 @@ class PanelSomConfig(wx.Panel):
         sboxsp.Add(sizer, 0, wx.ALL, 8)
 
         # Layout
-        sbox = wx.StaticBox(self, label="Topology")
+        sbox = wx.StaticBox(self, label="Matrix size")
         sboxsz = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        # Add some controls to the box
-        self.hex_topology = wx.RadioButton(self, -1, " Hexagonal Topology ",
-                                style=wx.RB_GROUP)
-        self.hex_topology.SetValue(True)
-        sboxsz.Add(self.hex_topology, 0, wx.ALL, 5)
-
-        self.rect_topology = wx.RadioButton(self, -1, " Rectangular Topology ")
-        self.rect_topology.SetValue(False)
-        sboxsz.Add(self.rect_topology, 0, wx.ALL, 5)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -288,19 +278,6 @@ class PanelSomConfig(wx.Panel):
         self.rand_map_initialization.SetValue(False)
         sboxszm.Add(self.rand_map_initialization, 0, wx.ALL, 5)
 
-        sbox = wx.StaticBox(self, label="Neighborhood")
-        sboxszn = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        self.gauss_neighborhood = wx.RadioButton(self, -1,
-                                " Gaussian neighborhood ", style=wx.RB_GROUP)
-        self.gauss_neighborhood.SetValue(True)
-        sboxszn.Add(self.gauss_neighborhood, 0, wx.ALL, 5)
-
-        self.bubble_neighborhood = wx.RadioButton(self, -1,
-                                                " Bubble neighborhood ")
-        self.bubble_neighborhood.SetValue(False)
-        sboxszn.Add(self.bubble_neighborhood, 0, wx.ALL, 5)
-
         sbox = wx.StaticBox(self, label="Stopping Conditions")
         sboxszs = wx.StaticBoxSizer(sbox, wx.VERTICAL)
 
@@ -320,7 +297,6 @@ class PanelSomConfig(wx.Panel):
 
         sizer2 = wx.BoxSizer(wx.HORIZONTAL)
         sizer2.Add(sboxszm, 0, wx.ALL, 8)
-        sizer2.Add(sboxszn, 0, wx.ALL, 8)
         sizer2.Add(sboxszs, 0, wx.ALL, 8)
 
         msizer.Add(sizer1, 0, wx.ALL, 7)

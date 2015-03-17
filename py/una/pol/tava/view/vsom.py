@@ -12,12 +12,13 @@ In particular it shows how to train MiniSom and how to visualize the result.
     ATTENTION: pylab is required for the visualization.
 """
 
-
+import wx
 import matplotlib
 matplotlib.use('WXAgg')
-import wx
+
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
+from pylab import get_cmap
 
 
 class CanvasPanel(wx.Panel):
@@ -30,6 +31,7 @@ class CanvasPanel(wx.Panel):
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
         self.SetSizer(self.sizer)
         self.Fit()
+        self.numObjetives = 0
 
     def initParameters(self, testConfig, panelSom):
         self.iterId = testConfig.test_details[0].test_datas[0].iteration_id
@@ -50,6 +52,7 @@ class CanvasPanel(wx.Panel):
 #         print datos
         data = None
         data = datos
+        self.numObjetives = len(data[0])
 
         # data normalization (Norma de Frobenius)
         data = apply_along_axis(lambda x: x / linalg.norm(x), 1, data)
@@ -61,14 +64,53 @@ class CanvasPanel(wx.Panel):
         print("Training...")
         som.train_batch(data, 100)  # random training
         print("\n...ready!")
+        return som, data
 
+    def initialDraw(self):
+        som, data = self.trainSom()
+        print data.__len__()
         ### Plotting the response for each pattern in the iris dataset ###
         # plotting the distance map as background
         self.axes.pcolor(som.distance_map().T)
-        cax = self.axes.imshow(data, interpolation='nearest')
+
+        self.axes.axis([0, som.weights.shape[0], som.weights.shape[1], 0])
+
+        for xx in data:
+            w = som.winner(xx)  # getting the winner
+            som.individuals[w[0]][w[1]].append(xx)
+
+        ### Plotting the response for each pattern in the iris dataset ###
+        # plotting the distance map as background
+        self.axes.pcolor(som.distance_map().T, cmap=get_cmap('gray'))
+        cax = self.axes.imshow(data, interpolation='nearest', cmap=get_cmap('gray'))
         self.figure.colorbar(cax)
 
-        self.axes.axis([0, som.weights.shape[0], 0, som.weights.shape[1]])
+        self.axes.axis([0, som.weights.shape[0], som.weights.shape[1], 0])
+
+        for cnt, xx in enumerate(data):
+            w = som.winner(xx)  # getting the winner
+            som.individuals[w[0]][w[1]].append(xx)
+
+        def onpick4(event):
+#             print "on_press"
+            if event.xdata and event.ydata:
+                xdata = int(event.xdata)
+                ydata = int(event.ydata)
+#                 print(xdata)
+#                 print(ydata)
+                print 'onpick points:', xdata, ydata
+                print 'cantidad de individuals del som:', len(som.individuals[xdata][ydata])
+
+                self.GetParent().lc.DeleteAllItems()
+
+                for cnt, ind in enumerate(som.individuals[xdata][ydata]):
+                    for c, i in enumerate(ind):
+                        if c == 0:
+                            self.GetParent().lc.InsertStringItem(cnt, str(i))
+                        else:
+                            self.GetParent().lc.SetStringItem(cnt, c, str(i))
+
+        self.figure.canvas.mpl_connect('button_press_event', onpick4)
 
 
 class PanelSomConfig(wx.Panel):
@@ -182,12 +224,26 @@ class PanelSomConfig(wx.Panel):
         msizer.Add(b, 0, wx.EXPAND | wx.ALL, 5)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(msizer, 1, wx.EXPAND)
+        sizer.Add(msizer, 0, wx.EXPAND)
 
-        panel = CanvasPanel(parent)
-        panel.initParameters(testConfig, self)
-        panel.draw()
-        sizer.Add(panel, 3, wx.EXPAND)
+        vsizer = wx.BoxSizer(wx.VERTICAL)
+
+        self.som_panel = CanvasPanel(self)
+        self.som_panel.initParameters(testConfig)
+        self.som_panel.initialDraw()
+        vsizer.Add(self.som_panel, 3, wx.EXPAND)
+
+        # Listctrl
+        self.lc = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
+        # Se insertan dos columnas
+        for i in range(self.som_panel.numObjetives):
+            self.lc.InsertColumn(i, 'Objetivo ' + str(i))
+            self.lc.SetColumnWidth(i, 140)
+#             self.lc.SetColumnWidth(i, wx.LIST_AUTOSIZE_USEHEADER)
+
+        vsizer.Add(self.lc, 1, wx.EXPAND)
+
+        sizer.Add(vsizer, 1, wx.EXPAND)
 
         self.SetSizer(sizer)
         self.SetSize((900, 710))
@@ -232,7 +288,7 @@ if __name__ == "__main__":
     from py.una.pol.tava.base.entity import createDB
     createDB()
     from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
-    testConfig = tm().getTestConfigById(1)
+    testConfig = tm().getTestConfigById(4)
     a = str(testConfig.test_graphic[0].name_graphic)
     app = wx.App()
     fr = wx.Frame(None, title='Configuration')

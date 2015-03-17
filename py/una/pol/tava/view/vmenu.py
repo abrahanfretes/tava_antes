@@ -328,6 +328,12 @@ class AnalysisMenu(wx.Menu):
 
         #------ items del menu ----------------------------------------
 
+        som_graphic = wx.MenuItem(self, wx.ID_ANY, 'Self Organizing Maps')
+        self.AppendItem(som_graphic)
+        som_graphic.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowSomGraphic, som_graphic)
+        self.AppendSeparator()
+
         # menu only_graphics resultado
         only_graphics = wx.MenuItem(self, wx.ID_ANY, 'Only Graphics')
         self.AppendItem(only_graphics)
@@ -345,6 +351,9 @@ class AnalysisMenu(wx.Menu):
 
     def OnShowGraphsAndData(self, event):
         self.presenter_menuanalizer.OnShowGraphsAndData(2)
+
+    def OnShowSomGraphic(self, event):
+        self.presenter_menuanalizer.ShowGraphic(0)
         #----------------------------------------------------
 #----------------------------------------------------
 
