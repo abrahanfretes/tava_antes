@@ -21,6 +21,7 @@ from py.una.pol.tava.view.vparallelcoordinatesdata_spl import\
                                                         WorkingPageParallelSpl
 from py.una.pol.tava.view.vparallelcoordinatesdata_fnl import\
     WorkingPageParallelFnl
+import vconstants as vc 
 
 
 class MainPanel(wx.Panel):
@@ -158,19 +159,19 @@ class AUINotebook(aui.AuiNotebook):
         self.SetArtProvider(aui.ChromeTabArt())
 
     def OnAddPage(self, test, mode):
-        if mode == 0:
+        if mode == vc.SOM:
             working_space = PanelSomConfig(self, test)
-            self.AddPage(working_space, test.name, True)
-        elif mode == 1:
+            self.AddPage(working_space, test.name + "- SOM", True)
+        elif mode == vc.PARALLEL_COORDINATES:
             working_space = WorkingPageParallel(self, test)
-            self.AddPage(working_space, test.name, True)
-        elif mode == 2:
+            self.AddPage(working_space, test.name + "- Parallel", True)
+        elif mode == vc.PARALLEL_COORDINATES_WITH_DATA:
             working_space = WorkingPageParallelFnl(self, test, mode)
-            self.AddPage(working_space, test.name, True)
-            #===================================================================
+            self.AddPage(working_space, test.name + "- Parallel", True)
+            #==================================================================
             # working_space = WorkingPageParallelSpl(self, test, mode)
             # self.AddPage(working_space, test.name, True)
-            #===================================================================
-        elif mode == 3:
+            #==================================================================
+        elif mode == -1:
             working_space = WorkingPageParallelData(self, test, mode)
-            self.AddPage(working_space, test.name, True)
+            self.AddPage(working_space, test.name + "- Parallel", True)

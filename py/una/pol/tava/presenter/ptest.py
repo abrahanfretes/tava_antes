@@ -8,10 +8,11 @@ from py.una.pol.tava.model.miteration import InterationModel as im
 from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig,\
 TestGraphic, SomConfig
 from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
+import wx
 from wx.lib.pubsub import Publisher as pub
 import topic as T
 import time
-import wx
+from py.una.pol.tava.view import vconstants as vc
 
 
 class GraphicWizardPresenter():
@@ -63,29 +64,23 @@ class GraphicWizardPresenter():
 
         # verificamos la seleccion escogida de grafico
         test_graphic = TestGraphic()
-        if selection == 0:
+        if selection == vc.PARALLEL_COORDINATES:
             test_graphic.name_graphic = "parallel"
-        if selection == 1:
+
+        if selection == vc.SOM:
+
             from py.una.pol.tava.model.msom import SomModel as sm
             somConfigPanel = self.iview.graphicList.somConfigPanel
             test_graphic.name_graphic = "som"
             som = SomConfig()
             som.learning_rate = somConfigPanel.learning_rate.GetValue()
             som.sigma = somConfigPanel.sigma.GetValue()
-            if somConfigPanel.hex_topology.GetValue():
-                som.topology = "hexagonal"
-            else:
-                som.topology = "square"
             som.columns = somConfigPanel.columns.GetValue()
             som.rows = somConfigPanel.rows.GetValue()
             if somConfigPanel.lin_map_initialization.GetValue():
                 som.map_initialization = "linear"
             else:
                 som.map_initialization = "random"
-            if somConfigPanel.gauss_neighborhood.GetValue():
-                som.neighborhood = "gaussian"
-            else:
-                som.neighborhood = "bubble"
             som.iterations = somConfigPanel.iterations.GetValue()
             sm().add(som)
             test_graphic.id_graphic = som.id
@@ -93,8 +88,6 @@ class GraphicWizardPresenter():
         test.test_graphic.append(test_graphic)
 
         test = tm().add(test)
-        
-       #test = tm().upDate(test)
 
         pub.sendMessage(T.PROJECT_UPDATE, project)
         pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, selection))

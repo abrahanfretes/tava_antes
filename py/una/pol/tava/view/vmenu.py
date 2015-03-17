@@ -14,6 +14,7 @@ from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
+import vconstants as vc
 
 
 #------ menu principal --------------------------------------------------------
@@ -328,23 +329,34 @@ class AnalysisMenu(wx.Menu):
 
         #------ items del menu ----------------------------------------
 
+        som_graphic = wx.MenuItem(self, wx.ID_ANY, 'Self Organizing Maps')
+        self.AppendItem(som_graphic)
+        som_graphic.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowSomGraphic, som_graphic)
+        self.AppendSeparator()
+
         # menu only_graphics resultado
-        only_graphics = wx.MenuItem(self, wx.ID_ANY, 'Only Graphics')
+        only_graphics = wx.MenuItem(self, wx.ID_ANY, 'Parallel Coordinate')
         self.AppendItem(only_graphics)
         only_graphics.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphic, only_graphics)
         self.AppendSeparator()
 
-        graphs_and_data = wx.MenuItem(self, wx.ID_ANY, 'Graphs And Data')
+        graphs_and_data = wx.MenuItem(self, wx.ID_ANY,
+                                      'Parallel Coordinate with data')
         self.AppendItem(graphs_and_data)
         graphs_and_data.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)
 
     def OnShowGraphic(self, event):
-        self.presenter_menuanalizer.ShowGraphic(1)
+        self.presenter_menuanalizer.ShowGraphic(vc.PARALLEL_COORDINATES)
 
     def OnShowGraphsAndData(self, event):
-        self.presenter_menuanalizer.OnShowGraphsAndData(2)
+        self.presenter_menuanalizer.\
+        OnShowGraphsAndData(vc.PARALLEL_COORDINATES_WITH_DATA)
+
+    def OnShowSomGraphic(self, event):
+        self.presenter_menuanalizer.ShowGraphic(vc.SOM)
         #----------------------------------------------------
 #----------------------------------------------------
 
