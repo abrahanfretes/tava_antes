@@ -17,11 +17,9 @@ from py.una.pol.tava.view.vsom import PanelSomConfig
 from py.una.pol.tava.view.vparallelcoordinates import WorkingPageParallel
 from py.una.pol.tava.view.vparallelcoordinatesdata_aux import\
                                                         WorkingPageParallelData
-from py.una.pol.tava.view.vparallelcoordinatesdata_spl import\
-                                                        WorkingPageParallelSpl
 from py.una.pol.tava.view.vparallelcoordinatesdata_fnl import\
     WorkingPageParallelFnl
-import vconstants as vc 
+import vconstants as vc
 
 
 class MainPanel(wx.Panel):

@@ -90,8 +90,6 @@ class CanvasPanel(wx.Panel):
             w = som.winner(xx)  # getting the winner
             som.individuals[w[0]][w[1]].append(xx)
 
-        ### Plotting the response for each pattern in the iris dataset ###
-        # plotting the distance map as background
         self.axes.pcolor(som.distance_map().T, cmap=get_cmap('gray'))
         cax = self.axes.imshow(data, interpolation='nearest',
                                cmap=get_cmap('gray'))
@@ -99,6 +97,10 @@ class CanvasPanel(wx.Panel):
 
         self.axes.axis([0, som.weights.shape[0], som.weights.shape[1], 0])
         self.som = som
+
+        for cnt, xx in enumerate(data):
+            w = som.winner(xx)  # getting the winner
+            som.individuals[w[0]][w[1]].append(xx)
 
         def onpick4(event):
 #             print "on_press"
@@ -225,7 +227,7 @@ class PanelSomConfig(wx.Panel):
 
         # Listctrl
         self.lc = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
-        # Se insertan dos columnas
+
         for i in range(self.som_panel.numObjetives):
             self.lc.InsertColumn(i, 'Objetivo ' + str(i))
             self.lc.SetColumnWidth(i, 140)
@@ -287,7 +289,7 @@ if __name__ == "__main__":
     from py.una.pol.tava.base.entity import createDB
     createDB()
     from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
-    testConfig = tm().getTestConfigById(1)
+    testConfig = tm().getTestConfigById(4)
     a = str(testConfig.test_graphic[0].name_graphic)
     app = wx.App()
     fr = wx.Frame(None, title='Configuration')

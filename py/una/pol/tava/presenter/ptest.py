@@ -66,9 +66,7 @@ class GraphicWizardPresenter():
         test_graphic = TestGraphic()
         if selection == vc.PARALLEL_COORDINATES:
             test_graphic.name_graphic = "parallel"
-
         if selection == vc.SOM:
-
             from py.una.pol.tava.model.msom import SomModel as sm
             somConfigPanel = self.iview.graphicList.somConfigPanel
             test_graphic.name_graphic = "som"
