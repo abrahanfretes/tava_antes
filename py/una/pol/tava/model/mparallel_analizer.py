@@ -30,7 +30,7 @@ class ParallelAnalizerModel():
         pa.name_figure = 'Tava'
         pa.legent_figure = True
         pa.color_figure = '#d7c16b'  # '#4ECDC4'
-        pa.enable_objectives = ','.join(['1']*ner)
+        pa.enable_objectives = ','.join(['1'] * ner)
         pa.order_objective = ','.join([str(i) for i in range(ner)])
         pa.order_name_obj = re.name_objectives
         pa.name_objetive = re.name_objectives

@@ -3,8 +3,7 @@ Created on 28/11/2014
 
 @author: arsenioferreira
 '''
-from minisom import MiniSom
-from numpy import genfromtxt, linalg, apply_along_axis
+
 
 """
     This script shows how to use MiniSom on the Iris dataset.
@@ -15,6 +14,9 @@ In particular it shows how to train MiniSom and how to visualize the result.
 import wx
 import matplotlib
 matplotlib.use('WXAgg')
+import wxversion
+from minisom import MiniSom
+from numpy import genfromtxt, linalg, apply_along_axis
 
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -246,7 +248,10 @@ class PanelSomConfig(wx.Panel):
         from py.una.pol.tava.model.msom import SomModel as sm
         from py.una.pol.tava.model.mresult import ResultModel as rm
         from py.una.pol.tava.model.miteration import InterationModel as im
-        som = sm().getSomById(testConfig.test_graphic[0].id_graphic)
+
+        # Buscaremos la instancia SOM asociada al test
+        som = sm().get_som_by_test_config_id(testConfig.id)
+        # som = sm().getSomById(testConfig.test_graphic[0].id_graphic)
 
         items = []
         itemsDict = {}
@@ -286,11 +291,11 @@ class PanelSomConfig(wx.Panel):
 
 
 if __name__ == "__main__":
-    from py.una.pol.tava.base.entity import createDB
-    createDB()
+    # from py.una.pol.tava.base.entity import createDB
+    # createDB()
     from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
-    testConfig = tm().getTestConfigById(4)
-    a = str(testConfig.test_graphic[0].name_graphic)
+    testConfig = tm().getTestConfigById(1)
+    # a = str(testConfig.test_graphic[0].name_graphic)
     app = wx.App()
     fr = wx.Frame(None, title='Configuration')
     panel = PanelSomConfig(fr, testConfig)

@@ -7,8 +7,8 @@ Created on 11/10/2014
 
 import wx
 # Para emplear como backend la libreria WxPython
-import matplotlib
-matplotlib.use('WXAgg')
+# import matplotlib
+# matplotlib.use('WXAgg')
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar

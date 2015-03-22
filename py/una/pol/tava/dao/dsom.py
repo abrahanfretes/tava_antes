@@ -22,3 +22,6 @@ def add(som):
 
 def getSomById(id_som):
     return session.query(SomConfig).filter_by(id=id_som).first()
+
+def get_som_by_test_config_id(id_test_config):
+    return session.query(SomConfig).filter_by(test_config_id=id_test_config).first()

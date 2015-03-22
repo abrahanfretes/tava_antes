@@ -5,14 +5,12 @@ Created on 21/09/2014
 '''
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.model.miteration import InterationModel as im
-from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig,\
-TestGraphic, SomConfig
+from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig
 from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
 import wx
 from wx.lib.pubsub import Publisher as pub
 import topic as T
 import time
-from py.una.pol.tava.view import vconstants as vc
 
 
 class GraphicWizardPresenter():
@@ -38,7 +36,7 @@ class GraphicWizardPresenter():
     def GetListItems(self):
         return rm().getNamesResultForProject(self.iview.project)
 
-    def CreateTest(self, name_test, data, selection, project):
+    def CreateTest(self, name_test, data, project):
 
         # Agregar TestConfig a la Base de Datos
         test = TestConfig()
@@ -62,33 +60,9 @@ class GraphicWizardPresenter():
 
             test.test_details.append(test_detail)
 
-        # verificamos la seleccion escogida de grafico
-        test_graphic = TestGraphic()
-        if selection == vc.PARALLEL_COORDINATES:
-            test_graphic.name_graphic = "parallel"
-        if selection == vc.SOM:
-            from py.una.pol.tava.model.msom import SomModel as sm
-            somConfigPanel = self.iview.graphicList.somConfigPanel
-            test_graphic.name_graphic = "som"
-            som = SomConfig()
-            som.learning_rate = somConfigPanel.learning_rate.GetValue()
-            som.sigma = somConfigPanel.sigma.GetValue()
-            som.columns = somConfigPanel.columns.GetValue()
-            som.rows = somConfigPanel.rows.GetValue()
-            if somConfigPanel.lin_map_initialization.GetValue():
-                som.map_initialization = "linear"
-            else:
-                som.map_initialization = "random"
-            som.iterations = somConfigPanel.iterations.GetValue()
-            sm().add(som)
-            test_graphic.id_graphic = som.id
-
-        test.test_graphic.append(test_graphic)
-
         test = tm().add(test)
 
         pub.sendMessage(T.PROJECT_UPDATE, project)
-        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, selection))
 
     def GetIterationsSelected(self, rf):
         iterations = []

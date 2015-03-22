@@ -5,12 +5,10 @@ Created on 06/09/2014
 '''
 import wx
 import wx.wizard as wizmod
+import wx.dataview as dv
 from wx.lib.itemspicker import ItemsPicker, IP_SORT_CHOICES, IP_SORT_SELECTED,\
                                IP_REMOVE_FROM_CHOICES, EVT_IP_SELECTION_CHANGED
-import py.una.pol.tava.view.vimages as images
 from py.una.pol.tava.presenter.ptest import GraphicWizardPresenter
-import wx.dataview as dv
-import vconstants as vc
 
 padding = 5
 
@@ -25,8 +23,7 @@ class GraphicWizard(wizmod.Wizard):
         self.presenter = GraphicWizardPresenter(self)
 
         self.project = project
-        print(len(project.results))
-        wizmod.Wizard.__init__(self, None, -1, title="New")
+        wizmod.Wizard.__init__(self, None, -1, title="New Test")
         self.SetPageSize((500, 380))
         self.pages = []
 
@@ -43,12 +40,6 @@ class GraphicWizard(wizmod.Wizard):
         self.page2.add_stuff(ldvPanel)
         self.page2.ldvPanel = ldvPanel
         self.add_page(self.page2)
-
-        # Add third page
-        self.page3 = WizardPage(self)
-        self.graphicList = GraphicList(self.page3)
-        self.page3.add_stuff(self.graphicList)
-        self.add_page(self.page3)
 
         self.Bind(wizmod.EVT_WIZARD_PAGE_CHANGED, self.on_page_changed)
         self.Bind(wizmod.EVT_WIZARD_FINISHED, self.on_finished)
@@ -88,8 +79,8 @@ class GraphicWizard(wizmod.Wizard):
                 if self.page2.ldvPanel.isSomeSelection():
                     forward_btn.Enable(True)
 
-            if page is self.pages[2]:
-                forward_btn.Enable(True)
+#             if page is self.pages[2]:
+#                 forward_btn.Enable(True)
         else:
             forward_btn.Enable(True)
 
@@ -99,23 +90,12 @@ class GraphicWizard(wizmod.Wizard):
     def on_finished(self, evt):
         '''Finish button has been pressed.  Clean up and exit.'''
 
-#         children = self.page3.sizer.GetChildren()
-#         graphicList = children[2].GetWindow()
-#         graphicList.somConfigPanel.get
-        # seleccion en el graphicList
-        selection = self.graphicList.GetSelection()
-
-#         for child in children:
-#             widget = child.GetWindow()
-#             print widget
-#             if isinstance(widget, wx.TextCtrl):
-#                 widget.Clear()
         # Nombre del test
         name_test = self.page1.panel1.name_value_text.GetValue()
         # Archivos Resultados e iteraciones seleccionadas
         data = self.page2.ldvPanel.data
 
-        self.presenter.CreateTest(name_test, data, selection, self.project)
+        self.presenter.CreateTest(name_test, data, self.project)
 
 
 class WizardPage(wizmod.PyWizardPage):
@@ -212,156 +192,6 @@ class PanelFirstPage(wx.Panel):
 
     def OnKeyUp(self, e):
         self.GetParent().GetParent().presenter.keyboardEvents(e.GetKeyCode())
-
-
-class ColoredPanel(wx.Window):
-    def __init__(self, parent, color):
-        wx.Window.__init__(self, parent, -1, style=wx.SIMPLE_BORDER)
-        self.SetBackgroundColour(color)
-        if wx.Platform == '__WXGTK__':
-            self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-
-
-class PanelSomConfig(wx.Panel):
-    def __init__(self, parent):
-        super(PanelSomConfig, self).__init__(parent)
-
-        # Parameters
-        sbox = wx.StaticBox(self, label="Parameters")
-        sboxsp = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        # Attributes
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(wx.StaticText(self, label="Initial learning \nrate:"))
-        self.learning_rate = wx.SpinCtrlDouble(self, value="0.5", min=0.00,
-                                  max=1.00, inc=0.01)
-        self.learning_rate.SetDigits(2)
-        sizer.Add(self.learning_rate)
-        sboxsp.Add(sizer, 0, wx.ALL, 8)
-
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(wx.StaticText(self, label="Sigma:                 "))
-        self.sigma = wx.SpinCtrlDouble(self, value="0.5", min=0.00, max=1.00,
-                                 inc=0.01)
-        self.sigma.SetDigits(2)
-        sizer.Add(self.sigma)
-        sboxsp.Add(sizer, 0, wx.ALL, 8)
-
-        # Layout
-        sbox = wx.StaticBox(self, label="Matrix size")
-        sboxsz = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.columns = wx.SpinCtrl(self, value="4", min=4, max=1000)
-        sizer.Add(wx.StaticText(self, label="Columns:    "))
-        sizer.Add(self.columns)
-
-        sboxsz.Add(sizer, 0, wx.ALL, 8)
-
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.rows = wx.SpinCtrl(self, value="4", min=4, max=1000)
-        sizer.Add(wx.StaticText(self, label="Rows:           "))
-        sizer.Add(self.rows)
-        sboxsz.Add(sizer, 0, wx.ALL, 8)
-
-        sbox = wx.StaticBox(self, label="Map Initialization")
-        sboxszm = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        self.lin_map_initialization = wx.RadioButton(self, -1, " Linear ",
-                                style=wx.RB_GROUP)
-        self.lin_map_initialization.SetValue(True)
-        sboxszm.Add(self.lin_map_initialization, 0, wx.ALL, 5)
-
-        self.rand_map_initialization = wx.RadioButton(self, -1, " Random ")
-        self.rand_map_initialization.SetValue(False)
-        sboxszm.Add(self.rand_map_initialization, 0, wx.ALL, 5)
-
-        sbox = wx.StaticBox(self, label="Stopping Conditions")
-        sboxszs = wx.StaticBoxSizer(sbox, wx.VERTICAL)
-
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.iterations = wx.SpinCtrl(self, value="50", min=1,
-                                 max=1000000)
-        sizer.Add(wx.StaticText(self, label="Iterations:    "))
-        sizer.Add(self.iterations)
-
-        sboxszs.Add(sizer, 0, wx.ALL, 8)
-
-        msizer = wx.BoxSizer(wx.VERTICAL)
-
-        sizer1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer1.Add(sboxsp, 0, wx.ALL, 8)
-        sizer1.Add(sboxsz, 0, wx.ALL, 8)
-
-        sizer2 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer2.Add(sboxszm, 0, wx.ALL, 8)
-        sizer2.Add(sboxszs, 0, wx.ALL, 8)
-
-        msizer.Add(sizer1, 0, wx.ALL, 7)
-        msizer.Add(sizer2, 0, wx.ALL, 7)
-
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(msizer, 1, wx.EXPAND)
-
-        self.SetSizer(sizer)
-
-
-class GraphicList(wx.Listbook):
-    def __init__(self, parent):
-        wx.Listbook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT)
-
-        il = wx.ImageList(64, 64)
-        obj = getattr(images, 'parallel_ico')
-        bmp = obj.GetBitmap()
-        il.Add(bmp)
-        obj = getattr(images, 'scatterplot_ico')
-        bmp = obj.GetBitmap()
-        il.Add(bmp)
-        obj = getattr(images, 'som_ico')
-        bmp = obj.GetBitmap()
-        il.Add(bmp)
-        self.AssignImageList(il)
-
-        win = self.makeColorPanel("Aquamarine")
-        self.AddPage(win, graphList[vc.PARALLEL_COORDINATES], imageId=0)
-
-#         win = self.makeColorPanel("Red")
-#         self.AddPage(win, graphList[1], imageId=1)
-
-        self.somConfigPanel = PanelSomConfig(self)
-        self.AddPage(self.somConfigPanel, graphList[vc.SOM], imageId=2)
-
-        self.SetSelection(0)
-
-        self.Bind(wx.EVT_LISTBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.Bind(wx.EVT_LISTBOOK_PAGE_CHANGING, self.OnPageChanging)
-
-    def makeColorPanel(self, color):
-        p = wx.Panel(self, -1)
-        win = ColoredPanel(p, color)
-        p.win = win
-
-        def OnCPSize(evt, win=win):
-            win.SetPosition((0, 0))
-            win.SetSize(evt.GetSize())
-        p.Bind(wx.EVT_SIZE, OnCPSize)
-        return p
-
-    def OnPageChanged(self, event):
-#         old = event.GetOldSelection()
-#         new = event.GetSelection()
-#         sel = self.GetSelection()
-#         print('OnPageChanged,  old:%d, new:%d, sel:%d\n' % (old, new, sel))
-        event.Skip()
-
-    def OnPageChanging(self, event):
-#         old = event.GetOldSelection()
-#         new = event.GetSelection()
-#         sel = self.GetSelection()
-#         print('OnPageChanging, old:%d, new:%d, sel:%d\n' % (old, new, sel))
-        event.Skip()
 
 
 class Iteration(object):
@@ -467,7 +297,7 @@ class MyTreeListModel(dv.PyDataViewModel):
         return False
 
     def SetValue(self, value, item, col):
-        print("SetValue: %s\n" % value)
+#         print("SetValue: %s\n" % value)
         node = self.ItemToObject(item)
         if isinstance(node, Iteration):
             if col == 2:

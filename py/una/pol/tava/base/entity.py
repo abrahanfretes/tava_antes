@@ -4,8 +4,6 @@ Created on 27/06/2014
 
 @author: afretes
 '''
-
-
 from sqlalchemy import ForeignKey, SmallInteger, Text
 from sqlalchemy import Column, Integer, String, Date, Boolean
 from sqlalchemy import Float
@@ -182,11 +180,6 @@ class TestConfig(Base):
                               order_by='TestDetail.id',
                               backref='test_config')
 
-    test_graphic = relationship('TestGraphic',
-                              cascade="save-update, merge, delete",
-                              order_by='TestGraphic.id',
-                              backref='test_config')
-
     def __init__(self):
         pass
 
@@ -253,22 +246,6 @@ class TestData(Base):
         return "<TestData(id='%s')>" % (self.id)
 
 
-class TestGraphic(Base):
-    ''''''
-
-    __tablename__ = 'test_graphic'
-    id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    test_config_id = Column(Integer, ForeignKey('test_config.id'))
-    name_graphic = Column(String(100), nullable=False)
-    id_graphic = Column(Integer)
-
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        return "<TestGraphic()>"
-
-
 class SomConfig(Base):
     ''''''
 
@@ -282,6 +259,7 @@ class SomConfig(Base):
     map_initialization = Column(String(20))
     neighborhood = Column(String(50))
     iterations = Column(Integer)
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
 
     def __init__(self):
         pass

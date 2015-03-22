@@ -15,8 +15,6 @@ import wx.lib.agw.aui as aui
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
 from py.una.pol.tava.view.vsom import PanelSomConfig
 from py.una.pol.tava.view.vparallelcoordinates import WorkingPageParallel
-from py.una.pol.tava.view.vparallelcoordinatesdata_aux import\
-                                                        WorkingPageParallelData
 from py.una.pol.tava.view.vparallelcoordinatesdata_fnl import\
     WorkingPageParallelFnl
 import vconstants as vc
@@ -165,11 +163,4 @@ class AUINotebook(aui.AuiNotebook):
             self.AddPage(working_space, test.name + "- Parallel", True)
         elif mode == vc.PARALLEL_COORDINATES_WITH_DATA:
             working_space = WorkingPageParallelFnl(self, test, mode)
-            self.AddPage(working_space, test.name + "- Parallel", True)
-            #==================================================================
-            # working_space = WorkingPageParallelSpl(self, test, mode)
-            # self.AddPage(working_space, test.name, True)
-            #==================================================================
-        elif mode == -1:
-            working_space = WorkingPageParallelData(self, test, mode)
             self.AddPage(working_space, test.name + "- Parallel", True)
