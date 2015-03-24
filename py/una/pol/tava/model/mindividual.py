@@ -245,3 +245,144 @@ class IndividualModel(object):
 
         f.close()
         return min_v, max_v
+
+# -------------------------------------------------------------------
+# Clases usadas para Parallel Grafic GF
+# -------------------------------------------------------------------
+    def createFileTestGF(self, ite_list):
+        mode = str(1)
+        type_gf = str(1)
+        filepath = os.path.join(gtd(),
+                                'type.' + type_gf + '.mode.' + mode + '.csv')
+        f_test = open(filepath, 'w')
+
+        print ite_list
+        # agrego cabecera
+        ite_h = im().getIterationById(ite_list[0])
+        # obtener result
+        res_h = rm().getResultById(ite_h.result_id)
+        f_test.write(res_h.name_objectives + ',Name\n')
+
+        # por cada iteracion
+        for i in ite_list:
+            # obtener la iteracion
+            ite = im().getIterationById(i)
+            # obtener result
+            res = rm().getResultById(ite.result_id)
+            # obtener individuos
+            inds = self.getIndividualsByIteracionId(ite.id)
+            # escribir archivo
+            for ind in inds:
+                f_test.write(ind.objectives
+                             + ',' + res.alias
+                             + '_' + str(ite.identifier) + '\n')
+        f_test.close()
+
+    def createFileResultGF(self, ite_list):
+        mode = str(1)
+        type_gf = str(2)
+
+        # por cada lista de iteraciones
+        for i_list in ite_list:
+
+            # ----- por cada resultado ---------
+            # obtener la iteracion
+            ite = im().getIterationById(i_list[0])
+            res = rm().getResultById(ite.result_id)
+            filepath = os.path.join(gtd(), str(ite.result_id) + '.'
+                                    + 'type.' + type_gf
+                                    + '.mode.' + mode
+                                    + '.csv')
+            f_test = open(filepath, 'w')
+            f_test.write(res.name_objectives + ',Name\n')
+
+            # ----- por cada iteracion ---------
+            for i in i_list:
+                ite = im().getIterationById(i)
+                inds = self.getIndividualsByIteracionId(ite.id)
+                for ind in inds:
+                    f_test.write(ind.objectives
+                                 + ',' + res.alias
+                                 + '_' + str(ite.identifier) + '\n')
+            f_test.close()
+
+    def createFileIterationtGF(self, ite_list):
+        mode = str(1)
+        type_gf = str(3)
+
+        # por cada lista de iteraciones
+        for i in ite_list:
+
+            # ----- por cada resultado ---------
+            # obtener la iteracion
+            ite = im().getIterationById(i)
+            res = rm().getResultById(ite.result_id)
+            inds = self.getIndividualsByIteracionId(ite.id)
+            filepath = os.path.join(gtd(), str(i) + '.'
+                                    + 'type.' + type_gf
+                                    + '.mode.' + mode
+                                    + '.csv')
+            f_test = open(filepath, 'w')
+            f_test.write(res.name_objectives + ',Name\n')
+
+            # ----- por cada iteracion ---------
+            for ind in inds:
+                f_test.write(ind.objectives
+                             + ',' + res.alias
+                             + '_' + str(ite.identifier) + '\n')
+            f_test.close()
+
+    def createFileTestGF1(self, ite_list):
+        mode = str(1)
+        type_gf = str(1)
+
+        # por cada iteracion
+        for i in ite_list:
+
+            # obtener la iteracion
+            ite = im().getIterationById(i)
+            # obtener result
+            res = rm().getResultById(ite.result_id)
+            # obtener individuos
+            inds = self.getIndividualsByIteracionId(ite.id)
+
+            # abro un archivo
+            filepath = os.path.join(gtd(), str(i) + '.'
+                                    + 'type.' + type_gf
+                                    + '.mode.' + mode
+                                    + '.csv')
+            f_test = open(filepath, 'w')
+            f_test.write(res.name_objectives + ',Name\n')
+
+            # escribir archivo
+            for ind in inds:
+                f_test.write(ind.objectives
+                             + ',' + res.alias
+                             + '_' + str(ite.identifier) + '\n')
+            f_test.close()
+
+    def getCsvForTest(self):
+        mode = str(1)
+        type_gf = str(1)
+        filepath = os.path.join(gtd(),
+                                'type.' + type_gf + '.mode.' + mode + '.csv')
+        return read_csv(filepath)
+
+    def getCsvForResult(self, i_list):
+        mode = str(1)
+        type_gf = str(2)
+        ite = im().getIterationById(i_list[0])
+        filepath = os.path.join(gtd(), str(ite.result_id) + '.'
+                                + 'type.' + type_gf
+                                + '.mode.' + mode
+                                + '.csv')
+        return read_csv(filepath)
+
+    def getCsvForIteration(self, iteration):
+        mode = str(1)
+        type_gf = str(3)
+        filepath = os.path.join(gtd(), str(iteration) + '.'
+                                + 'type.' + type_gf
+                                + '.mode.' + mode
+                                + '.csv')
+        return read_csv(filepath)

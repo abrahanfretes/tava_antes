@@ -24,8 +24,8 @@ class ResultModel(object):
             return styleVon.procesarArchivo(list_path_file, project)
 
         # aca se debe agregar las funciones para otros estilos
-        #if style == otro:
-            #otro.procesarArchivo(list_path_file, project)
+        # if style == otro:
+        # otro.procesarArchivo(list_path_file, project)
 
     def fastVerificationStyle(self, path_file, style):
         if style == vonlucken:

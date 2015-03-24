@@ -44,12 +44,12 @@ PROJECT_RENAME = 'PROJECT.RENAME'
 # Subscribe =pframe
 PROJECT_PROPERTIES = 'PROJECT.PROPERTIES'
 
-#Asi no funciona
-#==============================================================================
+# Asi no funciona
+# =============================================================================
 # # Send = pproject
 # # Subscribe = ptree
 # PROJECT_RENAME_UP = 'PROJECT.RENAME.UP'
-#==============================================================================
+# =============================================================================
 
 # Send = pproject, presult
 # Subscribe = ptree
@@ -141,3 +141,45 @@ PARALLEL_ON_CLEAN_FILTERS_OBJ = 'PARALLEL.ON_CLEAN_FILTERS_OBJ'
 # Send = pparallelcoordinatesdata_fnl
 # Subscribe = pparallelcoordinatesdata_fnl
 PARALLEL_UPDATE_FIGURE_RENAME_OBJ = 'PARALLEL.UPDATE_FIGURE_RENAME_OBJ'
+
+# -------- pparallelcoordinates ----
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_TREE_CHECK_GF = 'PARALLEL.TREE_CHECK_FIGURE_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_BUTTON_TEST_GRAFIC_GF = 'PARALLEL.FIGURE_BUTTON_TEST_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_BUTTON_RESU_GRAFIC_GF = 'PARALLEL.FIGURE_BUTTON_RESU_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_BUTTON_ITER_GRAFIC_GF = 'PARALLEL.FIGURE_BUTTON_ITER_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_FILE_TEST_GRAFIC_GF = 'PARALLEL.FIGURE_FILE_TEST_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_FILE_RESU_GRAFIC_GF = 'PARALLEL.FIGURE_FILE_RESU_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_FILE_ITER_GRAFIC_GF = 'PARALLEL.FIGURE_FILE_ITER_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_VIEW_TEST_GRAFIC_GF = 'PARALLEL.FIGURE_VIEW_TEST_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_VIEW_RESULT_GRAFIC_GF = 'PARALLEL.FIGURE_VIEW_RESULT_GRAFIC_GF'
+
+# Send = pparallelcoordinates
+# Subscribe = pparallelcoordinates
+PARALLEL_FIGURE_VIEW_ITERA_GRAFIC_GF = 'PARALLEL.FIGURE_VIEW_ITERA_GRAFIC_GF'

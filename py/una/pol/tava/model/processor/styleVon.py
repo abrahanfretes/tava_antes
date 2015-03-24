@@ -27,15 +27,15 @@ def __getObjetiosString(listObjetivos):
     return stringObjetivos, floatObjetivos
 
 
-def  __converter(listFloat):
+def converter(listFloat):
     list_string = []
     for i in listFloat:
         list_string.append(str(i))
     return ','.join(list_string)
 
 
-def __getAlias(proyecto):
-    return 'file-' + str(len(proyecto.results) + 1)
+def __getAlias(proyecto, count_result):
+    return 'file-' + str(count_result)
 
 
 def __buildVariablesDefaul(count, variable):
@@ -86,13 +86,15 @@ def fastVerification(path):
 
 def procesarArchivo(listFile, proyecto):
 
+    count_result = 0
     for path in listFile:
+        count_result = count_result + 1
 
         resultado = Result()
 
         fOpen = open(path, 'r')
         resultado.name = os.path.basename(path)
-        resultado.alias = __getAlias(proyecto)
+        resultado.alias = __getAlias(proyecto, count_result)
         resultado.iteration_count = int(__getValue__(fOpen.readline()))
         resultado.label1 = __getValue__(fOpen.readline())
         resultado.label2 = __getValue__(fOpen.readline())
