@@ -381,3 +381,22 @@ msgstr "Objetivos"
 
 msgid "FOOTER_AUI_NOTE_FILTROS"
 msgstr "Filtros"
+
+# ----------- ButtonsTollFigureGF - vparallelcoordinates_gf ------------------
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_TEST"
+msgstr "Por Test"
+
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_RESULT"
+msgstr "Por Resultado"
+
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_ITE"
+msgstr "Por Iteración"
+
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_TEST_TIP"
+msgstr "Un grafico para el Test"
+
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_RESULT_TIP"
+msgstr "Un grafico por Resultado"
+
+msgid "BUTTON_TOLL_FIGURE_GF_FOR_ITE_TIP"
+msgstr "Un grafico por Iteracion"

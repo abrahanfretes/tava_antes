@@ -6,6 +6,8 @@ Created on 17/3/2015
 import wx
 import py.una.pol.tava.view.vimages as I
 
+from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
 
 # -------------------         Panel Principal          ------------------------
 # -------------------                                  ------------------------
@@ -110,14 +112,14 @@ class ButtonsTollFigureGF(wx.Panel):
 
         # ------ self components --------------------------------------
 
-        self.test = wx.Button(self, -1, 'For Test')
-        self.test.SetToolTipString("Un grafico para el Test")
+        self.test = wx.Button(self, -1, _(C.BTFGF_FT))
+        self.test.SetToolTipString(_(C.BTFGF_FT_T))
 
-        self.result = wx.Button(self, -1, 'For Result')
-        self.result.SetToolTipString("Un grafico por Resultado")
+        self.result = wx.Button(self, -1, _(C.BTFGF_FR))
+        self.result.SetToolTipString(_(C.BTFGF_FR_T))
 
-        self.iteration = wx.Button(self, -1, 'For Iteration')
-        self.iteration.SetToolTipString("Un grafico por Iteracion")
+        self.iteration = wx.Button(self, -1, _(C.BTFGF_FI))
+        self.iteration.SetToolTipString(_(C.BTFGF_FI_T))
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(self.test, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=5)
