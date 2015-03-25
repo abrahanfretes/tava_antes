@@ -27,7 +27,7 @@ def __getObjetiosString(listObjetivos):
     return stringObjetivos, floatObjetivos
 
 
-def converter(listFloat):
+def __converter(listFloat):
     list_string = []
     for i in listFloat:
         list_string.append(str(i))
