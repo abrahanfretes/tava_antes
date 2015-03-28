@@ -336,14 +336,15 @@ class AnalysisMenu(wx.Menu):
         self.AppendSeparator()
 
         # menu only_graphics resultado
-        only_graphics = wx.MenuItem(self, wx.ID_ANY, 'Parallel Coordinate')
+        only_graphics = wx.MenuItem(self, wx.ID_ANY,
+                                    'Gráficos de Coordenadas Paralelas')
         self.AppendItem(only_graphics)
         only_graphics.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphic, only_graphics)
         self.AppendSeparator()
 
         graphs_and_data = wx.MenuItem(self, wx.ID_ANY,
-                                      'Parallel Coordinate with data')
+                                      'Analisis de Coordenadas Paralelas')
         self.AppendItem(graphs_and_data)
         graphs_and_data.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)

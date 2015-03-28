@@ -11,7 +11,7 @@ import py.una.pol.tava.view.vi18n as C
 
 # -------------------         Panel Principal          ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinates2\
+from py.una.pol.tava.presenter.pparallelcoordinatesgf\
     import WorkingPageParallelGFPresenter
 
 
@@ -34,7 +34,7 @@ class WorkingPageParallelGF(wx.Panel):
 # -------------------         Panel Tree               ------------------------
 # -------------------                                  ------------------------
 import wx.lib.agw.customtreectrl as CT
-from py.una.pol.tava.presenter.pparallelcoordinates2\
+from py.una.pol.tava.presenter.pparallelcoordinatesgf\
     import ParallelTreeGFPresenter
 
 
@@ -63,7 +63,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 
-from py.una.pol.tava.presenter.pparallelcoordinates2\
+from py.una.pol.tava.presenter.pparallelcoordinatesgf\
     import ParallelFigureGFPresenter
 
 
@@ -99,7 +99,7 @@ class ParallelFigureGF(wx.Panel):
 
 # -------------------         Panel Toll Figure        ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinates2\
+from py.una.pol.tava.presenter.pparallelcoordinatesgf\
     import ButtonsTollFigureGFPresenter
 
 

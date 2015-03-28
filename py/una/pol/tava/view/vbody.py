@@ -15,9 +15,9 @@ import wx.lib.agw.aui as aui
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
 from py.una.pol.tava.view.vsom import PanelSomConfig
 
-from py.una.pol.tava.view.vparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.view.vparallelcoordinatesal import\
     WorkingPageParallelFnl
-from py.una.pol.tava.view.vparallelcoordinates2 import\
+from py.una.pol.tava.view.vparallelcoordinatesgf import\
     WorkingPageParallelGF
 import vconstants as vc
 

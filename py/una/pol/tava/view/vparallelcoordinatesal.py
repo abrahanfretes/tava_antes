@@ -35,7 +35,7 @@ class WorkingPageParallelFnl(wx.SplitterWindow):
 
 # -------------------         Panel for top            ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     TopPanelPresenter
 
 
@@ -66,7 +66,7 @@ class TopPanel(wx.Panel):
 # -------------------                                  ------------------------
 import wx.lib.agw.customtreectrl as CT
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ParallelDataTreePresenter
 
 
@@ -103,7 +103,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 import py.una.pol.tava.view.vimages as I
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ParallelDataFigurePresenter
 
 
@@ -151,7 +151,7 @@ class ParallelDataFigure(wx.Panel):
 # -------------------                                  ------------------------
 
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ButtonsTollFigurePresenter
 
 
@@ -668,7 +668,7 @@ class FooterAUINotebook(aui.AuiNotebook):
 # -------------------                                  ------------------------
 from wx.lib.scrolledpanel import ScrolledPanel
 
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ParallelDataVarPresenter
 
 
@@ -699,7 +699,7 @@ class ParallelDataVar(ScrolledPanel):
 
 # ------------------- Pagina para visualizar Objetivos ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ParallelDataObjPresenter
 
 
@@ -729,7 +729,7 @@ class ParallelDataObj(ScrolledPanel):
 
 # ------------------- Scrolled para los filtros        ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesdata_fnl import\
+from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     AddFilterObjetivesScrollPresenter
 
 
