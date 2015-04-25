@@ -3,24 +3,20 @@ Created on 28/11/2014
 
 @author: arsenioferreira
 '''
-
-
-"""
-    This script shows how to use MiniSom on the Iris dataset.
-In particular it shows how to train MiniSom and how to visualize the result.
-    ATTENTION: pylab is required for the visualization.
-"""
-
 import wx
 import matplotlib
 matplotlib.use('WXAgg')
-import wxversion
 from minisom import MiniSom
 from numpy import genfromtxt, linalg, apply_along_axis
 
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from pylab import get_cmap
+from wx import EVT_LIST_ITEM_RIGHT_CLICK
+from matplotlib.patches import Rectangle
+
+from pandas.tools.plotting import parallel_coordinates
+from pandas import DataFrame
 
 
 class CanvasPanel(wx.Panel):
@@ -35,21 +31,17 @@ class CanvasPanel(wx.Panel):
         self.SetSizer(self.sizer)
         self.Fit()
         self.numObjetives = 0
+        self.rect = None
 
-    def initParameters(self, testConfig):
-        panelSom = self.GetParent()
-        self.iterId = testConfig.test_details[0].test_datas[0].iteration_id
-        self.sigma = float(panelSom.sigma.replace(",", "."))
-        self.learning_rate = float(panelSom.learning_rate.replace(",", "."))
-        self.columns = int(panelSom.columns)
-        self.rows = int(panelSom.rows)
-
-    def updateParameters(self, som, iterId):
-        self.iterId = iterId
-        self.sigma = som.sigma
-        self.learning_rate = som.learning_rate
-        self.columns = som.columns
-        self.rows = som.rows
+    def setParameters(self, iterDir, sigma, learning_rate, columns, rows,
+                      map_initialization, iterations):
+        self.iterId = iterDir
+        self.sigma = sigma
+        self.learning_rate = learning_rate
+        self.columns = columns
+        self.rows = rows
+        self.map_initialization = map_initialization
+        self.iterations = iterations
 
     def trainSom(self):
         from py.una.pol.tava.dao.dindividual import getIndividualsByIteracionId
@@ -70,8 +62,13 @@ class CanvasPanel(wx.Panel):
         som = MiniSom(self.columns, self.rows, data.shape[1], sigma=self.sigma,
                       learning_rate=self.learning_rate)
         # som.random_weights_init(data)
-        print("Training...")
-        som.train_batch(data, 100)  # random training
+        # Si el entrenamiento debe ser lineal o aleatorio
+        if str(self.map_initialization) == "linear":
+            print("Training batch...")
+            som.train_batch(data, self.iterations)  # batch training
+        else:
+            print("Training random...")
+            som.train_random(data, self.iterations)  # random training
         print("\n...ready!")
         return som, data
 
@@ -104,25 +101,73 @@ class CanvasPanel(wx.Panel):
             w = som.winner(xx)  # getting the winner
             som.individuals[w[0]][w[1]].append(xx)
 
-        def onpick4(event):
-#             print "on_press"
+        def onPick(event):
             if event.xdata and event.ydata:
                 xdata = int(event.xdata)
                 ydata = int(event.ydata)
-                print 'onpick points:', xdata, ydata
-                print 'cantidad de individuals del som:',
-                len(self.som.individuals[xdata][ydata])
+                if self.rect:
+                    self.rect.remove()
+                self.rect = Rectangle((xdata, ydata), 1, 1, color="yellow",
+                                      fill=False, lineWidth=2)
+
+                self.axes.add_patch(self.rect)
+                self.canvas.draw()
 
                 self.GetParent().lc.DeleteAllItems()
 
-                for cnt, ind in enumerate(self.som.individuals[xdata][ydata]):
-                    for c, i in enumerate(ind):
-                        if c == 0:
-                            self.GetParent().lc.InsertStringItem(cnt, str(i))
-                        else:
-                            self.GetParent().lc.SetStringItem(cnt, c, str(i))
+                self.individuals = self.som.individuals[xdata][ydata]
 
-        self.figure.canvas.mpl_connect('button_press_event', onpick4)
+                count = len(self.individuals)
+
+                self.Parent.text.SetLabel("Cantidad de individuos: "
+                                          + str(count))
+
+                for cnt, ind in enumerate(self.individuals):
+                    self.GetParent().lc.InsertStringItem(cnt, str(cnt + 1))
+                    for c, i in enumerate(ind):
+                        c = c + 1
+                        self.GetParent().lc.SetStringItem(cnt, c, str(i))
+                        if cnt % 2:
+                            self.GetParent().lc.SetItemBackgroundColour(cnt,
+                                                                    "white")
+                        else:
+                            self.GetParent().lc.SetItemBackgroundColour(cnt,
+                                                                    "pink")
+                print(self.GetParent().lc.getSelectIndices())
+
+        self.figure.canvas.mpl_connect('button_press_event', onPick)
+
+
+class IndividualsListCtrl(wx.ListCtrl):
+    def __init__(self, parent, num_objetives, ID=wx.ID_ANY,
+                 pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
+        wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
+        self.InsertColumn(0, 'Fila')
+        self.SetColumnWidth(0, 40)
+
+        self.columns = []
+
+        for i in range(num_objetives):
+            i = i + 1
+            column = 'Objetivo ' + str(i - 1)
+            self.columns.append(column)
+            self.InsertColumn(i, column)
+            self.SetColumnWidth(i, 140)
+
+    def getSelectIndices(self):
+        selection = []
+        # star at -1 to get the first selectec item
+        current = -1
+        while True:
+            next_ = self.getNextSelected(current)
+            if next_ == -1:
+                return selection
+            selection.append(next_)
+            current = next_
+
+    def getNextSelected(self, current):
+        return self.GetNextItem(current, wx.LIST_NEXT_ALL,
+                                wx.LIST_STATE_SELECTED)
 
 
 class PanelSomConfig(wx.Panel):
@@ -186,10 +231,10 @@ class PanelSomConfig(wx.Panel):
         sbox = wx.StaticBox(self, label="Map Initialization")
         sboxszm = wx.StaticBoxSizer(sbox, wx.VERTICAL)
 
-        radio1 = wx.RadioButton(self, -1, " Linear ",
+        self.radio1 = wx.RadioButton(self, -1, " Linear ",
                                 style=wx.RB_GROUP)
-        radio1.SetValue(self.linInit)
-        sboxszm.Add(radio1, 0, wx.ALL, 5)
+        self.radio1.SetValue(self.linInit)
+        sboxszm.Add(self.radio1, 0, wx.ALL, 5)
 
         radio2 = wx.RadioButton(self, -1, " Random ")
         radio2.SetValue(not self.linInit)
@@ -203,6 +248,7 @@ class PanelSomConfig(wx.Panel):
                                  max=1000000)
         sizer.Add(wx.StaticText(self, label="Iterations:    "))
         sizer.Add(iterations)
+        self.spin_iterations = iterations
 
         sboxszs.Add(sizer, 0, wx.ALL, 8)
 
@@ -223,18 +269,26 @@ class PanelSomConfig(wx.Panel):
         vsizer = wx.BoxSizer(wx.VERTICAL)
 
         self.som_panel = CanvasPanel(self)
-        self.som_panel.initParameters(testConfig)
+
+        # Tomamos el id de la primera iteracion
+        iterId = testConfig.test_details[0].test_datas[0].iteration_id
+
+        self.som_panel.setParameters(iterId, self.som.sigma,
+            self.som.learning_rate, self.som.columns, self.som.rows,
+                            self.som.map_initialization, self.som.iterations)
         self.som_panel.initialDraw()
         vsizer.Add(self.som_panel, 3, wx.EXPAND)
 
         # Listctrl
-        self.lc = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
+        self.lc = IndividualsListCtrl(self, self.som_panel.numObjetives,
+                                      style=wx.LC_REPORT)
+        EVT_LIST_ITEM_RIGHT_CLICK(self.lc, -1, self.itemRightClick)
 
-        for i in range(self.som_panel.numObjetives):
-            self.lc.InsertColumn(i, 'Objetivo ' + str(i))
-            self.lc.SetColumnWidth(i, 140)
-#             self.lc.SetColumnWidth(i, wx.LIST_AUTOSIZE_USEHEADER)
+        panel = wx.Panel(self, -1)
+        self.text = wx.StaticText(panel, -1, "")
+        self.text.SetLabel
 
+        vsizer.Add(panel, 0, wx.EXPAND)
         vsizer.Add(self.lc, 1, wx.EXPAND)
 
         sizer.Add(vsizer, 1, wx.EXPAND)
@@ -254,7 +308,10 @@ class PanelSomConfig(wx.Panel):
         # som = sm().getSomById(testConfig.test_graphic[0].id_graphic)
 
         items = []
+        # Diccionario empleado para almacenar los id de iteraciones asociadas a
+        # cada opcion en el combo
         itemsDict = {}
+
         for tdet in testConfig.test_details:
             result = rm().getResultById(tdet.result_id)
             for tdat in tdet.test_datas:
@@ -265,18 +322,24 @@ class PanelSomConfig(wx.Panel):
                 itemsDict[item] = tdat.iteration_id
 
         self.itemsDict = itemsDict
-
+        # Items para el combo de opciones
         self.items = items
-
+        # Tasa de aprendizaje
         self.learning_rate = str(som.learning_rate).replace(".", ",")
+        # Sigma
         self.sigma = str(som.sigma).replace(".", ",")
+        # Nro de Columnas
         self.columns = str(som.columns)
+        # Nro de Filas
         self.rows = str(som.rows)
+        # Inicializacion del mapa
         if str(som.map_initialization) == "linear":
             self.linInit = True
         else:
             self.linInit = False
+        # Cantidad de Iteraciones
         self.iterations = str(som.iterations)
+        # Referencia de la instancia SOM para el panel de configuracion
         self.som = som
 
     def OnButtonApply(self, event):
@@ -285,9 +348,67 @@ class PanelSomConfig(wx.Panel):
         self.som.sigma = self.spin2.GetValue()
         self.som.columns = self.spin_columns.GetValue()
         self.som.rows = self.spin_rows.GetValue()
-        self.som_panel.updateParameters(self.som, iterId)
+        self.linInit = self.radio1.GetValue()
+        if self.linInit:
+            self.som.map_initialization = "linear"
+        else:
+            self.som.map_initialization = "random"
+        self.som.iterations = self.spin_iterations.GetValue()
+        self.som_panel.setParameters(iterId, self.som.sigma,
+                    self.som.learning_rate, self.som.columns, self.som.rows,
+                            self.som.map_initialization, self.som.iterations)
+        if self.som_panel.rect:
+            self.som_panel.rect.remove()
         self.som_panel.draw()
         self.som_panel.canvas.draw()
+
+    def itemRightClick(self, event):
+        menu = wx.Menu()
+        show_in_parallel = wx.MenuItem(menu, wx.ID_ANY, 'Show In Parallel')
+        menu.AppendItem(show_in_parallel)
+        menu.Bind(wx.EVT_MENU, self.OnShowInParallel, show_in_parallel)
+        self.lc.PopupMenu(menu)
+        menu.Destroy()
+
+    def OnShowInParallel(self, event):
+        print(self.lc.getSelectIndices())
+        for idx in self.lc.getSelectIndices():
+            a = self.lc.GetItemText(idx)
+            print a
+        SomParallelCoordinateDialog(self, self.som_panel.individuals,
+                                    self.lc.columns)
+
+
+class SomParallelCoordinateDialog(wx.Dialog):
+
+    def __init__(self, parent, individuals, columns):
+        super(SomParallelCoordinateDialog, self).__init__(parent,
+                                                          size=(900, 630))
+
+        self.figure = Figure()
+        self.axes = self.figure.add_subplot(111, xlim=(0, 1), ylim=(0, 1),
+                                 autoscale_on=False)
+        self.canvas = FigureCanvas(self, -1, self.figure)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
+        self.SetSizer(self.sizer)
+
+        mydata = DataFrame(individuals, columns=columns)
+        myres = range(1, len(individuals) + 1)
+        mydata['res'] = myres
+        parallel_coordinates(mydata, 'res', ax=self.axes)
+        self.axes.legend().set_visible(False)
+        self.canvas.draw()
+        self.axes.set_title('Individuals')
+
+        #------ Definiciones iniciales -----
+        self.Centre(wx.BOTH)
+        self.CenterOnScreen()
+        # self.sizer.Fit(self)
+        # self.sizer.SetSizeHints(self)
+        # self.Layout()
+        # self.Fit()
+        self.ShowModal()
 
 
 if __name__ == "__main__":
@@ -295,7 +416,6 @@ if __name__ == "__main__":
     # createDB()
     from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
     testConfig = tm().getTestConfigById(1)
-    # a = str(testConfig.test_graphic[0].name_graphic)
     app = wx.App()
     fr = wx.Frame(None, title='Configuration')
     panel = PanelSomConfig(fr, testConfig)
