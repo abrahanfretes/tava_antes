@@ -7,7 +7,7 @@ Created on 14/4/2015
 
 from wx.lib.pubsub import Publisher as pub
 
-import topic as T
+from py.una.pol.tava.presenter import topic as T
 from py.una.pol.tava.model.mparallel_analizer import\
     ParallelAnalizerModel as pam
 

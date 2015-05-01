@@ -100,9 +100,6 @@ class ParallelFigureAL(wx.Panel):
         # ------ self components --------------------------------------
         self.parent = parent
         self.figure = Figure()
-        #=======================================================================
-        # self.figure.clear()
-        #=======================================================================
         self.canvas = FigureCanvas(self, -1, self.figure)
         self.toolbar = Toolbar(self.canvas)
 

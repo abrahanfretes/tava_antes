@@ -5,7 +5,7 @@ Created on 25/2/2015
 '''
 import wx
 from wx.lib.pubsub import Publisher as pub
-import topic as T
+from py.una.pol.tava.presenter import topic as T
 
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.model.miteration import InterationModel as itm

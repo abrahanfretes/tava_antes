@@ -115,17 +115,9 @@ class ParallelAnalizerModel():
 
         # obtiene los datos ordenados
         index_orders_real = [int(i) for i in pa.order_objective.split(',')]
-        print index_orders_real
-        print unordered_index
 
         obj_orders = []
         if self.isOrder(unordered_index, index_orders_real):
-        #=======================================================================
-        #     
-        # if(unordered_index != sorted(index_orders_real))\
-        #     and (len(unordered_index) == len(index_orders_real)):
-        #=======================================================================
-
             ordered_index = []
             for i in index_orders_real:
                 ordered_index.append(unordered_index.index(i))
