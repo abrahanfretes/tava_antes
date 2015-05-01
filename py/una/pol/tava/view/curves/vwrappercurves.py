@@ -1,3 +1,4 @@
+#  -*- coding: utf-8 -*-
 '''
 Created on 1/5/2015
 
@@ -25,6 +26,10 @@ class PageAndrewsCurves(wx.SplitterWindow):
         # ------ self controls -----------------------------------------
 
 
+from py.una.pol.tava.view.curves.vcurves import CurvesTree
+from py.una.pol.tava.view.curves.vcurves import CurvesFigure
+
+
 # -------------------         Panel for top            ------------------------
 # -------------------                                  ------------------------
 class TopPanel(wx.SplitterWindow):
@@ -35,6 +40,15 @@ class TopPanel(wx.SplitterWindow):
         self.SetMinimumPaneSize(3)
         # ------ self components --------------------------------------
         self.parent = parent
+
+        curves_tree = CurvesTree(self, test)
+        curves_figure = CurvesFigure(self, test)
+
+        width = int(round(self.GetParent().GetSize().GetWidth() * 0.50)) * 15
+        self.SplitVertically(curves_tree, curves_figure, width)
+        # ------ self inicailes executions -----------------------------
+        # ------ self controls -----------------------------------------
+        # ------ self controls -----------------------------------------
 
 
 # -------------------         Panel for botton         ------------------------

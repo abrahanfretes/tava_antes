@@ -4,11 +4,17 @@ Created on 1/5/2015
 
 @author: abrahan
 '''
+from pandas.tools.plotting import andrews_curves
+
 from py.una.pol.tava.dao import dcurves
 from py.una.pol.tava.model.mresult import ResultModel
 from py.una.pol.tava.base.entity import AndrewsCurves
 from py.una.pol.tava.base import tavac as tvc
 from py.una.pol.tava.base.entity import AndrewsGrid
+
+from py.una.pol.tava.model.miteration import InterationModel as itm
+from py.una.pol.tava.model.mindividual import IndividualModel as inm
+
 
 
 mode = str(tvc.MODE_ANDREWS_CURVES)
@@ -62,3 +68,26 @@ class AndrewsCurvesModel():
 
         '''
         return dcurves.add(ac)
+
+    def getCurvesByTestId(self, t_id):
+        return dcurves.getCurvesByTestId(t_id)
+
+    # --- en tree -----
+    def getFormatTree(self, test):
+
+        to_ret = {}
+        for detail in test.test_details:
+            r_name = ResultModel().getNameById(detail.result_id)
+            ite_list = []
+            for data in detail.test_datas:
+                identifier = str(itm().getIdentifierById(data.iteration_id))
+                ite_list.append((identifier, data.iteration_id))
+            to_ret[r_name] = ite_list
+
+        return to_ret
+
+    # --- en figure -----
+    def getCurvesAxe(self, iteration, _len, _pos, axe, legend_g, color_g):
+        data = inm().getCsv(iteration, mode)
+
+        return andrews_curves(data, 'Name', axe)

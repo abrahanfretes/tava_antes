@@ -20,7 +20,7 @@ def add(parallel_analizer):
     return abm.add(parallel_analizer)
 
 
-def getParallelAnalizerByIdTest(t_id):
+def getCurvesByTestId(t_id):
     return session.query(AndrewsCurves).filter_by(test_config_id=t_id)\
         .first()
 
