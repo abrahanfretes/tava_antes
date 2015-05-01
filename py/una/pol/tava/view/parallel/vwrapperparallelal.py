@@ -9,12 +9,14 @@ from wx import GetTranslation as _
 import wx.lib.agw.aui as aui
 
 from py.una.pol.tava.view import vi18n as C
-from py.una.pol.tava.presenter.pparallelal import TopPanelPresenter
-from py.una.pol.tava.view.vparallelal import ParallelTreeAL
-from py.una.pol.tava.view.vparallelal import ParallelFigureAL
-from py.una.pol.tava.view.vparallelal import TabVariables
-from py.una.pol.tava.view.vparallelal import TabObjectives
-from py.una.pol.tava.view.vparallelal import TabFilters
+from py.una.pol.tava.presenter.pparallel.pparallelal import TopPanelPresenter
+from py.una.pol.tava.view.parallel.vparallelal import ParallelTreeAL
+from py.una.pol.tava.view.parallel.vparallelal import ParallelFigureAL
+from py.una.pol.tava.view.parallel.vparallelal import TabVariables
+from py.una.pol.tava.view.parallel.vparallelal import TabObjectives
+from py.una.pol.tava.view.parallel.vparallelal import TabFilters
+
+
 
 
 # -------------------         Panel Splitter           ------------------------

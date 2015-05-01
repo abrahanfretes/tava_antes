@@ -4,14 +4,15 @@ Created on 17/3/2015
 @author: abrahan
 '''
 import wx
-import py.una.pol.tava.view.vimages as I
-
 from wx import GetTranslation as _
+
+import py.una.pol.tava.view.vimages as I
 import py.una.pol.tava.view.vi18n as C
+
 
 # -------------------         Panel Principal          ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesgf\
+from py.una.pol.tava.presenter.pparallel.pparallelcoordinatesgf \
     import WorkingPageParallelGFPresenter
 
 
@@ -34,7 +35,7 @@ class WorkingPageParallelGF(wx.Panel):
 # -------------------         Panel Tree               ------------------------
 # -------------------                                  ------------------------
 import wx.lib.agw.customtreectrl as CT
-from py.una.pol.tava.presenter.pparallelcoordinatesgf\
+from py.una.pol.tava.presenter.pparallel.pparallelcoordinatesgf \
     import ParallelTreeGFPresenter
 
 
@@ -63,7 +64,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 
-from py.una.pol.tava.presenter.pparallelcoordinatesgf\
+from py.una.pol.tava.presenter.pparallel.pparallelcoordinatesgf \
     import ParallelFigureGFPresenter
 
 
@@ -99,7 +100,7 @@ class ParallelFigureGF(wx.Panel):
 
 # -------------------         Panel Toll Figure        ------------------------
 # -------------------                                  ------------------------
-from py.una.pol.tava.presenter.pparallelcoordinatesgf\
+from py.una.pol.tava.presenter.pparallel.pparallelcoordinatesgf \
     import ButtonsTollFigureGFPresenter
 
 

@@ -5,21 +5,19 @@ Created on 28/05/2014
 @author: aferreira
 '''
 import wx
+from wx import GetTranslation as _
+import wx.lib.agw.aui as aui
 
 from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from py.una.pol.tava.presenter.pbody import ProjectTreeNotebookPresenter
-from wx import GetTranslation as _
 import py.una.pol.tava.view.vi18n as C
 import py.una.pol.tava.view.vimages as I
-import wx.lib.agw.aui as aui
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
 from py.una.pol.tava.view.vsom import PanelSomConfig
-
 from py.una.pol.tava.base import tavac as tvc
-
-from py.una.pol.tava.view.vparallelcoordinatesgf import\
+from py.una.pol.tava.view.parallel.vparallelcoordinatesgf import\
     WorkingPageParallelGF
-from py.una.pol.tava.view.vwrapperparallelal import WorkingPageFL as wpal
+from py.una.pol.tava.view.parallel.vwrapperparallelal import WorkingPageFL as wpal
 import vconstants as vc
 
 

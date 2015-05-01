@@ -11,7 +11,7 @@ import wx.lib.colourselect as csel
 
 from py.una.pol.tava.view import vi18n as C
 import py.una.pol.tava.view.vimages as I
-from py.una.pol.tava.presenter.pparallelconal\
+from py.una.pol.tava.presenter.pparallel.pparallelconal \
     import ConfigurationParallelFigurePresenter
 
 

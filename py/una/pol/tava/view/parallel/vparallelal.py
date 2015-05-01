@@ -12,6 +12,8 @@ from py.una.pol.tava.view import vi18n as C
 from py.una.pol.tava.view import vimages as I
 
 
+
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # Sección encargada de los componentes Visuales (views) para ParallelTreeAL.
@@ -25,7 +27,7 @@ from py.una.pol.tava.view import vimages as I
 # -------------------                                  ------------------------
 import wx.lib.agw.customtreectrl as CT
 
-from py.una.pol.tava.presenter.pparallelal import ParallelTreeALPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import ParallelTreeALPresenter
 
 
 class ParallelTreeAL(CT.CustomTreeCtrl):
@@ -77,11 +79,11 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 
 
-from py.una.pol.tava.presenter.pparallelal import ParallelFigureALPresenter
-from py.una.pol.tava.presenter.pparallelal import ButtonsExecutionPresenter
-from py.una.pol.tava.presenter.pparallelal import ButtonsConfigPresenter
-from py.una.pol.tava.presenter.pparallelal import ButtonsFilterPresenter
-from py.una.pol.tava.view.vparallelconal import ConfigurationParallelFigure
+from py.una.pol.tava.presenter.pparallel.pparallelal import ParallelFigureALPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import ButtonsExecutionPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import ButtonsConfigPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import ButtonsFilterPresenter
+from py.una.pol.tava.view.parallel.vparallelconal import ConfigurationParallelFigure
 
 
 # ------------------- Panel Para Grafico De Coordenadas Paralelas -------------
@@ -289,9 +291,9 @@ class ButtonsFilter(wx.Panel):
 from wx import dataview as dv
 from wx.lib.scrolledpanel import ScrolledPanel
 
-from py.una.pol.tava.presenter.pparallelal import TabVariablesPresenter
-from py.una.pol.tava.presenter.pparallelal import TabObjectivesPresenter
-from py.una.pol.tava.presenter.pparallelal import TabFiltrosPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import TabVariablesPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import TabObjectivesPresenter
+from py.una.pol.tava.presenter.pparallel.pparallelal import TabFiltrosPresenter
 
 
 # ------------------- Clase contenedor para Tab de Variables  -----------------
