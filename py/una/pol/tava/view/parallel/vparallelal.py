@@ -12,8 +12,6 @@ from py.una.pol.tava.view import vi18n as C
 from py.una.pol.tava.view import vimages as I
 
 
-
-
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # Sección encargada de los componentes Visuales (views) para ParallelTreeAL.
