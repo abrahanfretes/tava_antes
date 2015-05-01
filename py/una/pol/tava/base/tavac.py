@@ -97,3 +97,9 @@ T_FIGURE_BACKGROUND_AL = '#BBA2FF'
 ORIENTATION_LINE_AL = ['both', 'x', 'y']
 STYLE_LINE_AL = [':', '--', '-.', '-']
 
+# ---------------------------------------------------------------------------
+# ------------------- Modos para Graficos  Andrews-Curves -------------------
+MODE_ANDREWS_CURVES = 10
+TREE_BACKGROUND_AC = '#FFFFFF'
+FIGURE_BACKGROUND_AC = '#FFFFFF'
+T_FIGURE_BACKGROUND_AC = '#BBA2FF'

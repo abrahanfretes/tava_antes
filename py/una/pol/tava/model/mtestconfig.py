@@ -6,6 +6,7 @@ Created on 23/09/2014
 '''
 from py.una.pol.tava.dao import dtestconfig
 from py.una.pol.tava.model.mparallel_analizer import ParallelAnalizerModel
+from py.una.pol.tava.model.mcurves import AndrewsCurvesModel
 from py.una.pol.tava.model.msom import SomModel
 from datetime import date
 
@@ -28,6 +29,7 @@ class TestConfigModel():
         test_config.creation_date = date.today()
         new_test_config = dtestconfig.add(test_config)
         ParallelAnalizerModel().add(new_test_config)
+        AndrewsCurvesModel().add(new_test_config)
         SomModel().addWithTestConfig(new_test_config)
         return new_test_config
 
