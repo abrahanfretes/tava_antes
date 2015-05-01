@@ -351,6 +351,11 @@ class AnalysisMenu(wx.Menu):
         graphs_and_data.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)
 
+        andrews_curves = wx.MenuItem(self, wx.ID_ANY, 'Andrews Curves')
+        self.AppendItem(andrews_curves)
+        andrews_curves.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowAndrewsCurves, andrews_curves)
+
     def OnShowGraphic(self, event):
         self.presenter_menuanalizer.\
             ShowGraphic(tvc.MODE_PARALLEL_COORDINATES_GF)
@@ -358,6 +363,10 @@ class AnalysisMenu(wx.Menu):
     def OnShowGraphsAndData(self, event):
         self.presenter_menuanalizer.\
             OnShowGraphsAndData(tvc.MODE_PARALLEL_COORDINATES_AL)
+
+    def OnShowAndrewsCurves(self, event):
+        self.presenter_menuanalizer.\
+            OnShowGraphsAndData(tvc.MODE_ANDREWS_CURVES)
 
     def OnShowSomGraphic(self, event):
         self.presenter_menuanalizer.ShowGraphic(vc.SOM)

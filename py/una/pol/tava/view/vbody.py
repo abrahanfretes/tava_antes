@@ -8,6 +8,7 @@ import wx
 from wx import GetTranslation as _
 import wx.lib.agw.aui as aui
 
+import vconstants as vc
 from py.una.pol.tava.view.vtree import ProjectTreeCtrl
 from py.una.pol.tava.presenter.pbody import ProjectTreeNotebookPresenter
 import py.una.pol.tava.view.vi18n as C
@@ -17,8 +18,9 @@ from py.una.pol.tava.view.vsom import PanelSomConfig
 from py.una.pol.tava.base import tavac as tvc
 from py.una.pol.tava.view.parallel.vparallelcoordinatesgf import\
     WorkingPageParallelGF
-from py.una.pol.tava.view.parallel.vwrapperparallelal import WorkingPageFL as wpal
-import vconstants as vc
+from py.una.pol.tava.view.parallel.vwrapperparallelal\
+    import WorkingPageFL as wpal
+from py.una.pol.tava.view.curves.vwrappercurves import PageAndrewsCurves
 
 
 class MainPanel(wx.Panel):
@@ -165,3 +167,6 @@ class AUINotebook(aui.AuiNotebook):
         elif mode == tvc.MODE_PARALLEL_COORDINATES_AL:
             working_space = wpal(self, test)
             self.AddPage(working_space, test.name + "- Parallel", True)
+        elif mode == tvc.MODE_ANDREWS_CURVES:
+            page_pac = PageAndrewsCurves(self, test)
+            self.AddPage(page_pac, test.name + "Andrews Curves", True)
