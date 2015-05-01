@@ -13,7 +13,7 @@ import py.una.pol.tava.view.vi18n as C
 
 # -------------------         Panel Splitter           ------------------------
 # -------------------                                  ------------------------
-class WorkingPageParallelFnl(wx.SplitterWindow):
+class WorkingPageFl(wx.SplitterWindow):
     def __init__(self, parent, test, mode):
         wx.SplitterWindow.__init__(self, parent)
 
@@ -48,7 +48,7 @@ class TopPanel(wx.Panel):
         # ------ self components --------------------------------------
         self.parent = parent
         self.presenter = TopPanelPresenter(self, test, mode)
-        self.data_tree = ParallelDataTree(self, test.test_details)
+        self.data_tree = ParallelTreeAL(self, test.test_details)
         self.data_figure = ParallelDataFigure(self, mode, test)
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
@@ -70,7 +70,7 @@ from py.una.pol.tava.presenter.pparallelcoordinatesal import\
     ParallelDataTreePresenter
 
 
-class ParallelDataTree(CT.CustomTreeCtrl):
+class ParallelTreeAL(CT.CustomTreeCtrl):
     def __init__(self, parent, test_details):
         CT.CustomTreeCtrl.__init__(self, parent, agwStyle=CT.TR_HIDE_ROOT)
 
@@ -126,12 +126,12 @@ class ParallelDataFigure(wx.Panel):
         self.toolbar.Realize()
         self.button_tolbar = ButtonsTollFigure(self, test)
 
-        self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-        self.sizer_h.Add(self.button_tolbar, 4)
-        self.sizer_h.Add(self.toolbar, 1)
+        self.sizer_toll = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer_toll.Add(self.button_tolbar, 4)
+        self.sizer_toll.Add(self.toolbar, 1)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(self.sizer_h, 0, wx.LEFT | wx.EXPAND)
+        self.sizer.Add(self.sizer_toll, 0, wx.LEFT | wx.EXPAND)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
         self.SetSizer(self.sizer)
         self.Fit()
@@ -229,7 +229,7 @@ class ButtonsTollFigure(wx.Panel):
 
     def OnClickConfiguration(self, event):
         pa = self.presenter.getParallelAnalizer()
-        CustomizeFrontFigure(self, pa.legent_figure, pa.color_figure)
+        CustomizeFrontFigure(self, pa.legent, pa.color_lines)
 
     def OnFilterObjetives(self, event):
         CustomizeObjetives(self)
@@ -483,7 +483,7 @@ class CustomizeFrontFigure(wx.Dialog):
         # ------ self customize ---------------------------------------
         self.parent = parent
         self.color_f = []
-        self.color_figure = color_figure
+        self.color_lines = color_figure
 
         # ------ self components --------------------------------------
         self.panel = wx.Panel(self)
@@ -491,15 +491,15 @@ class CustomizeFrontFigure(wx.Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         title = wx.StaticText(self.panel, -1, _(C.CFF_CC))
 
-        self.legent_figure = wx.CheckBox(self.panel, -1, _(C.CFF_L))
-        self.legent_figure.SetValue(legent_figure)
+        self.legent = wx.CheckBox(self.panel, -1, _(C.CFF_L))
+        self.legent.SetValue(legent_figure)
 
         colour_sizer = wx.BoxSizer(wx.HORIZONTAL)
         colour_sizer.Add(wx.StaticText(self.panel, -1, _(C.CFF_LC)))
-        self.colourDefaults = csel.ColourSelect(self.panel, -1,
+        self.c_lines = csel.ColourSelect(self.panel, -1,
                                                 colour=color_figure,
                                                 size=(60, 25))
-        colour_sizer.Add(self.colourDefaults)
+        colour_sizer.Add(self.c_lines)
 
         line = wx.StaticLine(self.panel, -1, size=(20, -1))
 
@@ -514,7 +514,7 @@ class CustomizeFrontFigure(wx.Dialog):
 
         sizer.Add(title, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         sizer.Add(line, 0, wx.EXPAND | wx.ALL, 5)
-        sizer.Add(self.legent_figure, 0, wx.ALIGN_LEFT | wx.ALL, 5)
+        sizer.Add(self.legent, 0, wx.ALIGN_LEFT | wx.ALL, 5)
         sizer.Add(colour_sizer, 0, wx.ALIGN_LEFT | wx.ALL, 5)
         sizer.Add(btnsizer, 0, wx.ALIGN_RIGHT | wx.TOP, 35)
 
@@ -522,7 +522,7 @@ class CustomizeFrontFigure(wx.Dialog):
 
         # ------ self inicailes executions ----------------------------
         self.Bind(csel.EVT_COLOURSELECT, self.OnSelectColour,
-                  id=self.colourDefaults.GetId())
+                  id=self.c_lines.GetId())
         btn_restart_d.Bind(wx.EVT_BUTTON, self.OnRestartDefaul)
         btn_ok.Bind(wx.EVT_BUTTON, self.OnButtonOk)
         btn_cancel.Bind(wx.EVT_BUTTON, self.OnButtonCancel)
@@ -540,9 +540,9 @@ class CustomizeFrontFigure(wx.Dialog):
 
         if not (self.color_f == []):
             from matplotlib.colors import rgb2hex
-            self.color_figure = rgb2hex(self.normCol(self.color_f))
-        self.parent.updateConfigPa(self.legent_figure.GetValue(),
-                                   self.color_figure)
+            self.color_lines = rgb2hex(self.normCol(self.color_f))
+        self.parent.updateConfigPa(self.legent.GetValue(),
+                                   self.color_lines)
         self.Close(True)
 
     def OnButtonCancel(self, event):

@@ -23,3 +23,7 @@ def add(parallel_analizer):
 def getParallelAnalizerByIdTest(t_id):
     return session.query(ParallelAnalizer).filter_by(test_config_id=t_id)\
         .first()
+
+
+def getParallelAnalizerById(pa_id):
+    return session.query(ParallelAnalizer).filter_by(id=pa_id).first()

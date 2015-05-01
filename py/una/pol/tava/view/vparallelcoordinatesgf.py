@@ -84,12 +84,12 @@ class ParallelFigureGF(wx.Panel):
 
         self.button_tolbar = ButtonsTollFigureGF(self)
 
-        self.sizer_h = wx.BoxSizer(wx.HORIZONTAL)
-        self.sizer_h.Add(self.button_tolbar, 4, wx.EXPAND)
-        self.sizer_h.Add(self.toolbar, 1)
+        self.sizer_toll = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer_toll.Add(self.button_tolbar, 4, wx.EXPAND)
+        self.sizer_toll.Add(self.toolbar, 1)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add(self.sizer_h, 0, wx.LEFT | wx.EXPAND)
+        self.sizer.Add(self.sizer_toll, 0, wx.LEFT | wx.EXPAND)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
         self.SetSizer(self.sizer)
         self.Fit()

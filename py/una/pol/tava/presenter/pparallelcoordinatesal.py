@@ -8,7 +8,7 @@ from wx.lib.pubsub import Publisher as pub
 import topic as T
 
 from py.una.pol.tava.model.mresult import ResultModel as rm
-from py.una.pol.tava.model.miteration import InterationModel as im
+from py.una.pol.tava.model.miteration import InterationModel as itm
 from py.una.pol.tava.model.mindividual import IndividualModel as inm
 from py.una.pol.tava.model.mparallel_analizer import ParallelAnalizerModel
 
@@ -108,7 +108,7 @@ class ParallelDataTreePresenter:
             self.iview.SetItemImage(td_item, 0, wx.TreeItemIcon_Normal)
 
             for data in detail.test_datas:
-                idn = str(im().getIdentifierById(data.iteration_id))
+                idn = str(itm().getIdentifierById(data.iteration_id))
                 tda_item = self.iview.AppendItem(td_item, idn, ct_type=1)
                 self.iview.SetItemPyData(tda_item, data.iteration_id)
                 self.iview.CheckItem(tda_item, False)
@@ -186,8 +186,8 @@ class ParallelDataFigurePresenter:
     # ---- Funciones definidas para ParallelFigure Test -----------------------
     def newFigureTest(self, ite_list, suptitle=''):
         pa = self.getParallelAnalizer()
-        self.color_g = (pa.color_figure,)
-        self.legend_g = pa.legent_figure
+        self.color_g = (pa.color_lines,)
+        self.legend_g = pa.legent
         self.cleanParallelFigure()
         suptitle = self.title_g
         self.figure_axes = self._initFigurePaint(ite_list, suptitle)
@@ -306,8 +306,8 @@ class ButtonsTollFigurePresenter:
 
     def updateConfigPa(self, legent_figure, color_figure):
         pa = self.getParallelAnalizer()
-        pa.legent_figure = legent_figure
-        pa.color_figure = color_figure
+        pa.legent = legent_figure
+        pa.color_lines = color_figure
         pam = ParallelAnalizerModel()
         pam.upDate(pa)
         pub.sendMessage(T.PARALLEL_UPDATE_FIGURE_CONFIG)
@@ -524,7 +524,7 @@ class AddFilterObjetivesScrollPresenter:
 
 def parallel_coordinatesTava(frame, class_column, len_color=1, pos_color=0,
                              ax=None, no_seque=True, is_use_legends=True,
-                             cols=None, color=None, use_columns=False,
+                             cols=None, color=None, use_columns=True,
                              xticks=None, colormap=None, **kwds):
     """Parallel coordinates plotting.
 

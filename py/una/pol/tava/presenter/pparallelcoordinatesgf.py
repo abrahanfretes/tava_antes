@@ -8,7 +8,7 @@ from wx.lib.pubsub import Publisher as pub
 import topic as T
 
 from py.una.pol.tava.model.mresult import ResultModel as rm
-from py.una.pol.tava.model.miteration import InterationModel as im
+from py.una.pol.tava.model.miteration import InterationModel as itm
 from py.una.pol.tava.model.mindividual import IndividualModel as inm
 
 TYPE_TEST = 0
@@ -75,7 +75,7 @@ class ParallelTreeGFPresenter:
             self.iview.SetItemImage(td_item, 0, wx.TreeItemIcon_Normal)
 
             for data in detail.test_datas:
-                idn = str(im().getIdentifierById(data.iteration_id))
+                idn = str(itm().getIdentifierById(data.iteration_id))
                 tda_item = self.iview.AppendItem(td_item, idn, ct_type=1)
                 self.iview.SetItemPyData(tda_item, data.iteration_id)
                 self.iview.CheckItem(tda_item, False)
