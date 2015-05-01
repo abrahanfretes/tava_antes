@@ -5,6 +5,32 @@
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 catalog = {}
+# ---------------------------------------------------------------------
+
+arrow_grey_right_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAJ1J"
+    "REFUOI3VkzEKAyEQRb8hXs3KxhPo0ZwzJL2FtXcRBJsRTRE21Wp2WVJEEIThf96fGcUYA1fO"
+    "7ZL6ZwZE9CCiIYTAds8SaGMMvPdfG7SMcMTkPisw8xtF681kN8eUIOeMUgpqrVBKgYh2SaYE"
+    "rTX03tF7x2pXpgZSys87hABr7bkIzAxmRowRzrnpHJdNTCktxSuC5xExAIj//0wvx+ZJ1uO3"
+    "z9EAAAAASUVORK5CYII="
+    )
+
+catalog["arrow_grey_right.png"] = "arrow_grey_right"
+arrow_grey_right = arrow_grey_right_png.GetBitmap()
+
+# ---------------------------------------------------------------------
+
+arrow_bullet_right_png = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAPhJ"
+    "REFUOI1jYBgFjNgEsxebf/315xfXr39/uBYmX/6OzwAmbII//vxikBHRZPjx+/c3/6nynCQb"
+    "wMPGw6UpYc4gK6zO8O3Xjy+23YI8JBnw598vhmcfHzPoylgzKIvpM/348+2jbjMjP0le+Pb3"
+    "O8PDd3cZDGRtGdQlTZl+/Pn/lgQDfjD8//ufQZRXmuHc46MMR+8eef3tF4MJNrUs2AS//fnB"
+    "IMgtxnD64RGGvbd2vfj1h8H5eTvDNWxqmbEKWnws+/+fmXX/zT1Pf/1lcHreznADmzoGBhzp"
+    "QLGW4evff8xc3//9VXrdznAfl2a8QLicAW/8Dx4AAHR1YeN2C0QUAAAAAElFTkSuQmCC"
+    )
+
+catalog["arrow_bullet_right.png"] = "arrow_bullet_right"
+arrow_bullet_right = arrow_bullet_right_png.GetBitmap()
 
 # ---------------------------------------------------------------------
 

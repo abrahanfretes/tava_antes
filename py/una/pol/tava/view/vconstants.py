@@ -3,9 +3,6 @@ Created on 19/03/2015
 
 @author: arsenioferreira
 '''
-
-PARALLEL_COORDINATES = 0
 SOM = 1
 SCATTER_PLOT = 2
 HEATMAP = 3
-PARALLEL_COORDINATES_WITH_DATA = 4

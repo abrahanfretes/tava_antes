@@ -15,10 +15,11 @@ import wx.lib.agw.aui as aui
 from py.una.pol.tava.presenter.pbody import AUINotebookPresenter
 from py.una.pol.tava.view.vsom import PanelSomConfig
 
-from py.una.pol.tava.view.vparallelcoordinatesal import\
-    WorkingPageParallelFnl
+from py.una.pol.tava.base import tavac as tvc
+
 from py.una.pol.tava.view.vparallelcoordinatesgf import\
     WorkingPageParallelGF
+from py.una.pol.tava.view.vwrapperparallelal import WorkingPageFL as wpal
 import vconstants as vc
 
 
@@ -110,7 +111,7 @@ class ProjectTreeNotebook(wx.Notebook):
         self.SetPageImage(0, tree_explorer_bmp)
 
         # Se establece el color de fondo para el componente Notebook.
-        self.SetBackgroundColour(self.GetThemeBackgroundColour())
+        self.SetBackgroundColour("#FFFFFF")
 
 
 class TreePanel(wx.Panel):
@@ -160,9 +161,9 @@ class AUINotebook(aui.AuiNotebook):
         if mode == vc.SOM:
             working_space = PanelSomConfig(self, test)
             self.AddPage(working_space, test.name + "- SOM", True)
-        elif mode == vc.PARALLEL_COORDINATES:
+        elif mode == tvc.MODE_PARALLEL_COORDINATES_GF:
             working_space = WorkingPageParallelGF(self, test)
             self.AddPage(working_space, test.name + "- Parallel", True)
-        elif mode == vc.PARALLEL_COORDINATES_WITH_DATA:
-            working_space = WorkingPageParallelFnl(self, test, mode)
+        elif mode == tvc.MODE_PARALLEL_COORDINATES_AL:
+            working_space = wpal(self, test)
             self.AddPage(working_space, test.name + "- Parallel", True)

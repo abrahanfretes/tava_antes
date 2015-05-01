@@ -16,6 +16,8 @@ from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
 import vconstants as vc
 
+from py.una.pol.tava.base import tavac as tvc
+
 
 #------ menu principal --------------------------------------------------------
 
@@ -350,15 +352,15 @@ class AnalysisMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)
 
     def OnShowGraphic(self, event):
-        self.presenter_menuanalizer.ShowGraphic(vc.PARALLEL_COORDINATES)
+        self.presenter_menuanalizer.\
+            ShowGraphic(tvc.MODE_PARALLEL_COORDINATES_GF)
 
     def OnShowGraphsAndData(self, event):
         self.presenter_menuanalizer.\
-        OnShowGraphsAndData(vc.PARALLEL_COORDINATES_WITH_DATA)
+            OnShowGraphsAndData(tvc.MODE_PARALLEL_COORDINATES_AL)
 
     def OnShowSomGraphic(self, event):
         self.presenter_menuanalizer.ShowGraphic(vc.SOM)
-        #----------------------------------------------------
-#----------------------------------------------------
-
-#--------------------------------------------------------------
+        # ----------------------------------------------------
+# --------------------------------------------------------------
+# --------------------------------------------------------------

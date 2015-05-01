@@ -183,3 +183,65 @@ PARALLEL_FIGURE_VIEW_RESULT_GRAFIC_GF = 'PARALLEL.FIGURE_VIEW_RESULT_GRAFIC_GF'
 # Send = pparallelcoordinates
 # Subscribe = pparallelcoordinates
 PARALLEL_FIGURE_VIEW_ITERA_GRAFIC_GF = 'PARALLEL.FIGURE_VIEW_ITERA_GRAFIC_GF'
+
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# TOPICOS USADOS EN LA CLASE MANEJADA PARA
+#     GRAFICO DE COORDENADAS PARALELAS
+#                 ANALIZER
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+
+# Send = pconfigparallel -> ParallelTreeALPresenter
+# Subscribe = pconfigparallel -> BaseButtonsTollBar
+PARALLEL_TREE_CHECK_FIGURE_AL = 'PARALLEL.TREE_CHECK_FIGURE_AL'
+
+
+# Send = pconfigparallel -> ParallelTreeALPresenter
+# Subscribe = pconfigparallel -> ButtonsEjecutionPresenter
+PARALLEL_ONCLICK_BUTTON_EXECUTE_AL = 'PARALLEL.\
+PARALLEL_ONCLICK_BUTTON_EXECUTE_AL'
+
+# Send = pconfigparallel -> ParallelTreeALPresenter
+# Subscribe = pconfigparallel -> ButtonsFilterPresenter
+PARALLEL_TREE_CHECK_SET_FILTER_AL = 'PARALLEL.\
+PARALLEL_TREE_CHECK_SET_FILTER_AL'
+
+# Send = pconfigparallel -> ParallelTreeALPresenter
+# Subscribe = pconfigparallel -> BaseButtonsTollBar
+PARALLEL_TREE_CHECK_FILTER_AL = 'PARALLEL.PARALLEL_TREE_CHECK_FILTER_AL'
+
+# Send = pconfigparallel -> ParallelTreeALPresenter
+# Subscribe = pconfigparallel -> TopPanelPresenter
+PARALLEL_UPDATE_FIGURE_FOR_TREE_AL = 'PARALLEL.UPDATE_FIGURE_FOR_TREE_AL'
+
+# Send = pconfigparallel -> ButtonsEjecutionPresenter
+# Subscribe = pconfigparallel -> ParallelTreeALPresenter
+PARALLEL_VERIFY_TREE_CHECKED_AL = 'PARALLEL.VERIFY_TREE_CHECKED_AL'
+
+# Send = pconfigparallel -> TopPanelPresenter -> updateFigureForChangeTreePub
+# Send = pconfigparallel -> TopPanelPresenter -> updateFiltersObjectPub
+# Send = pconfigparallel -> TopPanelPresenter -> updateListObjectPub
+# Subscribe = pconfigparallel -> ParallelFigureALPresenter
+# Subscribe = pconfigparallel -> TabVariablesPresenter
+# Subscribe = pconfigparallel -> TabObjectivesPresenter
+# Subscribe = pconfigparallel -> TabFiltrosPresenter
+PARALLEL_UPDATE_ALL_AL = 'PARALLEL.UPDATE_ALL_AL'
+
+# Send = pconfigparallel -> ButtonsFilterPresenter
+# Subscribe = pconfigparallel -> TabFiltrosPresenter
+PARALLEL_ON_SET_FILTERS_OBJ_AL = 'PARALLEL.ON_SET_FILTERS_OBJ_AL'
+
+# Send = pconfigparallel -> ButtonsFilterPresenter -> cleanFilter
+# Subscribe = pconfigparallel -> TabFiltrosPresenter -> setFiltersCleanPub
+PARALLEL_ON_CLEAN_FILTERS_OBJ_AL = 'PARALLEL.ON_CLEAN_FILTERS_OBJ_AL'
+
+# Send = pparallelconal -> ConfigurationParallelFigurePresenter
+# Subscribe = pparallelconal -> ParallelTreeALPresenter
+# Subscribe = pparallelconal -> ParallelFigureALPresenter
+PARALLEL_BACKGROUND_UPDATE_AL = 'PARALLEL.BACKGROUND_UPDATE_AL'
+
+# Send = pparallelconal -> ConfigurationParallelFigurePresenter
+# Subscribe = pparallelconal -> ParallelTreeALPresenter
+# Subscribe = pparallelconal -> ParallelFigureALPresenter
+PARALLEL_GRID_UPDATE_AL = 'PARALLEL.GRID_UPDATE_AL'

@@ -7,7 +7,7 @@ import os
 from pandas import read_csv
 
 from py.una.pol.tava.dao import dindividual
-from py.una.pol.tava.model.miteration import InterationModel as im
+from py.una.pol.tava.model.miteration import InterationModel as itm
 from py.una.pol.tava.model.mresult import ResultModel as rm
 from py.una.pol.tava.base.tavac import getTavaDirectory as gtd
 from numpy.distutils.npy_pkg_config import VariableSet
@@ -84,7 +84,7 @@ class IndividualModel(object):
     def getObjByIteration(self, ite_id):
         to_ret_obj = []
         to_ret_var = []
-        ite = im().getIterationById(ite_id)
+        ite = itm().getIterationById(ite_id)
         res = rm().getResultById(ite.result_id)
 
         for ind in self.getIndividualsByIteracionId(ite_id):
@@ -210,15 +210,6 @@ class IndividualModel(object):
         f.close()
         return to_ret
 
-    def fileExists(self, ite_id, mode):
-        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
-        return os.path.isfile(file_obj)
-
-    def fileDelete(self, ite_id, mode):
-        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
-        if os.path.isfile(file_obj):
-            os.remove(file_obj)
-
     def getMinMax(self, ite_id, mode):
         min_v = []
         max_v = []
@@ -258,7 +249,7 @@ class IndividualModel(object):
 
         print ite_list
         # agrego cabecera
-        ite_h = im().getIterationById(ite_list[0])
+        ite_h = itm().getIterationById(ite_list[0])
         # obtener result
         res_h = rm().getResultById(ite_h.result_id)
         f_test.write(res_h.name_objectives + ',Name\n')
@@ -266,7 +257,7 @@ class IndividualModel(object):
         # por cada iteracion
         for i in ite_list:
             # obtener la iteracion
-            ite = im().getIterationById(i)
+            ite = itm().getIterationById(i)
             # obtener result
             res = rm().getResultById(ite.result_id)
             # obtener individuos
@@ -287,7 +278,7 @@ class IndividualModel(object):
 
             # ----- por cada resultado ---------
             # obtener la iteracion
-            ite = im().getIterationById(i_list[0])
+            ite = itm().getIterationById(i_list[0])
             res = rm().getResultById(ite.result_id)
             filepath = os.path.join(gtd(), str(ite.result_id) + '.'
                                     + 'type.' + type_gf
@@ -298,7 +289,7 @@ class IndividualModel(object):
 
             # ----- por cada iteracion ---------
             for i in i_list:
-                ite = im().getIterationById(i)
+                ite = itm().getIterationById(i)
                 inds = self.getIndividualsByIteracionId(ite.id)
                 for ind in inds:
                     f_test.write(ind.objectives
@@ -315,7 +306,7 @@ class IndividualModel(object):
 
             # ----- por cada resultado ---------
             # obtener la iteracion
-            ite = im().getIterationById(i)
+            ite = itm().getIterationById(i)
             res = rm().getResultById(ite.result_id)
             inds = self.getIndividualsByIteracionId(ite.id)
             filepath = os.path.join(gtd(), str(i) + '.'
@@ -340,7 +331,7 @@ class IndividualModel(object):
         for i in ite_list:
 
             # obtener la iteracion
-            ite = im().getIterationById(i)
+            ite = itm().getIterationById(i)
             # obtener result
             res = rm().getResultById(ite.result_id)
             # obtener individuos
@@ -371,7 +362,7 @@ class IndividualModel(object):
     def getCsvForResult(self, i_list):
         mode = str(1)
         type_gf = str(2)
-        ite = im().getIterationById(i_list[0])
+        ite = itm().getIterationById(i_list[0])
         filepath = os.path.join(gtd(), str(ite.result_id) + '.'
                                 + 'type.' + type_gf
                                 + '.mode.' + mode
@@ -386,3 +377,15 @@ class IndividualModel(object):
                                 + '.mode.' + mode
                                 + '.csv')
         return read_csv(filepath)
+
+# -------------------------------------------------------------------
+# Deben ser borradas luego
+# -------------------------------------------------------------------
+    def fileExists(self, ite_id, mode):
+        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
+        return os.path.isfile(file_obj)
+
+    def fileDelete(self, ite_id, mode):
+        file_obj = os.path.join(gtd(), str(ite_id) + '.mode.' + mode + '.csv')
+        if os.path.isfile(file_obj):
+            os.remove(file_obj)

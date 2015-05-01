@@ -4,7 +4,7 @@ Created on 21/09/2014
 @author: arsenioferreira
 '''
 from py.una.pol.tava.model.mresult import ResultModel as rm
-from py.una.pol.tava.model.miteration import InterationModel as im
+from py.una.pol.tava.model.miteration import InterationModel as itm
 from py.una.pol.tava.base.entity import TestData, TestDetail, TestConfig
 from py.una.pol.tava.model.mtestconfig import TestConfigModel as tm
 import wx
@@ -22,7 +22,7 @@ class GraphicWizardPresenter():
         for file_name in filesSelecteds:
             result = rm().getResultByProjectIdAndFileName(project.id,
                                                           file_name)
-            listIters = im().getIterationsByResult(result)
+            listIters = itm().getIterationsByResult(result)
 
             for itr in listIters:
                 listResults.append((itr, result))
