@@ -40,12 +40,12 @@ class Project(Base):
     creation_date = Column(Date(), nullable=False)
 
     results = relationship('Result', lazy=None,
-                              cascade="save-update, merge, delete",
-                              order_by='Result.id', backref='project')
+                           cascade="save-update, merge, delete",
+                           order_by='Result.id', backref='project')
 
     test_config = relationship('TestConfig', lazy=None,
-                              cascade="save-update, merge, delete",
-                              order_by='TestConfig.id', backref='project')
+                               cascade="save-update, merge, delete",
+                               order_by='TestConfig.id', backref='project')
 
     def __init__(self, name, blog, state, date):
 
@@ -57,7 +57,7 @@ class Project(Base):
     def __repr__(self):
         return "<Project(name='%s', blog='%s', state='%s',\
         creation_date='%s')>" % (self.name,
-                                    self.blog, self.state, self.creation_date)
+                                 self.blog, self.state, self.creation_date)
 
 
 class Result(Base):
@@ -101,8 +101,8 @@ class Result(Base):
     project_id = Column(Integer, ForeignKey('project.id'))
 
     iterations = relationship('Iteration', lazy=None,
-                          cascade="save-update, merge, delete",
-                          order_by='Iteration.id', backref='result')
+                              cascade="save-update, merge, delete",
+                              order_by='Iteration.id', backref='result')
 
     def __init__(self):
         pass
@@ -112,11 +112,12 @@ class Result(Base):
         label1='%s', label2='%s', label3='%s', label4='%s', \
         problem_name='%s', number_objectives='%s', number_variables='%s', \
         number_initial_population='%s', name_variables='%s', \
-        name_objectives='%s', add_date='%s')>" % (self.name, self.alias, \
-        self.iteration_count, self.label1, self.label2, self.label3,
-        self.label4, self.problem_name, self.number_objectives,\
-        self.number_variables, self.number_initial_population, \
-        self.name_variables, self.name_objectives, self.add_date)
+        name_objectives='%s', add_date='%s')>"\
+        % (self.name, self.alias,
+           self.iteration_count, self.label1, self.label2, self.label3,
+           self.label4, self.problem_name, self.number_objectives,
+           self.number_variables, self.number_initial_population,
+           self.name_variables, self.name_objectives, self.add_date)
 
 
 class Iteration(Base):
@@ -133,16 +134,17 @@ class Iteration(Base):
     result_id = Column(Integer, ForeignKey('result.id'))
 
     individuals = relationship('Individual', lazy=None,
-                          cascade="save-update, merge, delete",
-                          order_by='Individual.id', backref='iteration')
+                               cascade="save-update, merge, delete",
+                               order_by='Individual.id', backref='iteration')
 
     def __init__(self):
         pass
 
     def __repr__(self):
         return "<Iteration(identifier: '%s', execution_start :'%s', \
-        execution_end:'%s', number_individuals:'%s')>" % (self.identifier,
-        self.execution_start, self.execution_end, self.number_individuals)
+        execution_end:'%s', number_individuals:'%s')>"\
+        % (self.identifier, self.execution_start,
+           self.execution_end, self.number_individuals)
 
 
 class Individual(Base):
@@ -176,16 +178,16 @@ class TestConfig(Base):
     project_id = Column(Integer, ForeignKey('project.id'))
 
     test_details = relationship('TestDetail',
-                              cascade="save-update, merge, delete",
-                              order_by='TestDetail.id',
-                              backref='test_config')
+                                cascade="save-update, merge, delete",
+                                order_by='TestDetail.id',
+                                backref='test_config')
 
     def __init__(self):
         pass
 
     def __repr__(self):
         return "<TestConfig(name='%s', description='%s', creation_date='%s')>"\
-     % (self.name, self.description, self.creation_date)
+            % (self.name, self.description, self.creation_date)
 
 
 class TestDetail(Base):
@@ -247,6 +249,50 @@ class FigureGrid(Base):
     red_width = Column(SmallInteger, nullable=False)
     red_style = Column(SmallInteger)
     parallel_analizer_id = Column(Integer, ForeignKey('parallel_analizer.id'))
+
+    def __init__(self):
+        pass
+
+
+class AndrewsCurves(Base):
+    ''''''
+
+    __tablename__ = 'andrews_curves'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name_figure = Column(String(100), nullable=True)
+    color_lines = Column(String(7), nullable=False)
+    legent = Column(Boolean, nullable=False)
+    enable_objectives = Column(String(100))
+    order_objective = Column(String(100))
+    order_name_obj = Column(String(100))
+    name_objetive = Column(String(100))
+    name_variable = Column(String(100))
+    maxs_objetive = Column(String(100))
+    mins_objetive = Column(String(100))
+    colors_backgrounds = Column(String(100))
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    andrews_grid = relationship("AndrewsGrid", uselist=False,
+                                backref="andrews_curves")
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestDetail(id='%i', name_figure='%s, name_figure='%s)>"\
+            % (self.id, self.name_figure, self.legent)
+
+
+class AndrewsGrid(Base):
+    ''''''
+
+    __tablename__ = 'andrews_grid'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    grid = Column(Boolean, nullable=False)
+    orientation = Column(SmallInteger)
+    red_color = Column(String(7))
+    red_width = Column(SmallInteger, nullable=False)
+    red_style = Column(SmallInteger)
+    andrews_curves_id = Column(Integer, ForeignKey('andrews_curves.id'))
 
     def __init__(self):
         pass
