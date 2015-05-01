@@ -214,21 +214,42 @@ class ParallelAnalizer(Base):
     __tablename__ = 'parallel_analizer'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name_figure = Column(String(100), nullable=True)
-    color_figure = Column(String(7), nullable=False)
-    legent_figure = Column(Boolean, nullable=False)
+    color_lines = Column(String(7), nullable=False)
+    legent = Column(Boolean, nullable=False)
     enable_objectives = Column(String(100))
     order_objective = Column(String(100))
     order_name_obj = Column(String(100))
     name_objetive = Column(String(100))
     name_variable = Column(String(100))
+    maxs_objetive = Column(String(100))
+    mins_objetive = Column(String(100))
+    colors_backgrounds = Column(String(100))
     test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    figure_grid = relationship("FigureGrid", uselist=False,
+                               backref="parallel_analizer")
 
     def __init__(self):
         pass
 
     def __repr__(self):
         return "<TestDetail(id='%i', name_figure='%s, name_figure='%s)>"\
-            % (self.id, self.name_figure, self.legent_figure)
+            % (self.id, self.name_figure, self.legent)
+
+
+class FigureGrid(Base):
+    ''''''
+
+    __tablename__ = 'figure_config'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    grid = Column(Boolean, nullable=False)
+    orientation = Column(SmallInteger)
+    red_color = Column(String(7))
+    red_width = Column(SmallInteger, nullable=False)
+    red_style = Column(SmallInteger)
+    parallel_analizer_id = Column(Integer, ForeignKey('parallel_analizer.id'))
+
+    def __init__(self):
+        pass
 
 
 class TestData(Base):
