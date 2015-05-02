@@ -1,64 +1,77 @@
 #  -*- coding: utf-8 -*-
 '''
-Created on 1/5/2015
+Created on 2/5/2015
 
 @author: abrahan
 '''
-
 import wx
+
+from py.una.pol.tava.view.curves.treecurves import CurvesTree
+from py.una.pol.tava.view.curves.figurecurves import CurvesFigure
+from py.una.pol.tava.view.curves.filtercurves import CurvesFilter
+from py.una.pol.tava.presenter.pandrews_curves.pwrappercurves\
+    import AndrewsCurvesPresenter
 
 
 # -------------------         Panel Splitter           ------------------------
 # -------------------                                  ------------------------
-class PageAndrewsCurves(wx.SplitterWindow):
-    def __init__(self, parent, test):
-        wx.SplitterWindow.__init__(self, parent)
-
-        #  ------ self customize ----------------------------------------
-        self.SetMinimumPaneSize(3)
-        self.SetBorderSize(1)
-
-        #  ------ self components --------------------------------------
-        self.top_panel = TopPanel(self, test)
-        self.footer = BottomPanel(self, test)
-        high = int(round(self.GetParent().GetSize().GetWidth() * 0.50))
-        self.SplitHorizontally(self.top_panel, self.footer, high)
-        # ------ self controls -----------------------------------------
-
-
-from py.una.pol.tava.view.curves.vcurves import CurvesTree
-from py.una.pol.tava.view.curves.vcurves import CurvesFigure
-from py.una.pol.tava.presenter.pandrews_curves.pcurves import TopPanelPresenter
-
-
-# -------------------         Panel for top            ------------------------
-# -------------------                                  ------------------------
-class TopPanel(wx.SplitterWindow):
-    def __init__(self, parent, test):
-        wx.SplitterWindow.__init__(self, parent)
-
-        # ------ self customize ----------------------------------------
-        self.SetMinimumPaneSize(3)
-        # ------ self components --------------------------------------
-        self.parent = parent
-        self.presenter = TopPanelPresenter(self, test)
-
-        curves_tree = CurvesTree(self, test)
-        curves_figure = CurvesFigure(self, test)
-
-        width = int(round(self.GetParent().GetSize().GetWidth() * 0.50)) * 15
-        self.SplitVertically(curves_tree, curves_figure, width)
-        # ------ self inicailes executions -----------------------------
-        # ------ self controls -----------------------------------------
-        # ------ self controls -----------------------------------------
-
-
-# -------------------         Panel for botton         ------------------------
-# -------------------                                  ------------------------
-class BottomPanel(wx.Panel):
-
+class AndrewsCurves(wx.Panel):
     def __init__(self, parent, test):
         wx.Panel.__init__(self, parent)
 
-        # ------ self customize ---------------------------------------
-    # ------ self controls --------------------------------------------
+        #  ------ self customize ----------------------------------------
+        #  ------ self components --------------------------------------
+        splitter = wx.SplitterWindow(self)
+        v_splitter = wx.SplitterWindow(splitter)
+
+        self.tree_curves = CurvesTree(v_splitter, self, test)
+        self.figure_curves = CurvesFigure(v_splitter, self, test)
+        v_splitter.SplitVertically(self.tree_curves, self.figure_curves)
+        v_splitter.SetSashGravity(0.2)
+        v_splitter.SetMinimumPaneSize(8)
+
+        self.filter_curves = CurvesFilter(splitter, self, test)
+        splitter.SplitHorizontally(v_splitter, self.filter_curves)
+        splitter.SetSashGravity(0.75)
+        splitter.SetMinimumPaneSize(8)
+
+        sizer = wx.BoxSizer()
+        sizer.Add(splitter, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+        self.presenter = AndrewsCurvesPresenter(self, test)
+
+    # lógica de manejo de botones de Figura
+    def enableButtonFigure(self):
+        self.figure_curves.enableButtons()
+
+    def disableButtonFigure(self):
+        self.figure_curves.disableButtons()
+
+    # lógica para crear archivos y actualizar componetes
+    def updateDatas(self):
+        'acutulalizacion de datos'
+        ite = self.tree_curves.getCurrentSelection()
+        self.presenter.createDates(ite)
+        # mensaje de actualizacion de figura
+        self.figure_curves.presenter.newFigure([ite])
+        self.figure_curves.disableButtons()
+        self.tree_curves.setAfterExecute()
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        self.filter_curves.presenter.updateValuesList([ite])
+        pass
+
+    # lógica de los botones para filtros
+    def verificFilter(self):
+        if self.filter_curves.presenter.isFilterModified():
+            max, min = self.filter_curves.presenter.getListValues()
+            self.presenter.updateFilters(max, min)
+            self.updateDatas()
+            return True
+        else:
+            return False
+
+    def cleanFilter(self):
+        self.presenter.clearFilters()
+        self.updateDatas()
