@@ -1,0 +1,101 @@
+#  -*- coding: utf-8 -*-
+'''
+Created on 2/5/2015
+
+@author: abrahan
+'''
+import wx
+
+from py.una.pol.tava.view.curves.treecurves import CurvesTree
+from py.una.pol.tava.view.curves.figurecurves import CurvesFigure
+from py.una.pol.tava.view.curves.filtercurves import CurvesFilter
+
+
+# -------------------         Panel Splitter           ------------------------
+# -------------------                                  ------------------------
+class AndrewsCurves(wx.Panel):
+    def __init__(self, parent, test):
+        wx.Panel.__init__(self, parent)
+
+        #  ------ self customize ----------------------------------------
+        #  ------ self components --------------------------------------
+        splitter = wx.SplitterWindow(self)
+        v_splitter = wx.SplitterWindow(splitter)
+
+        self.tree_curves = CurvesTree(v_splitter, self, test)
+        self.figure_curves = CurvesFigure(v_splitter, self, test)
+        v_splitter.SplitVertically(self.tree_curves, self.figure_curves)
+        v_splitter.SetSashGravity(0.2)
+        v_splitter.SetMinimumPaneSize(8)
+
+        self.filter_curves = CurvesFilter(splitter, self, test)
+        splitter.SplitHorizontally(v_splitter, self.filter_curves)
+        splitter.SetSashGravity(0.75)
+        splitter.SetMinimumPaneSize(8)
+
+        sizer = wx.BoxSizer()
+        sizer.Add(splitter, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+        self.presenter = AndrewsCurvesPresenter(self, test)
+
+    # lógica de manejo de botones de Figura
+    def enableButtonFigure(self):
+        self.figure_curves.enableButtons()
+
+    def disableButtonFigure(self):
+        self.figure_curves.disableButtons()
+
+    # lógica para crear archivos y actualizar componetes
+    def updateDatas(self):
+        'acutulalizacion de datos'
+        ite = self.tree_curves.getCurrentSelection()
+        self.presenter.createDates(ite)
+        # mensaje de actualizacion de figura
+        self.figure_curves.presenter.newFigure([ite])
+        self.figure_curves.disableButtons()
+        self.tree_curves.setAfterExecute()
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        self.filter_curves.presenter.updateValuesList([ite])
+        pass
+
+    # lógica de los botones para filtros
+    def verificFilter(self):
+        if self.filter_curves.presenter.isFilterModified():
+            self.presenter.updateFilters(self.filter_curves.
+                                         presenter.getListValues())
+            self.updateDatas()
+            return True
+        else:
+            return False
+
+    def cleanFilter(self):
+        self.presenter.clearFilters()
+        self.updateDatas()
+
+
+from py.una.pol.tava.model.mcurves import AndrewsCurvesModel as acm
+
+
+class AndrewsCurvesPresenter:
+    def __init__(self, iview, test):
+        self.iview = iview
+        self.test = test
+
+    def createDates(self, ite):
+        acm().fileForDelete(ite)
+        ac = acm().getCurvesByTestId(self.test.id)
+        return acm().createDates(ac, ite)
+
+    def updateFilters(self, maxs_objetive, mins_objetive):
+        ac = acm().getCurvesByTestId(self.test.id)
+        ac.maxs_objetive = maxs_objetive
+        ac.mins_objetive = mins_objetive
+        acm().upDate(ac)
+
+    def clearFilters(self):
+        ac = acm().getCurvesByTestId(self.test.id)
+        ac.maxs_objetive = None
+        ac.mins_objetive = None
+        acm().upDate(ac)

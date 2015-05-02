@@ -209,3 +209,18 @@ class AndrewsCurvesModel():
         for i in ordered_index:
             to_ret.append(objective_aux[i])
         return ','.join(to_ret)
+
+    # --- en tab TabVariables ------
+
+    def getListVariables(self, ite):
+        filename = str(ite) + '.mode.' + mode + '.' + 'var'
+        return tvc.redFileForTab(filename)
+
+    # --- en tab TabObjectives -----
+    def getListObjectives(self, ite):
+        filename = str(ite) + '.mode.' + mode + '.' + 'obj'
+        return tvc.redFileForTab(filename)
+
+    # --- en tab TabFiltros --------
+    def getMinMaxObjective(self, ite):
+        return inm().getMinMax(ite, mode)

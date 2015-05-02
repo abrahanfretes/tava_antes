@@ -21,6 +21,7 @@ from py.una.pol.tava.view.parallel.vparallelcoordinatesgf import\
 from py.una.pol.tava.view.parallel.vwrapperparallelal\
     import WorkingPageFL as wpal
 from py.una.pol.tava.view.curves.vwrappercurves import PageAndrewsCurves
+from py.una.pol.tava.view.curves.cuvespage import AndrewsCurves
 
 
 class MainPanel(wx.Panel):
@@ -168,5 +169,6 @@ class AUINotebook(aui.AuiNotebook):
             working_space = wpal(self, test)
             self.AddPage(working_space, test.name + "- Parallel", True)
         elif mode == tvc.MODE_ANDREWS_CURVES:
-            page_pac = PageAndrewsCurves(self, test)
+            page_pac = AndrewsCurves(self, test)
+            #page_pac = PageAndrewsCurves(self, test)
             self.AddPage(page_pac, test.name + "Andrews Curves", True)
