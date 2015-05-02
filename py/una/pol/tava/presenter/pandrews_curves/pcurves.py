@@ -10,7 +10,6 @@ from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.presenter import topic as T
 from py.una.pol.tava.model.mcurves import AndrewsCurvesModel as acm
 
-
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # Sección encargada de los componentes Manejadores (Presenter) para para
@@ -20,46 +19,49 @@ from py.una.pol.tava.model.mcurves import AndrewsCurvesModel as acm
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
-#===============================================================================
-# class TopPanelPresenter:
-#     def __init__(self, iview, test):
-#         self.iview = iview
-#         self.test = test
-#         self.ite_list = []
-# 
-#         pub.subscribe(self.updateFigureForChangeTreePub,
-#                       T.PARALLEL_UPDATE_FIGURE_FOR_TREE_AL)
-# 
-#         pub.subscribe(self.updateListObjectPub,
-#                       T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
-# 
-#     # ---- Funciones Generales ------------------------------------------------
-# 
-#     def updateFigureForChangeTreePub(self, message):
-#         ite_tuple = message.data
-#         self.ite_list = list(ite_tuple)
-#         ite = self.ite_list[0]
-#         pam().fileForDelete(ite)
-#         self.createDates(ite)
-#         # mensaje de actualizacion de figura
-#         # mensaje de actualizacion de variables
-#         # mensaje de actualizacion de objetivos
-#         pub.sendMessage(T.PARALLEL_UPDATE_ALL_AL, self.ite_list)
-# 
-#     def updateListObjectPub(self, message):
-#         if self.ite_list != []:
-#             ite = self.ite_list[0]
-#             pam().fileForDelete(ite)
-#             self.createDates(ite)
-#             # mensaje de actualizacion de figura
-#             # mensaje de actualizacion de variables
-#             # mensaje de actualizacion de objetivos
-#             pub.sendMessage(T.PARALLEL_UPDATE_ALL_AL, self.ite_list)
-# 
-#     def createDates(self, ite):
-#         p_analizer = pam().getParallelAnalizerByIdTest(self.test.id)
-#         return pam().createDates(p_analizer, ite)
-#===============================================================================
+
+class TopPanelPresenter:
+    def __init__(self, iview, test):
+        self.iview = iview
+        self.test = test
+        self.ite_list = []
+
+        pub.subscribe(self.updateFigureForChangeTreePub,
+                      T.PARALLEL_UPDATE_FIGURE_FOR_TREE_AL)
+
+        #=======================================================================
+        # pub.subscribe(self.updateListObjectPub,
+        #               T.PARALLEL_UPDATE_FIGURE_LIST_OBJ)
+        #=======================================================================
+
+    # ---- Funciones Generales ------------------------------------------------
+
+    def updateFigureForChangeTreePub(self, message):
+        ite_tuple = message.data
+        self.ite_list = list(ite_tuple)
+        ite = self.ite_list[0]
+        acm().fileForDelete(ite)
+        self.createDates(ite)
+        # mensaje de actualizacion de figura
+        # mensaje de actualizacion de variables
+        # mensaje de actualizacion de objetivos
+        pub.sendMessage(T.PARALLEL_UPDATE_ALL_AL, self.ite_list)
+
+    #===========================================================================
+    # def updateListObjectPub(self, message):
+    #     if self.ite_list != []:
+    #         ite = self.ite_list[0]
+    #         pam().fileForDelete(ite)
+    #         self.createDates(ite)
+    #         # mensaje de actualizacion de figura
+    #         # mensaje de actualizacion de variables
+    #         # mensaje de actualizacion de objetivos
+    #         pub.sendMessage(T.PARALLEL_UPDATE_ALL_AL, self.ite_list)
+    #===========================================================================
+
+    def createDates(self, ite):
+        ac = acm().getCurvesByTestId(self.test.id)
+        return acm().createDates(ac, ite)
 
     # -------------------------------------------------------------------------
 
@@ -141,9 +143,11 @@ class CurvesTreePresenter:
     # ---                               -----------
 
     def setChecked(self):
+        # oculta y desoculta los botones para iltros heredados de BaseButton
         pub.sendMessage(T.PARALLEL_TREE_CHECK_FIGURE_AL,
                         self.__getOneChecked())
         if self.__getOneChecked():
+            # oculta y desoculta los botones para iltros
             pub.sendMessage(T.PARALLEL_TREE_CHECK_FILTER_AL,
                             tuple(self.__getListChecked()))
 
@@ -253,6 +257,9 @@ class CurvesFigurePresenter:
         suptitle = self.title_g
         self.figure_axes = self._initFigurePaint(ite_list, suptitle)
 
+    def getAdrewsCurves(self):
+        return self.__getAC()
+
     # ---- Metodos usados Localmente -----------
     # ---                            -----------
 
@@ -308,4 +315,47 @@ class CurvesFigurePresenter:
     #         axe.grid(fg.grid)
     #     return axe
     #===========================================================================
+
+
+# ------------------- Clase Presentador de Botones para Ejecución     ---------
+# -------------------                                  ------------------------
+class BaseButtonsTollBar:
+    def __init__(self, iview):
+        self.iview = iview
+
+        pub.subscribe(self.checkedTreePub, T.PARALLEL_TREE_CHECK_FIGURE_AL)
+
+        self.checkedTree(False)
+
+    def checkedTreePub(self, message):
+        self.checkedTree(message.data)
+
+    def checkedTree(self, enable):
+        if enable:
+            self.iview.enableButtons()
+        else:
+            self.iview.disableButtons()
+
+
+# ------------------- Clase Presentador de Botones para Ejecución     ---------
+# -------------------                                  ------------------------
+class ButtonsExecutionPresenter(BaseButtonsTollBar):
+    def __init__(self, iview):
+        BaseButtonsTollBar.__init__(self, iview)
+
+        pub.subscribe(self.onClickExecute,
+                      T.PARALLEL_ONCLICK_BUTTON_EXECUTE_AL)
+
+        pub.subscribe(self.setBackGroundExecutionPub,
+                      T.PARALLEL_BACKGROUND_UPDATE_AL)
+
+    def setBackGroundExecutionPub(self, message):
+        self.iview.SetBackgroundColour(message.data.split(',')[2])
+        self.iview.GetParent().SetBackgroundColour(message.data.split(',')[2])
+
+    def onClickExecute(self, message):
+        self.checkedTree(False)
+
+    def verifyTreeCheckeo(self):
+        pub.sendMessage(T.PARALLEL_VERIFY_TREE_CHECKED_AL)
 

@@ -5,7 +5,9 @@ Created on 1/5/2015
 @author: abrahan
 '''
 import wx
+from wx import GetTranslation as _
 
+from py.una.pol.tava.view import vi18n as C
 from py.una.pol.tava.view import vimages as I
 from py.una.pol.tava.presenter.pandrews_curves.pcurves\
     import CurvesTreePresenter
@@ -73,6 +75,8 @@ from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 
 from py.una.pol.tava.presenter.pandrews_curves.pcurves\
     import CurvesFigurePresenter
+from py.una.pol.tava.presenter.pandrews_curves.pcurves\
+    import ButtonsExecutionPresenter
 
 
 # ------------------- Panel Para Grafico De Coordenadas Paralelas -------------
@@ -95,11 +99,11 @@ class CurvesFigure(wx.Panel):
         self.presenter = CurvesFigurePresenter(self, test)
 
         self.toolbar.Realize()
-        # self.button_tolbar = TollBarFigure(self, self.presenter.
-        #                                    getParallelAnalizer())
+        self.button_tolbar = TollBarFigure(self, self.presenter.
+                                           getAdrewsCurves())
 
         self.sizer_toll = wx.BoxSizer(wx.HORIZONTAL)
-        # self.sizer_toll.Add(self.button_tolbar, 4)
+        self.sizer_toll.Add(self.button_tolbar, 4)
         self.sizer_toll.Add(self.toolbar, 1)
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -113,3 +117,58 @@ class CurvesFigure(wx.Panel):
     # ------ self controls --------------------------------------------
     def showNewFigure(self, ite_list):
         self.presenter.newFigureTest(ite_list)
+
+
+# ------------------- Panel De Control De Configuracion      ------------------
+# -------------------                                  ------------------------
+class TollBarFigure(wx.Panel):
+    def __init__(self, parent, pa):
+        wx.Panel.__init__(self, parent)
+
+        # ------ self customize ---------------------------------------
+        background = pa.colors_backgrounds.split(',')[2]
+        self.SetBackgroundColour(background)
+
+        # ------ self components --------------------------------------
+        self.parent = parent
+
+        buttons_ejecution = ButtonsEjecution(self, background)
+        s_line_update = wx.StaticLine(self, style=wx.LI_VERTICAL)
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(buttons_ejecution)
+        sizer.Add(s_line_update, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=4)
+        self.SetSizer(sizer)
+
+
+# ------------------- Clase contenedor de Botones para Ejecución      ---------
+# -------------------                                  ------------------------
+class ButtonsEjecution(wx.Panel):
+    def __init__(self, parent, background):
+        wx.Panel.__init__(self, parent)
+
+        # ------ self customize ---------------------------------------
+        self.SetBackgroundColour(background)
+
+        # ------ self components --------------------------------------
+        self.execution = wx.BitmapButton(self, -1, I.graficar_parallel,
+                                         style=wx.NO_BORDER)
+        self.execution.SetToolTipString(_(C.BTF_UF))
+
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self.execution, 1, wx.LEFT, border=10)
+        self.SetSizer(sizer)
+
+        self.presenter = ButtonsExecutionPresenter(self)
+        # ------ self inicailes executions ----------------------------
+        self.Bind(wx.EVT_BUTTON, self.OnClickExecution, self.execution)
+
+    # ------ self controls --------------------------------------------
+    def OnClickExecution(self, event):
+        self.presenter.verifyTreeCheckeo()
+
+    def enableButtons(self):
+        self.execution.Enable()
+
+    def disableButtons(self):
+        self.execution.Disable()

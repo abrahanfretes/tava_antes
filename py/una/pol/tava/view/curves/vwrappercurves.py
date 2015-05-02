@@ -28,6 +28,7 @@ class PageAndrewsCurves(wx.SplitterWindow):
 
 from py.una.pol.tava.view.curves.vcurves import CurvesTree
 from py.una.pol.tava.view.curves.vcurves import CurvesFigure
+from py.una.pol.tava.presenter.pandrews_curves.pcurves import TopPanelPresenter
 
 
 # -------------------         Panel for top            ------------------------
@@ -40,6 +41,7 @@ class TopPanel(wx.SplitterWindow):
         self.SetMinimumPaneSize(3)
         # ------ self components --------------------------------------
         self.parent = parent
+        self.presenter = TopPanelPresenter(self, test)
 
         curves_tree = CurvesTree(self, test)
         curves_figure = CurvesFigure(self, test)
