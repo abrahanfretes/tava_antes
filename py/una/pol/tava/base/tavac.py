@@ -72,6 +72,30 @@ def createfileForParallel(list_graphic, list_objectives, list_variables,
     f_obj.close()
 
 
+def createfileForCurves(list_graphic, list_objectives, list_variables,
+                        filename_gra, filename_var, filename_obj):
+
+    fp_gra = os.path.join(getTavaDirectory(), filename_gra)
+    fp_var = os.path.join(getTavaDirectory(), filename_var)
+    fp_obj = os.path.join(getTavaDirectory(), filename_obj)
+
+    f_gra = open(fp_gra, 'w')
+    f_var = open(fp_var, 'w')
+    f_obj = open(fp_obj, 'w')
+
+    f_gra.write(list_graphic[0])
+    for index in range(len(list_graphic) - 1):
+        f_gra.write(list_graphic[index + 1])
+
+    for index in range(len(list_objectives)):
+        f_obj.write(list_objectives[index])
+        f_var.write(list_variables[index])
+
+    f_gra.close()
+    f_var.close()
+    f_obj.close()
+
+
 def redFileForTab(filename):
 
     to_ret = []

@@ -143,6 +143,7 @@ class AndrewsCurvesModel():
         # debe modificar tanto los valores objetivos como los de Variables
         obj_order_filter = []
         var_order_filter = []
+        obj_order_no_filter = []
         if(not (pa.maxs_objetive is None) and not (pa.mins_objetive is None)):
             max_objetive = [float(i) for i in pa.maxs_objetive.split(',')]
             min_objetive = [float(i) for i in pa.mins_objetive.split(',')]
@@ -158,6 +159,8 @@ class AndrewsCurvesModel():
                 if(to_write):
                     obj_order_filter.append(obj_orders[index])
                     var_order_filter.append(var_list[index])
+                else:
+                    obj_order_no_filter.append(obj_orders[index])
         else:
             obj_order_filter = obj_orders
             var_order_filter = var_list
@@ -173,14 +176,31 @@ class AndrewsCurvesModel():
         list_var = []
 
         list_gra.append(pa.order_name_obj + ',Name\n')
-        for index in range(len(obj_order_filter)):
-            count_var = str(index + 1)
-            list_gra.append(obj_order_filter[index] + ',' + str(ident) + '\n')
-            list_obj.append(count_var + ',' + obj_order_filter[index] + '\n')
-            list_var.append(count_var + ',' + var_order_filter[index] + '\n')
+        if obj_order_no_filter != []:
+            for index in range(len(obj_order_filter)):
+                count_var = str(index + 1)
+                list_gra.append(obj_order_filter[index] + ', Filtrado\n')
+                list_obj.append(count_var + ','
+                                + obj_order_filter[index] + '\n')
+                list_var.append(count_var + ','
+                                + var_order_filter[index] + '\n')
 
-        tvc.createfileForParallel(list_gra, list_obj, list_var,
-                                  filename_gra, filename_var, filename_obj)
+            # valores fuera de filtro
+            for index in range(len(obj_order_no_filter)):
+                list_gra.append(obj_order_no_filter[index] + ','
+                                + str(ident) + '\n')
+        else:
+            for index in range(len(obj_order_filter)):
+                count_var = str(index + 1)
+                list_gra.append(obj_order_filter[index]
+                                + ',' + str(ident) + '\n')
+                list_obj.append(count_var + ','
+                                + obj_order_filter[index] + '\n')
+                list_var.append(count_var + ','
+                                + var_order_filter[index] + '\n')
+
+        tvc.createfileForCurves(list_gra, list_obj, list_var,
+                                filename_gra, filename_var, filename_obj)
 
     def isOrder(self, unordered_index, index_orders_real):
         if unordered_index == sorted(index_orders_real):

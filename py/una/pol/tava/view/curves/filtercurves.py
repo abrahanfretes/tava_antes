@@ -37,9 +37,9 @@ class CurvesFilter(wx.Panel):
         self.obj = dv.DataViewListCtrl(self.tab_aui)
         self.fil = ScrolledPanel(self.tab_aui)
 
+        self.tab_aui.AddPage(self.fil,  _(C.FAN_F), True)
         self.tab_aui.AddPage(self.var, _(C.FAN_V), False)
         self.tab_aui.AddPage(self.obj, _(C.FAN_O), False)
-        self.tab_aui.AddPage(self.fil,  _(C.FAN_F), False)
 
         self.sizer_aux = wx.BoxSizer(wx.HORIZONTAL)
         self.sizer_fil = wx.BoxSizer(wx.VERTICAL)
@@ -47,9 +47,9 @@ class CurvesFilter(wx.Panel):
         self.fil.SetSizer(self.sizer_fil)
 
     def deltePages(self):
+        self.tab_aui.DeletePage(self.tab_aui.GetPageIndex(self.fil))
         self.tab_aui.DeletePage(self.tab_aui.GetPageIndex(self.var))
         self.tab_aui.DeletePage(self.tab_aui.GetPageIndex(self.obj))
-        self.tab_aui.DeletePage(self.tab_aui.GetPageIndex(self.fil))
 
     def addItemFil(self, vmin, vmax, nobj, min_v_r, max_v_r):
         value = FilterObjetives(self.fil, vmin, vmax, nobj, min_v_r, max_v_r)

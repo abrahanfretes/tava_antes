@@ -83,7 +83,6 @@ class CurvesFigure(wx.Panel):
     def OnClickFilter(self, event):
         if self.page_curves.verificFilter():
             self.clean_filter.Enable()
-            self.update_filters.Disable()
 
     def OnClickCleanFilter(self, event):
         self.page_curves.cleanFilter()
