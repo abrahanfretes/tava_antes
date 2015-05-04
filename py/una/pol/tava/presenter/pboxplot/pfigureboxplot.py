@@ -70,7 +70,7 @@ class BoxPlotFigurePresenter:
 
     def __cleanParallelFigure(self):
         if not(self.figure_axes is None):
-            self.iview.figure.delaxes(self.figure_axes)
+            self.iview.figure.delaxes(self.iview.figure.gca())
 
     def _initFigurePaint(self, ite_list, suptitle='', sp_axe=None):
         axe = None
