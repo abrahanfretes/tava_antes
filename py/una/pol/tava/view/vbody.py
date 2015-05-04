@@ -21,6 +21,7 @@ from py.una.pol.tava.view.parallel.vparallelcoordinatesgf import\
 from py.una.pol.tava.view.parallel.vwrapperparallelal\
     import WorkingPageFL as wpal
 from py.una.pol.tava.view.curves.vwrappercurves import AndrewsCurves
+from py.una.pol.tava.view.vscatter_matrix import PanelScatterMatrixCongif
 
 
 class MainPanel(wx.Panel):
@@ -170,3 +171,6 @@ class AUINotebook(aui.AuiNotebook):
         elif mode == tvc.MODE_ANDREWS_CURVES:
             page_ac = AndrewsCurves(self, test)
             self.AddPage(page_ac, test.name + "Andrews Curves", True)
+        elif mode == vc.SCATTER_MATRIX:
+            working_space = PanelScatterMatrixCongif(self, test)
+            self.AddPage(working_space, test.name + "- Scatter Matrix", True)

@@ -240,7 +240,7 @@ class NewProjectDialog(wx.Dialog):
     def OnButtonBrowse(self, evt):
 
         self.dlg = wx.FileDialog(self, message=_(C.AFD_FDM),
-            defaultDir=os.getcwd(), defaultFile="", wildcard=wildcard,
+        defaultDir=os.path.expanduser("~"), defaultFile="", wildcard=wildcard,
             style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
 
         if self.dlg.ShowModal() == wx.ID_OK:

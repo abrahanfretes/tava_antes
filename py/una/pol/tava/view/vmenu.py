@@ -350,6 +350,14 @@ class AnalysisMenu(wx.Menu):
         self.AppendItem(graphs_and_data)
         graphs_and_data.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowGraphsAndData, graphs_and_data)
+        self.AppendSeparator()
+
+        scatter_matrix_graphic = wx.MenuItem(self, wx.ID_ANY, 'Scatter Matrix')
+        self.AppendItem(scatter_matrix_graphic)
+        scatter_matrix_graphic.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowScatterMatrixGraphic,
+                  scatter_matrix_graphic)
+        self.AppendSeparator()
 
         andrews_curves = wx.MenuItem(self, wx.ID_ANY, 'Andrews Curves')
         self.AppendItem(andrews_curves)
@@ -370,6 +378,7 @@ class AnalysisMenu(wx.Menu):
 
     def OnShowSomGraphic(self, event):
         self.presenter_menuanalizer.ShowGraphic(vc.SOM)
-        # ----------------------------------------------------
-# --------------------------------------------------------------
-# --------------------------------------------------------------
+
+    def OnShowScatterMatrixGraphic(self, event):
+        self.presenter_menuanalizer.ShowGraphic(vc.SCATTER_MATRIX)
+#--------------------------------------------------------------
