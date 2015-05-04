@@ -45,7 +45,7 @@ class MiniSom:
         self.neigy = arange(y)
         self.neighborhood = self.gaussian
         self.individuals = [[[] for i in range(x)] for i in range(y)]
-        self.individuos = []
+#         self.individuos = []
 
     def train_random(self, data, num_iteration):
         """ Trains the SOM picking samples at random from data """
@@ -98,7 +98,7 @@ class MiniSom:
             win - position of the winning neuron for x (array or tuple).
             t - iteration index
         """
-        self.individuos.append(x)
+#         self.individuos.append(x)
         # eta(t) = eta(0) / (1 + t/T)
         # keeps the learning rate nearly constant for
         # the first T iterations and then adjusts it

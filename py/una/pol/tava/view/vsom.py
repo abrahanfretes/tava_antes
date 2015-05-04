@@ -10,6 +10,7 @@ from minisom import MiniSom
 from numpy import genfromtxt, linalg, apply_along_axis
 
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 from matplotlib.figure import Figure
 from pylab import get_cmap
 from wx import EVT_LIST_ITEM_RIGHT_CLICK
@@ -17,6 +18,8 @@ from matplotlib.patches import Rectangle
 
 from pandas.tools.plotting import parallel_coordinates
 from pandas import DataFrame
+from mpldatacursor.datacursor import HighlightingDataCursor
+from matplotlib.lines import Line2D
 
 
 class CanvasPanel(wx.Panel):
@@ -76,7 +79,9 @@ class CanvasPanel(wx.Panel):
         som, data = self.trainSom()
         for xx in data:
             w = som.winner(xx)  # getting the winner
-            som.individuals[w[0]][w[1]].append(xx)
+            # para no repetir ya ingresados
+            if w not in som.individuals[w[0]][w[1]]:
+                som.individuals[w[0]][w[1]].append(xx)
         self.axes.pcolor(som.distance_map().T, cmap=get_cmap('gray'))
 
         self.axes.axis([0, som.weights.shape[0], som.weights.shape[1], 0])
@@ -87,7 +92,9 @@ class CanvasPanel(wx.Panel):
 
         for xx in data:
             w = som.winner(xx)  # getting the winner
-            som.individuals[w[0]][w[1]].append(xx)
+            # para no repetir ya ingresados
+            if w not in som.individuals[w[0]][w[1]]:
+                som.individuals[w[0]][w[1]].append(xx)
 
         self.axes.pcolor(som.distance_map().T, cmap=get_cmap('gray'))
         cax = self.axes.imshow(data, interpolation='nearest',
@@ -96,10 +103,6 @@ class CanvasPanel(wx.Panel):
 
         self.axes.axis([0, som.weights.shape[0], som.weights.shape[1], 0])
         self.som = som
-
-        for cnt, xx in enumerate(data):
-            w = som.winner(xx)  # getting the winner
-            som.individuals[w[0]][w[1]].append(xx)
 
         def onPick(event):
             if event.xdata and event.ydata:
@@ -133,7 +136,7 @@ class CanvasPanel(wx.Panel):
                         else:
                             self.GetParent().lc.SetItemBackgroundColour(cnt,
                                                                     "pink")
-                print(self.GetParent().lc.getSelectIndices())
+#                 print(self.GetParent().lc.getSelectIndices())
 
         self.figure.canvas.mpl_connect('button_press_event', onPick)
 
@@ -142,14 +145,14 @@ class IndividualsListCtrl(wx.ListCtrl):
     def __init__(self, parent, num_objetives, ID=wx.ID_ANY,
                  pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
-        self.InsertColumn(0, 'Fila')
+        self.InsertColumn(0, 'Row')
         self.SetColumnWidth(0, 40)
 
         self.columns = []
 
         for i in range(num_objetives):
             i = i + 1
-            column = 'Objetivo ' + str(i - 1)
+            column = 'Obj ' + str(i - 1)
             self.columns.append(column)
             self.InsertColumn(i, column)
             self.SetColumnWidth(i, 140)
@@ -371,10 +374,10 @@ class PanelSomConfig(wx.Panel):
         menu.Destroy()
 
     def OnShowInParallel(self, event):
-        print(self.lc.getSelectIndices())
-        for idx in self.lc.getSelectIndices():
-            a = self.lc.GetItemText(idx)
-            print a
+#         print(self.lc.getSelectIndices())
+#         for idx in self.lc.getSelectIndices():
+#             a = self.lc.GetItemText(idx)
+#             print a
         SomParallelCoordinateDialog(self, self.som_panel.individuals,
                                     self.lc.columns)
 
@@ -383,7 +386,7 @@ class SomParallelCoordinateDialog(wx.Dialog):
 
     def __init__(self, parent, individuals, columns):
         super(SomParallelCoordinateDialog, self).__init__(parent,
-                                                          size=(900, 630))
+                                                          size=(1000, 680))
 
         self.figure = Figure()
         self.axes = self.figure.add_subplot(111, xlim=(0, 1), ylim=(0, 1),
@@ -392,14 +395,28 @@ class SomParallelCoordinateDialog(wx.Dialog):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
         self.SetSizer(self.sizer)
-
         mydata = DataFrame(individuals, columns=columns)
         myres = range(1, len(individuals) + 1)
-        mydata['res'] = myres
+        labels = []
+        for c in myres:
+            labels.append("Ind" + str(c))
+        mydata['res'] = labels
         parallel_coordinates(mydata, 'res', ax=self.axes)
-        self.axes.legend().set_visible(False)
-        self.canvas.draw()
+        lines = []
+        for line in self.axes.get_children():
+            if isinstance(line, Line2D):
+                lines.append(line)
+        HighlightingDataCursor(lines)
+#         self.axes.legend().set_visible(False)
+#         self.canvas.draw()
+
+        self.figure.subplots_adjust(bottom=0.15)
+        self.axes.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+          fancybox=True, shadow=True, ncol=7, title="Legend")
+
         self.axes.set_title('Individuals')
+
+        self.add_toolbar()
 
         #------ Definiciones iniciales -----
         self.Centre(wx.BOTH)
@@ -409,6 +426,16 @@ class SomParallelCoordinateDialog(wx.Dialog):
         # self.Layout()
         # self.Fit()
         self.ShowModal()
+
+    def add_toolbar(self):
+        """copied verbatim from embedding_wx2.py"""
+        self.toolbar = NavigationToolbar2Wx(self.canvas)
+        self.toolbar.Realize()
+        tw, th = self.toolbar.GetSizeTuple()
+        fw, fh = self.canvas.GetSizeTuple()
+        self.toolbar.SetSize(wx.Size(fw, th))
+        self.sizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
+        self.toolbar.update()
 
 
 if __name__ == "__main__":
