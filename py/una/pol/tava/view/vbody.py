@@ -22,6 +22,7 @@ from py.una.pol.tava.view.parallel.vwrapperparallelal\
     import WorkingPageFL as wpal
 from py.una.pol.tava.view.curves.vwrappercurves import AndrewsCurves
 from py.una.pol.tava.view.vscatter_matrix import PanelScatterMatrixCongif
+from py.una.pol.tava.view.boxplot.wrapperboxplot import BoxPlot
 
 
 class MainPanel(wx.Panel):
@@ -174,3 +175,6 @@ class AUINotebook(aui.AuiNotebook):
         elif mode == vc.SCATTER_MATRIX:
             working_space = PanelScatterMatrixCongif(self, test)
             self.AddPage(working_space, test.name + "- Scatter Matrix", True)
+        elif mode == tvc.MODE_BOX_PLOT:
+            page_bp = BoxPlot(self, test)
+            self.AddPage(page_bp, test.name + "Box Plot", True)

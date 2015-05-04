@@ -298,6 +298,50 @@ class AndrewsGrid(Base):
         pass
 
 
+class BoxPlot(Base):
+    ''''''
+
+    __tablename__ = 'box_plot'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name_figure = Column(String(100), nullable=True)
+    color_lines = Column(String(7), nullable=False)
+    legent = Column(Boolean, nullable=False)
+    enable_objectives = Column(String(100))
+    order_objective = Column(String(100))
+    order_name_obj = Column(String(100))
+    name_objetive = Column(String(100))
+    name_variable = Column(String(100))
+    maxs_objetive = Column(String(100))
+    mins_objetive = Column(String(100))
+    colors_backgrounds = Column(String(100))
+    test_config_id = Column(Integer, ForeignKey('test_config.id'))
+    box_plot_grid = relationship("BoxPlotGrid", uselist=False,
+                                 backref="box_plot")
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<TestDetail(id='%i', name_figure='%s, name_figure='%s)>"\
+            % (self.id, self.name_figure, self.legent)
+
+
+class BoxPlotGrid(Base):
+    ''''''
+
+    __tablename__ = 'box_plot_grid'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    grid = Column(Boolean, nullable=False)
+    orientation = Column(SmallInteger)
+    red_color = Column(String(7))
+    red_width = Column(SmallInteger, nullable=False)
+    red_style = Column(SmallInteger)
+    andrews_curves_id = Column(Integer, ForeignKey('box_plot.id'))
+
+    def __init__(self):
+        pass
+
+
 class TestData(Base):
     ''''''
 

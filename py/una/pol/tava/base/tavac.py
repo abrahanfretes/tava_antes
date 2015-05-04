@@ -96,6 +96,30 @@ def createfileForCurves(list_graphic, list_objectives, list_variables,
     f_obj.close()
 
 
+def createfileBoxPlot(list_graphic, list_objectives, list_variables,
+                      filename_gra, filename_var, filename_obj):
+
+    fp_gra = os.path.join(getTavaDirectory(), filename_gra)
+    fp_var = os.path.join(getTavaDirectory(), filename_var)
+    fp_obj = os.path.join(getTavaDirectory(), filename_obj)
+
+    f_gra = open(fp_gra, 'w')
+    f_var = open(fp_var, 'w')
+    f_obj = open(fp_obj, 'w')
+
+    f_gra.write(list_graphic[0])
+    for index in range(len(list_graphic) - 1):
+        f_gra.write(list_graphic[index + 1])
+
+    for index in range(len(list_objectives)):
+        f_obj.write(list_objectives[index])
+        f_var.write(list_variables[index])
+
+    f_gra.close()
+    f_var.close()
+    f_obj.close()
+
+
 def redFileForTab(filename):
 
     to_ret = []
@@ -109,6 +133,38 @@ def redFileForTab(filename):
     f.close()
 
     return to_ret
+
+
+def getFilePath(filename):
+    return os.path.join(getTavaDirectory(), filename)
+
+
+def getMinMax(filename):
+    min_v = []
+    max_v = []
+
+    filepath = getFilePath(filename)
+    f = open(filepath)
+
+    ind = f.readline()
+    if ind != '':
+        for obj in ind.split(',')[1:]:
+            min_v.append(float(obj))
+            max_v.append(float(obj))
+    ind = f.readline()
+    while ind != '':
+        index = 0
+        for obj_aux in ind.split(',')[1:]:
+            if float(obj_aux) < min_v[index]:
+                min_v[index] = float(obj_aux)
+            if float(obj_aux) > max_v[index]:
+                max_v[index] = float(obj_aux)
+            index += 1
+        ind = f.readline()
+    f.close()
+
+    return min_v, max_v
+
 
 # ---------------------------------------------------------------------------
 # ------------------- Modos para Graficos   ---------------------------------
@@ -127,3 +183,10 @@ MODE_ANDREWS_CURVES = 10
 TREE_BACKGROUND_AC = '#FFFFFF'
 FIGURE_BACKGROUND_AC = '#FFFFFF'
 T_FIGURE_BACKGROUND_AC = '#BBA2FF'
+
+# ---------------------------------------------------------------------------
+# ------------------- Modos para Graficos  Andrews-Curves -------------------
+MODE_BOX_PLOT = 20
+TREE_BACKGROUND_BP = '#FFFFFF'
+FIGURE_BACKGROUND_BP = '#FFFFFF'
+T_FIGURE_BACKGROUND_BP = '#BBA2FF'

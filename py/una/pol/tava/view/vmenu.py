@@ -364,6 +364,12 @@ class AnalysisMenu(wx.Menu):
         andrews_curves.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowAndrewsCurves, andrews_curves)
 
+        box_plot = wx.MenuItem(self, wx.ID_ANY, 'Box Plot')
+        self.AppendItem(box_plot)
+        box_plot.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowBoxPlot, box_plot)
+    
+
     def OnShowGraphic(self, event):
         self.presenter_menuanalizer.\
             ShowGraphic(tvc.MODE_PARALLEL_COORDINATES_GF)
@@ -375,6 +381,10 @@ class AnalysisMenu(wx.Menu):
     def OnShowAndrewsCurves(self, event):
         self.presenter_menuanalizer.\
             OnShowGraphsAndData(tvc.MODE_ANDREWS_CURVES)
+
+    def OnShowBoxPlot(self, event):
+        self.presenter_menuanalizer.\
+            OnShowGraphsAndData(tvc.MODE_BOX_PLOT)
 
     def OnShowSomGraphic(self, event):
         self.presenter_menuanalizer.ShowGraphic(vc.SOM)
