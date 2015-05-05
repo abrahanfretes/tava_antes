@@ -245,6 +245,21 @@ class ParallelAnalizerModel():
     def getMinMaxForTabFilter(self, iteration):
         return inm().getMinMax(iteration, mode)
 
+    # --- en tab TabVariables ------
+
+    def getListVariables(self, ite):
+        filename = str(ite) + '.mode.' + mode + '.' + 'var'
+        return tvc.redFileForTab(filename)
+
+    # --- en tab TabObjectives -----
+    def getListObjectives(self, ite):
+        filename = str(ite) + '.mode.' + mode + '.' + 'obj'
+        return tvc.redFileForTab(filename)
+
+    # --- en tab TabFiltros --------
+    def getMinMaxObjective(self, ite):
+        return inm().getMinMax(ite, mode)
+
     def _parallel_coordinatesTava(self, frame, class_column, len_color=1,
                                   pos_color=0, ax=None, no_seque=True,
                                   is_use_legends=True, cols=None, color=None,
