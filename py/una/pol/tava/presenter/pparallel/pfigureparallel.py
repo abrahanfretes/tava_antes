@@ -24,7 +24,8 @@ class ParallelFigurePresenter:
     def Init(self):
 
         pa = self.__getPA()
-        self.__setBackGroundFigure(pa.colors_backgrounds)
+        colors = pa.colors_backgrounds.split(',')
+        self.setBackGround(colors[1], colors[2])
 
     # ---- Metodos usados No Localmente -----------
     # ---                               -----------
@@ -49,11 +50,10 @@ class ParallelFigurePresenter:
     def __getPA(self):
         return pam().getParallelAnalizerByIdTest(self.test.id)
 
-    def __setBackGroundFigure(self, backColor):
-        list_bac = backColor.split(',')
-        self.iview.figure.set_facecolor(list_bac[1])
-        self.iview.SetBackgroundColour(list_bac[2])
-        self.iview.toolbar.SetBackgroundColour(list_bac[2])
+    def setBackGround(self, color_one, color_to):
+        self.iview.figure.set_facecolor(color_one)
+        self.iview.SetBackgroundColour(color_to)
+        self.iview.toolbar.SetBackgroundColour(color_to)
         self.iview.canvas.draw()
 
     def __cleanParallelFigure(self):

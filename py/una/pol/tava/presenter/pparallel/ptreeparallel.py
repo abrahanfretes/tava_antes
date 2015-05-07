@@ -19,7 +19,7 @@ class ParallelTreePresenter:
         #  Inicializacion del arbol de proyectos
     def InitUI(self, test):
         pa = pam().getParallelAnalizerByIdTest(test.id)
-        self.__setBackGround(pa.colors_backgrounds)
+        self.setBackGround(pa.colors_backgrounds.split(',')[0])
 
         # inicializamos el arbol
         for_tree = pam().getFormatTree(test)
@@ -51,5 +51,5 @@ class ParallelTreePresenter:
     # ---- Metodos usados Localmente -----------
     # ---                            -----------
 
-    def __setBackGround(self, backColor):
-        self.iview.SetBackgroundColour(backColor.split(',')[0])
+    def setBackGround(self, backColor):
+        self.iview.SetBackgroundColour(backColor)

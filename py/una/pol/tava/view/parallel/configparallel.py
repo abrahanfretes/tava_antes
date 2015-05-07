@@ -1,6 +1,6 @@
 #  -*- coding: utf-8 -*-
 '''
-Created on 14/4/2015
+Created on 5/5/2015
 
 @author: abrahan
 '''
@@ -11,8 +11,8 @@ import wx.lib.colourselect as csel
 
 from py.una.pol.tava.view import vi18n as C
 import py.una.pol.tava.view.vimages as I
-from py.una.pol.tava.presenter.pparallel.pparallelconal \
-    import ConfigurationParallelFigurePresenter
+from py.una.pol.tava.presenter.pparallel.pconfigparallel import\
+    ParallelConfigPresenter
 
 
 class ColorTv(wx.Panel):
@@ -82,11 +82,12 @@ class BasedHeader(wx.Panel):
 
 # ------------------- CustomizeFrontFigure             ------------------------
 # -------------------                                  ------------------------
-class ConfigurationParallelFigure(wx.Dialog):
+class ParallelConfig(wx.Dialog):
 
-    def __init__(self, parent, pa):
+    def __init__(self, parent, main_parent, pa):
         wx.Dialog.__init__(self, parent, size=(600, 500))
 
+        self.main_parent = main_parent
         bg_colors = pa.colors_backgrounds.split(',')
 
         self.lb = LB.LabelBook(self, -1, agwStyle=LB.INB_USE_PIN_BUTTON)
@@ -120,7 +121,7 @@ class ConfigurationParallelFigure(wx.Dialog):
         sizer_foo.Add(error_rename, 1, wx.EXPAND)
         sizer_foo.Add(self.buttons, 2.5, wx.EXPAND)
 
-        self.presenter = ConfigurationParallelFigurePresenter(self, pa)
+        self.presenter = ParallelConfigPresenter(self, pa)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.lb, 12, wx.EXPAND)
         sizer.Add(line, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
@@ -150,18 +151,39 @@ class ConfigurationParallelFigure(wx.Dialog):
                              self.tab_rename_var.state_var)
 
     def OnButtonApply(self, event):
-        self.presenter.setApplyConfig()
+        for_update = self.presenter.setApplyConfig()
+        if for_update[0]:
+            self.main_parent.updateDatas()
+        if for_update[1]:
+            backcolor = self.presenter.pa.colors_backgrounds
+            self.main_parent.updateBackGrounpColor(backcolor)
 
     def OnButtonCancel(self, event):
-        self.presenter.setCancel()
+        self.__cancel()
+        self.Close()
+
+    def __cancel(self):
+        for_cancel = self.presenter.setCancel()
+        if for_cancel[0]:
+            self.main_parent.updateDatas()
+        if for_cancel[1]:
+            backcolor = self.presenter.pa.colors_backgrounds
+            self.main_parent.updateBackGrounpColor(backcolor)
 
     def OnButtonOk(self, event):
-        self.presenter.setSave()
+        for_save = self.presenter.setSave()
+        if for_save[0]:
+            self.main_parent.updateDatas()
+        if for_save[1]:
+            backcolor = self.presenter.pa.colors_backgrounds
+            self.main_parent.updateBackGrounpColor(backcolor)
+        self.Close()
 
     def OnKeyDown(self, event):
         key = event.GetKeyCode()
         if key == wx.WXK_ESCAPE:
-            self.presenter.setCancel()
+            self.__cancel()
+            self.Close()
 
     def setBackGroundLB(self, color):
         self.lb.SetColour(LB.INB_TAB_AREA_BACKGROUND_COLOUR, color)

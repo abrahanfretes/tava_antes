@@ -63,6 +63,12 @@ class ParrallelCoordenates(wx.Panel):
         self.filter_parallel.presenter.updateValuesList([ite])
         pass
 
+    def updateBackGrounpColor(self, backColor):
+        colors = backColor.split(',')
+        self.tree_parallel.presenter.setBackGround(colors[0])
+        self.figure_parallel.presenter.setBackGround(colors[1], colors[2])
+
+        pass
     # lógica de los botones para filtros
     def verificFilter(self):
         if self.filter_parallel.presenter.isFilterModified():
