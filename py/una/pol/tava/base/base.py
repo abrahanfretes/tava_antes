@@ -8,9 +8,11 @@ Modulo base encargado de manejar las interacciones con la Base de Datos.
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from py.una.pol.tava.base import tavac as tvc
 
 
-engine = create_engine('sqlite:///tava.db')
+path_database = tvc.getDataBaseInHome('tava.db')
+engine = create_engine('sqlite:///' + path_database)
 Base = declarative_base()
 
 

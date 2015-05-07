@@ -166,6 +166,9 @@ def getMinMax(filename):
     return min_v, max_v
 
 
+def getDataBaseInHome(db_name):
+    return os.path.join(os.environ['HOME'], db_name)
+
 # ---------------------------------------------------------------------------
 # ------------------- Modos para Graficos   ---------------------------------
 MODE_PARALLEL_COORDINATES_GF = 0
