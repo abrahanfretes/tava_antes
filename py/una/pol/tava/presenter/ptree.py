@@ -223,42 +223,48 @@ class ProjectTreeCtrlPresenter:
             # falta agregar menu para este item
             print 'se selecciono un Graphics'
 
-        # seleccion de un paquete Graphics Files
-        elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsFileName():
-            print 'se selecciono un Graphics Files'
-            project_item = self.iview.GetItemParent(parent_item)
-            project = self.iview.GetItemPyData(project_item)
-            self.iview.InitializeResultPackageMenu(project)
+        # seleccion de un paquete bajo Graphics
+        elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsName():
 
-        # seleccion de un File
-        elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsFileName():
-            self.iview.InitializeResultMenu(item)
+            # seleccion de un paquete Graphics Files
+            if self.iview.GetItemText(item) == self.iview.getPackageGraphicsFileName():
+                print 'se selecciono un Graphics Files'
+                project_item = self.iview.GetItemParent(parent_item)
+                project = self.iview.GetItemPyData(project_item)
+                self.iview.InitializeResultPackageMenu(project)
 
-        # seleccion de un paquete Graphics Tests
-        elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsTestName():
-            print 'se selecciono un Graphics test'
-            project_item = self.iview.GetItemParent(parent_item)
-            project = self.iview.GetItemPyData(project_item)
-            self.iview.InitializeAnalysisPackageMenu(project)
+            # seleccion de un File
+            elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsFileName():
+                self.iview.InitializeResultMenu(item)
 
-        # seleccion de un Test
-        elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsTestName():
-            self.iview.InitializeAnalysisMenu(data)
+            # seleccion de un paquete Graphics Tests
+            elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsTestName():
+                print 'se selecciono un Graphics test'
+                project_item = self.iview.GetItemParent(parent_item)
+                project = self.iview.GetItemPyData(project_item)
+                self.iview.InitializeAnalysisPackageMenu(project)
+
+            # seleccion de un Test
+            elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsTestName():
+                self.iview.InitializeAnalysisMenu(data)
 
         # seleccion de un paquete Metrics
         elif self.iview.GetItemText(item) == self.iview.getPackageMetricsName():
             # falta agregar menu para este item
             print 'se selecciono un Metric'
 
-        # seleccion de un paquete Metrics Files
-        elif self.iview.GetItemText(item) == self.iview.getPackageMetricsFileName():
-            # falta agregar menu para este item
-            print 'se selecciono un Metric Files'
+        # seleccion de un paquete bajo Metrics
+        elif self.iview.GetItemText(parent_item) == self.iview.getPackageMetricsName():
 
-        # seleccion de un paquete Metrics Tests
-        elif self.iview.GetItemText(item) == self.iview.getPackageMetricsTestName():
-            # falta agregar menu para este item
-            print 'se selecciono un Metric Test'
+            # seleccion de un paquete Metrics Files
+            if self.iview.GetItemText(item) == self.iview.getPackageMetricsFileName():
+                # falta agregar menu para este item
+                print 'se selecciono un Metric Files'
+
+            # seleccion de un paquete Metrics Tests
+            elif self.iview.GetItemText(item) == self.iview.getPackageMetricsTestName():
+                # falta agregar menu para este item
+                print 'se selecciono un Metric Test'
 
     def getItemSelected(self):
         return self.iview.GetSelection()
