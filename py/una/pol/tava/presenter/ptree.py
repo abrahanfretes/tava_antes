@@ -228,7 +228,6 @@ class ProjectTreeCtrlPresenter:
 
             # seleccion de un paquete Graphics Files
             if self.iview.GetItemText(item) == self.iview.getPackageGraphicsFileName():
-                print 'se selecciono un Graphics Files'
                 project_item = self.iview.GetItemParent(parent_item)
                 project = self.iview.GetItemPyData(project_item)
                 self.iview.InitializeResultPackageMenu(project)
@@ -239,7 +238,6 @@ class ProjectTreeCtrlPresenter:
 
             # seleccion de un paquete Graphics Tests
             elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsTestName():
-                print 'se selecciono un Graphics test'
                 project_item = self.iview.GetItemParent(parent_item)
                 project = self.iview.GetItemPyData(project_item)
                 self.iview.InitializeAnalysisPackageMenu(project)
@@ -258,13 +256,15 @@ class ProjectTreeCtrlPresenter:
 
             # seleccion de un paquete Metrics Files
             if self.iview.GetItemText(item) == self.iview.getPackageMetricsFileName():
-                # falta agregar menu para este item
-                print 'se selecciono un Metric Files'
+                project_item = self.iview.GetItemParent(parent_item)
+                project = self.iview.GetItemPyData(project_item)
+                self.iview.InitializeMetricsFilesPackageMenu(project)
 
             # seleccion de un paquete Metrics Tests
             elif self.iview.GetItemText(item) == self.iview.getPackageMetricsTestName():
-                # falta agregar menu para este item
-                print 'se selecciono un Metric Test'
+                project_item = self.iview.GetItemParent(parent_item)
+                project = self.iview.GetItemPyData(project_item)
+                self.iview.InitializeAnalysisPackageMenu(project)
 
     def getItemSelected(self):
         return self.iview.GetSelection()

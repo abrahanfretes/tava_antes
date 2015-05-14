@@ -9,6 +9,8 @@ import wx
 from py.una.pol.tava.presenter.ptree import ProjectTreeCtrlPresenter
 from py.una.pol.tava.view.vmenu import ProjectMenu, ResultPackageMenu
 from py.una.pol.tava.view.vmenu import AnalysisPackageMenu, ResultMenu
+from py.una.pol.tava.view.vmenu import MetricsFilesPackageMenu
+from py.una.pol.tava.view.vmenu import MetricsViewsPackageMenu
 from py.una.pol.tava.view.vmenu import AnalysisMenu
 from py.una.pol.tava.base.entity import CLOSED, Project
 import wx.lib.agw.customtreectrl as CT
@@ -116,6 +118,15 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
 
     def InitializeAnalysisMenu(self, date_item):
         menu = AnalysisMenu(self, date_item)
+        self.PopupMenu(menu)
+
+    # menus para Metrics
+    def InitializeMetricsFilesPackageMenu(self, project):
+        menu = MetricsFilesPackageMenu(self, project)
+        self.PopupMenu(menu)
+
+    def InitializeMetricsViewsPackageMenu(self, project):
+        menu = MetricsViewsPackageMenu(self, project)
         self.PopupMenu(menu)
 
     def AddResultToProject(self, package_item, result):

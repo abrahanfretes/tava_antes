@@ -14,12 +14,16 @@ from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
+from py.una.pol.tava.presenter.pprojectmenu import\
+    MetricsFilesPackageMenuPresenter
+from py.una.pol.tava.presenter.pprojectmenu import\
+    MetricsViewsPackageMenuPresenter
 import vconstants as vc
 
 from py.una.pol.tava.base import tavac as tvc
 
 
-#------ menu principal --------------------------------------------------------
+# ------ menu principal -------------------------------------------------------
 
 class MainMenuBar(wx.MenuBar):
     '''
@@ -51,7 +55,7 @@ class MainMenuBar(wx.MenuBar):
         # MenuItem Propiedades
         self.properties_item = wx.MenuItem(file_menu, wx.ID_PROPERTIES)
         file_menu.Bind(wx.EVT_MENU, self.OnPropertiesShow,
-                  self.properties_item)
+                       self.properties_item)
         file_menu.AppendItem(self.properties_item)
 
         # MenuItem Salir de Aplicacion
@@ -67,14 +71,14 @@ class MainMenuBar(wx.MenuBar):
         self.english_language_menu_item = wx.MenuItem(language_menu,
                                                       wx.ID_ANY, " ")
         language_menu.Bind(wx.EVT_MENU, self.OnEnglishLanguageSelect,
-                  self.english_language_menu_item)
+                           self.english_language_menu_item)
         language_menu.AppendItem(self.english_language_menu_item)
 
         # MenuItem del idioma Espanhol
         self.spanish_language_menu_item = wx.MenuItem(language_menu,
-                                                 wx.ID_ANY, " ")
+                                                      wx.ID_ANY, " ")
         language_menu.Bind(wx.EVT_MENU, self.OnSpanishLanguageSelect,
-                  self.spanish_language_menu_item)
+                           self.spanish_language_menu_item)
         language_menu.AppendItem(self.spanish_language_menu_item)
 
         # Menu de Ayuda
@@ -127,12 +131,12 @@ class MainMenuBar(wx.MenuBar):
         self.SetMenuLabel(2, _(C.MMB_HELP))
         self.about_menu_item.SetText(_(C.MMB_ABOUT_TAVA))
 
-#--------------------------------------------------------------
+# --------------------------------------------------------------
 
-#------ menu llamados desde el arbol (vtree) ----------------------------------
+# ------ menu llamados desde el arbol (vtree) ---------------------------------
 
 
-#------ menu para proyecto ----------------------------------------------------
+# ------ menu para proyecto ---------------------------------------------------
 class ProjectMenu(wx.Menu):
     '''
     Clase Menu que estará contenida en un contextMenu de la entidad proyecto
@@ -140,17 +144,17 @@ class ProjectMenu(wx.Menu):
     def __init__(self, parent, project):
         super(ProjectMenu, self).__init__()
 
-        #------ definiciones iniciales ----------------------------------------
+        # ------ definiciones iniciales ---------------------------------------
 
         self.project = project
         self.presentermenu = ProjectMenuPresenter(self)
 
         self.InitUI()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
 
-        #------ items del menu ----------------------------------------
+        # ------ items del menu ----------------------------------------
 
         # Opcion de menu agregar archivo
         self.add_file = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
@@ -192,7 +196,7 @@ class ProjectMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.OnProjectProperties, self.properties_item)
 
         self.presentermenu.InitialEnableItem()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def OnAddFileInProject(self, event):
         self.presentermenu.AddFileInProject(self.project)
@@ -215,24 +219,24 @@ class ProjectMenu(wx.Menu):
     def OnProjectHide(self, event):
         self.presentermenu.HideProject()
 
-#----------------------------------------------------
+# ---------------------------------------------------
 
 
-#------ menu para el paquete de resultado -------------------------------------
+# ----- menu para el paquete de resultado -------------------------------------
 class ResultPackageMenu(wx.Menu):
     def __init__(self, parent, project):
         super(ResultPackageMenu, self).__init__()
 
-        #------ definiciones iniciales ----------------------------------------
+        # ------ definiciones iniciales ---------------------------------------
         self.project = project
         self.presentermenu = ResultPackageMenuPresenter(self)
 
         self.InitUI()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
 
-        #------ items del menu ----------------------------------------
+        # ------ items del menu ----------------------------------------
 
         # menu agregar archivo
         self.add_file = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
@@ -240,30 +244,30 @@ class ResultPackageMenu(wx.Menu):
         self.Bind(wx.EVT_MENU, self.OnAddFileInProject, self.add_file)
 
         self.AppendSeparator()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def OnAddFileInProject(self, event):
         self.presentermenu.AddFileInProject(self.project)
 
-#----------------------------------------------------
+# ----------------------------------------------------
 
 
-#------ menu para el paquete de analisis --------------------------------------
+# ----- menu para el paquete de analisis --------------------------------------
 class AnalysisPackageMenu(wx.Menu):
     def __init__(self, parent, analysis_package):
         super(AnalysisPackageMenu, self).__init__()
 
         self.presentermenu = AnalysisPackageMenuPresenter(self)
 
-        #------ definiciones iniciales ----------------------------------------
+        # ------ definiciones iniciales ---------------------------------------
 
         self.package = analysis_package
         self.InitUI()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
 
-        #------ items del menu ----------------------------------------
+        # ------ items del menu ----------------------------------------
 
         # menu agregar analisis a proyecto
         new_analise = wx.MenuItem(self, wx.ID_ANY, 'Nuevo Analisis')
@@ -272,24 +276,24 @@ class AnalysisPackageMenu(wx.Menu):
 
     def OnShowGraphicWizard(self, event):
         self.presentermenu.ShowGraphicWizard()
-        #----------------------------------------------------
-#----------------------------------------------------
+        # ----------------------------------------------------
+# ----------------------------------------------------
 
 
-#------ menu para resultados --------------------------------------------------
+# ------ menu para resultados -------------------------------------------------
 class ResultMenu(wx.Menu):
     def __init__(self, parent, result):
         super(ResultMenu, self).__init__()
 
-        #------ definiciones iniciales ----------------------------------------
+        # ------ definiciones iniciales ---------------------------------------
 
         self.result = result
         self.InitUI()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
 
-        #------ items del menu ----------------------------------------
+        # ------ items del menu ----------------------------------------
 
         # menu ver archivo
         ver = wx.MenuItem(self, wx.ID_ANY, 'Ver archivo')
@@ -312,24 +316,24 @@ class ResultMenu(wx.Menu):
         properties = wx.MenuItem(self, wx.ID_ANY, 'Propiedades')
         self.AppendItem(properties)
         properties.Enable(False)
-#----------------------------------------------------
+# ----------------------------------------------------
 
 
-#------ menu para analisis ----------------------------------------------------
+# ----- menu para analisis ----------------------------------------------------
 class AnalysisMenu(wx.Menu):
     def __init__(self, parent, test):
         super(AnalysisMenu, self).__init__()
 
-        #------ definiciones iniciales ----------------------------------------
+        # ------ definiciones iniciales ---------------------------------------
         self.presenter_menuanalizer = AnalysisMenuPresenter(self)
 
         self.test = test
         self.InitUI()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
 
-        #------ items del menu ----------------------------------------
+        # ------ items del menu ----------------------------------------
 
         som_graphic = wx.MenuItem(self, wx.ID_ANY, 'Self Organizing Maps')
         self.AppendItem(som_graphic)
@@ -368,7 +372,6 @@ class AnalysisMenu(wx.Menu):
         self.AppendItem(box_plot)
         box_plot.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowBoxPlot, box_plot)
-    
 
     def OnShowGraphic(self, event):
         self.presenter_menuanalizer.\
@@ -391,4 +394,43 @@ class AnalysisMenu(wx.Menu):
 
     def OnShowScatterMatrixGraphic(self, event):
         self.presenter_menuanalizer.ShowGraphic(vc.SCATTER_MATRIX)
-#--------------------------------------------------------------
+
+
+# ------ menu para el paquete de metricas files -------------------------------
+class MetricsFilesPackageMenu(wx.Menu):
+    def __init__(self, parent, project):
+        super(MetricsFilesPackageMenu, self).__init__()
+
+        self.project = project
+        self.presentermenu = MetricsFilesPackageMenuPresenter(self)
+
+        # menu agregar archivo
+        self.add_file = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
+        self.AppendItem(self.add_file)
+        # self.Bind(wx.EVT_MENU, self.OnAddFileInProject, self.add_file)
+
+        self.AppendSeparator()
+        # ----------------------------------------------------
+
+    def OnAddFileInProject(self, event):
+        self.presentermenu.AddFileInProject(self.project)
+
+
+# ----- menu para el paquete de metricas views --------------------------------
+class MetricsViewsPackageMenu(wx.Menu):
+    def __init__(self, parent, project):
+        super(MetricsViewsPackageMenu, self).__init__()
+
+        self.project = project
+        self.presentermenu = MetricsViewsPackageMenuPresenter(self)
+
+        # menu agregar archivo
+        self.add_file = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
+        self.AppendItem(self.add_file)
+        # self.Bind(wx.EVT_MENU, self.OnAddFileInProject, self.add_file)
+
+        self.AppendSeparator()
+        # ----------------------------------------------------
+
+    def OnAddFileInProject(self, event):
+        self.presentermenu.AddFileInProject(self.project)

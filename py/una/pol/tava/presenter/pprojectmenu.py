@@ -66,3 +66,23 @@ class ResultPackageMenuPresenter:
 
     def AddFileInProject(self, project):
         pub.sendMessage(T.PROJECT_ADDFILE, project)
+
+
+class MetricsFilesPackageMenuPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    #===========================================================================
+    # def AddFileInProject(self, project):
+    #     pub.sendMessage(T.PROJECT_ADDFILE, project)
+    #===========================================================================
+
+
+class MetricsViewsPackageMenuPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    #===========================================================================
+    # def AddFileInProject(self, project):
+    #     pub.sendMessage(T.PROJECT_ADDFILE, project)
+    #===========================================================================
