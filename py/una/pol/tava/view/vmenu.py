@@ -407,7 +407,7 @@ class MetricsFilesPackageMenu(wx.Menu):
         # menu agregar archivo
         self.add_file = wx.MenuItem(self, wx.ID_ANY, _(C.PM_NEW))
         self.AppendItem(self.add_file)
-        # self.Bind(wx.EVT_MENU, self.OnAddFileInProject, self.add_file)
+        self.Bind(wx.EVT_MENU, self.OnAddFileInProject, self.add_file)
 
         self.AppendSeparator()
         # ----------------------------------------------------
