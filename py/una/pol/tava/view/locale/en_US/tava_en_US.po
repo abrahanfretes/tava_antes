@@ -394,3 +394,23 @@ msgstr "A graph for Result"
 
 msgid "BUTTON_TOLL_FIGURE_GF_FOR_ITE_TIP"
 msgstr "A graph for Iteration"
+
+
+# ----------- ProjectTreeCtrl - vtree -----------------------------------------
+msgid "PACKAGE_GRAPHICS_NAME"
+msgstr "Graphics"
+
+msgid "PACKAGE_GRAPHICS_FILES_NAME"
+msgstr "Files"
+
+msgid "PACKAGE_GRAPHICS_TESTS_NAME"
+msgstr "Test"
+
+msgid "PACKAGE_METRICS_NAME"
+msgstr "Metrics"
+
+msgid "PACKAGE_METRICS_FILES_NAME"
+msgstr "Files"
+
+msgid "PACKAGE_METRICS_TESTS_NAME"
+msgstr "Test"

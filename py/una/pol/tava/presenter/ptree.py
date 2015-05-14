@@ -22,7 +22,7 @@ class ProjectTreeCtrlPresenter:
         pub.subscribe(self.DeleteProjectPub, T.PROJECT_DELETE)
         pub.subscribe(self.UpDateStateProjectPub, T.PROJECT_STATE_UPDATE)
 
-    #------ funciones encargadas de recepcionar mensajes ----------------------
+    # ----- funciones encargadas de recepcionar mensajes ----------------------
     def NewProjectPub(self, message):
         project = message.data
         self.NewProjectItem(project)
@@ -42,9 +42,9 @@ class ProjectTreeCtrlPresenter:
         project.state = state
         self.UpdateProjectData(project)
         self.UdDateItemProject(project)
-    #----------------------------------------------------
+    # ----------------------------------------------------
 
-    #-----------  NewProjectItem ----------------------------------------
+    # -----------  NewProjectItem ----------------------------------------
     def NewProjectItem(self, project):
         '''
         Función que agrega un item proyecto al arbol.
@@ -56,14 +56,19 @@ class ProjectTreeCtrlPresenter:
         '''
         if project.state == OPEN:
             pitem = self.AddProjectOpenNodeItem(project)
-            pr_item = self.AddItemPackageResult(pitem)
-            pt_item = self.AddPackageAnalyzerItem(pitem)
+            # parte gráfica
+            tg_item = self.AddTestGraphicNodeItem(pitem)
+            tg_pr_item = self.AddItemPackageResult(tg_item)
+            tg_pt_item = self.AddPackageAnalyzerItem(tg_item)
+            self.AddItemsFileResult(tg_pr_item, project)
+            self.AddItemsTestConfig(tg_pt_item, project)
+            self.sortTree(tg_pr_item)
+            self.sortTree(tg_pt_item)
 
-            self.AddItemsFileResult(pr_item, project)
-            self.sortTree(pr_item)
-
-            self.AddItemsTestConfig(pt_item, project)
-            self.sortTree(pt_item)
+            # parte métrica
+            tm_item = self.AddTestMetricsNodeItem(pitem)
+            tm_mr_item = self.AddNodeItemMetricResults(tm_item)
+            tm_mv_item = self.AddNodePackageMetricViews(tm_item)
 
         elif project.state == CLOSED:
             self.AddProjectCloseNodeItem(project)
@@ -72,6 +77,10 @@ class ProjectTreeCtrlPresenter:
 
     def AddProjectOpenNodeItem(self, project):
         return self.iview.AddProjectOpenNode(project)
+
+    # agregación de graficas
+    def AddTestGraphicNodeItem(self, project_item):
+        return self.iview.AddItemTestGraphic(project_item)
 
     def AddItemPackageResult(self, project_item):
         return self.iview.AddPackageResult(project_item)
@@ -87,14 +96,24 @@ class ProjectTreeCtrlPresenter:
         for test in TestConfigModel().getTestConfigByProject(project):
             self.iview.AddTestToProject(package_test, test)
 
+    # agregación de metricas
+    def AddTestMetricsNodeItem(self, project_item):
+        return self.iview.AddItemTestMetrics(project_item)
+
+    def AddNodeItemMetricResults(self, tm_item):
+        return self.iview.AddMetricResults(tm_item)
+
+    def AddNodePackageMetricViews(self, tm_item):
+        return self.iview.AddPackageMetricViews(tm_item)
+
     def sortTree(self, item):
         self.iview.SortChildren(item)
 
     def AddProjectCloseNodeItem(self, project):
         return self.iview.AddProjectCloseNode(project)
-    #---------------------------------------------------
+    # ---------------------------------------------------
 
-    #----------  DeleteProjectItem  -------------------------------------
+    # ----------  DeleteProjectItem  -------------------------------------
     def DeleteProjectItem(self):
         '''
         Función que elimina un item proyecto del arbol.
@@ -103,9 +122,9 @@ class ProjectTreeCtrlPresenter:
         '''
         item_project = self.GetItemPorjectSelected()
         self.iview.Delete(item_project)
-    #---------------------------------------------------
+    # ---------------------------------------------------
 
-    #----------  UdDateItemProject  -------------------------------------
+    # ----------  UdDateItemProject  -------------------------------------
     def UdDateItemProject(self, project):
         '''
         Función que actualiza un item proyecto del arbol.
@@ -117,15 +136,15 @@ class ProjectTreeCtrlPresenter:
         '''
         self.DeleteProjectItem()
         self.NewProjectItem(project)
-    #---------------------------------------------------
+    # ---------------------------------------------------
 
-    #----------  InitializeTree  -------------------------------------
+    # ----------  InitializeTree  -------------------------------------
     def InitializeTree(self):
         for project in ProjectModel().getAll():
             self.NewProjectItem(project)
-    #---------------------------------------------------
+    # --------------------------------------------------
 
-    #------------- GetItemPorjectSelected  ------------------------------------
+    # ------------ GetItemPorjectSelected  ------------------------------------
     def GetItemPorjectSelected(self):
         '''
         Funcion para obtener el item del projecto a partir del item
@@ -161,9 +180,10 @@ class ProjectTreeCtrlPresenter:
     def GetGrandFather(self, item):
         father = self.iview.GetItemParent(item)
         return self.iview.GetItemParent(father)
-    #--------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
-    #------------ GetTypeSelectedItem -----------------------------------------
+    # ----- funciones auxiliares desde la vista -------------------------------
+
     def GetTypeSelectedItem(self):
 
         item, data = self.getItemEndDataSelected()
@@ -177,7 +197,7 @@ class ProjectTreeCtrlPresenter:
         if data is not None:
             parent_item = self.iview.GetItemParent(item)
             if(parent_item == self.iview.root):
-                #verificar luego si esta correcto
+                # verificar luego si esta correcto
                 pub.sendMessage(T.PROJECT_SELECTED, self.GetProjectSelected())
 
                 if self.GetProjectSelected().state == OPEN:
@@ -185,51 +205,60 @@ class ProjectTreeCtrlPresenter:
                 else:
                     pub.sendMessage(T.PROJECT_SELECTED_CLOSE)
 
-    #--------------------------------------------------------------------------
-
-    #------ funciones auxiliares desde la vista -------------------------------
     def GetProjectSelected(self):
         item_selected = self.iview.GetSelection()
         return self.iview.GetItemPyData(item_selected)
-
-    def GetPackageResultSelected(self):
-        item_selected = self.iview.GetSelection()
-        parent_item = self.iview.GetItemParent(item_selected)
-
-        #si la seleccion es un proyecto
-        if parent_item == self.iview.root:
-            for item in item_selected.GetChildren():
-                if self.iview.GetItemText(item) == 'Resultados':
-                    return item
-        #si la seleccion es un paquete resultado
-        return item_selected
 
     def ContexMenu(self):
 
         item, data = self.getItemEndDataSelected()
         parent_item = self.iview.GetItemParent(item)
 
-        #seleccion de un proyecto
+        # seleccion de un proyecto
         if(parent_item == self.iview.root):
             self.iview.InitializeProjectMenu(data)
 
-        #seleccion de un paquete resultado
-        elif self.iview.GetItemText(item) == 'Resultados':
-            project = self.iview.GetItemPyData(parent_item)
+        # seleccion de un paquete Graphics
+        elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsName():
+            # falta agregar menu para este item
+            print 'se selecciono un Graphics'
+
+        # seleccion de un paquete Graphics Files
+        elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsFileName():
+            print 'se selecciono un Graphics Files'
+            project_item = self.iview.GetItemParent(parent_item)
+            project = self.iview.GetItemPyData(project_item)
             self.iview.InitializeResultPackageMenu(project)
 
-        #seleccion de un paquete analisis
-        elif self.iview.GetItemText(item) == 'Pruebas':
-            project = self.iview.GetItemPyData(parent_item)
-            self.iview.InitializeAnalysisPackageMenu(project)
-
-        #seleccion de un archivo resultado
-        elif self.iview.GetItemText(parent_item) == 'Resultados':
+        # seleccion de un File
+        elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsFileName():
             self.iview.InitializeResultMenu(item)
 
-        #seleccion de un analisis
-        elif self.iview.GetItemText(parent_item) == 'Pruebas':
+        # seleccion de un paquete Graphics Tests
+        elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsTestName():
+            print 'se selecciono un Graphics test'
+            project_item = self.iview.GetItemParent(parent_item)
+            project = self.iview.GetItemPyData(project_item)
+            self.iview.InitializeAnalysisPackageMenu(project)
+
+        # seleccion de un Test
+        elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsTestName():
             self.iview.InitializeAnalysisMenu(data)
+
+        # seleccion de un paquete Metrics
+        elif self.iview.GetItemText(item) == self.iview.getPackageMetricsName():
+            # falta agregar menu para este item
+            print 'se selecciono un Metric'
+
+        # seleccion de un paquete Metrics Files
+        elif self.iview.GetItemText(item) == self.iview.getPackageMetricsFileName():
+            # falta agregar menu para este item
+            print 'se selecciono un Metric Files'
+
+        # seleccion de un paquete Metrics Tests
+        elif self.iview.GetItemText(item) == self.iview.getPackageMetricsTestName():
+            # falta agregar menu para este item
+            print 'se selecciono un Metric Test'
 
     def getItemSelected(self):
         return self.iview.GetSelection()
@@ -242,10 +271,10 @@ class ProjectTreeCtrlPresenter:
         item = self.iview.GetSelection()
         data = self.iview.GetItemPyData(item)
         return item, data
-    #----------------------------------------------------
+    # ----------------------------------------------------
 
-    #- funciones encargadas del abm de datos de proyectos(model)----------
-    #----- abm of data-------------------------------------------------
+    # - funciones encargadas del abm de datos de proyectos(model)----------
+    # ----- abm of data-------------------------------------------------
     def DeleteProjectData(self, project):
         ProjectModel().delete(project)
 
@@ -254,4 +283,4 @@ class ProjectTreeCtrlPresenter:
 
     def GetProjectByName(self, name):
         return ProjectModel().getProjectForName(name)
-    #----------------------------------------------------------
+    # ----------------------------------------------------------

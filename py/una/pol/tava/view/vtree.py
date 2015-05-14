@@ -10,8 +10,11 @@ from py.una.pol.tava.presenter.ptree import ProjectTreeCtrlPresenter
 from py.una.pol.tava.view.vmenu import ProjectMenu, ResultPackageMenu
 from py.una.pol.tava.view.vmenu import AnalysisPackageMenu, ResultMenu
 from py.una.pol.tava.view.vmenu import AnalysisMenu
+from py.una.pol.tava.base.entity import CLOSED, Project
 import wx.lib.agw.customtreectrl as CT
 import py.una.pol.tava.view.vimages as I
+from wx import GetTranslation as _
+import py.una.pol.tava.view.vi18n as C
 
 
 class ProjectTreeCtrl(CT.CustomTreeCtrl):
@@ -23,8 +26,9 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         '''
         Constructor
         '''
-        super(ProjectTreeCtrl, self).__init__(parent,
-                                agwStyle=CT.TR_HAS_BUTTONS | CT.TR_HIDE_ROOT)
+        super(ProjectTreeCtrl, self).__init__(parent)
+
+        self.SetAGWWindowStyleFlag(CT.TR_HAS_BUTTONS | CT.TR_HIDE_ROOT)
 
         # Definicion del presenter de la clase
         self.presenter = ProjectTreeCtrlPresenter(self)
@@ -39,6 +43,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.folder_closed_bmp = il.Add(I.folderClosed_png)
         self.file_bmp = il.Add(I.result_png)
         self.package_bmp = il.Add(I.package_result_png)
+        self.package_close = il.Add(I.package_close_png)
         self.AssignImageList(il)
 
         # Definicion del nodo raiz del arbol
@@ -77,13 +82,13 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
 
     # Se reesscribe este metodo para el SortChildren
     def OnCompareItems(self, item1, item2):
-        #si se ordenan proyectos
-        #Se concatena el estado y el nombre del proyecto para tener encuenta
-        #los dos atributos en la comparacion
+        # si se ordenan proyectos
+        # Se concatena el estado y el nombre del proyecto para tener encuenta
+        # los dos atributos en la comparacion
         if self.GetItemParent(item1) == self.root:
             itemc1 = str(item1.GetData().state) + item1.GetData().name
             itemc2 = str(item2.GetData().state) + item2.GetData().name
-        #si se ordenan Archivos
+        # si se ordenan Archivos
         else:
             itemc1 = item1.GetData().name
             itemc2 = item2.GetData().name
@@ -123,22 +128,68 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetItemImage(test_item, 3, wx.TreeItemIcon_Normal)
         self.SetItemPyData(test_item, test)
 
+    # -- Parte del árbol para la parte gáfica
+    def AddItemTestGraphic(self, project_item):
+        item = self.AppendItem(project_item, self.getPackageGraphicsName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
+
     def AddPackageResult(self, project_item):
-        package_result_item = self.AppendItem(project_item, 'Resultados')
-        self.SetItemImage(package_result_item, 4, wx.TreeItemIcon_Normal)
-        return package_result_item
+        item = self.AppendItem(project_item, self.getPackageGraphicsFileName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
 
     def AddPackageAnalyzer(self, project_item):
-        package_analizer_item = self.AppendItem(project_item, 'Pruebas')
-        self.SetItemImage(package_analizer_item, 4, wx.TreeItemIcon_Normal)
-        return package_analizer_item
+        item = self.AppendItem(project_item, self.getPackageGraphicsTestName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
+
+    # -- Parte del árbol para la parte gáfica
+    def AddItemTestMetrics(self, project_item):
+        item = self.AppendItem(project_item, self.getPackageMetricsName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
+
+    def AddMetricResults(self, tm_item):
+        item = self.AppendItem(tm_item, self.getPackageMetricsFileName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
+
+    def AddPackageMetricViews(self, tm_item):
+        item = self.AppendItem(tm_item, self.getPackageMetricsTestName())
+        self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
+        self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
+        return item
 
     def OnItemTreeExpanded(self, event):
         item = self.GetSelection()
         date_item = self.GetItemPyData(item)
 
-        if date_item == None:
+        if date_item is None:
             return
+        elif isinstance(date_item, Project):
+            if date_item.state == CLOSED:
+                self.Collapse(item)
 
-        if date_item.state == 1:
-            self.Collapse(item)
+    def getPackageGraphicsName(self):
+        return _(C.VTREE_PGN)
+
+    def getPackageGraphicsFileName(self):
+        return _(C.VTREE_PGFN)
+
+    def getPackageGraphicsTestName(self):
+        return _(C.VTREE_PGTN)
+
+    def getPackageMetricsName(self):
+        return _(C.VTREE_PMN)
+
+    def getPackageMetricsFileName(self):
+        return _(C.VTREE_PMFN)
+
+    def getPackageMetricsTestName(self):
+        return _(C.VTREE_PMMN)
