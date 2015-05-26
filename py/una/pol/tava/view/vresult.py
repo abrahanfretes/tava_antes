@@ -35,7 +35,7 @@ class AddFileDialog(wx.Dialog):
 
     def InitUI(self):
         panel = wx.Panel(self, -1, size=(400, 300))
-        self.g_sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         #------ header title description --------------------------------------
         ht_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -100,16 +100,16 @@ class AddFileDialog(wx.Dialog):
         #----------------------------------------------------
 
         #------ add sizer global ----------------------------------------------
-        self.g_sizer.Add(ht_sizer, 0.7, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM |
+        self.sizer.Add(ht_sizer, 0.7, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM |
                          wx.LEFT | wx.TOP, border=10)
-        self.g_sizer.Add(b_sizer, 0.5,
+        self.sizer.Add(b_sizer, 0.5,
                          wx.ALIGN_LEFT | wx.BOTTOM | wx.LEFT, 10)
-        self.g_sizer.Add(scrolled_panel, 6,
+        self.sizer.Add(scrolled_panel, 6,
                         wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
-        self.g_sizer.Add(s_sizer, 1, wx.ALIGN_RIGHT | wx.RIGHT |
+        self.sizer.Add(s_sizer, 1, wx.ALIGN_RIGHT | wx.RIGHT |
                          wx.LEFT | wx.TOP, 10)
-        self.g_sizer.Add(boc_sizer, 1, wx.ALIGN_RIGHT | wx.ALL, 10)
-        panel.SetSizer(self.g_sizer)
+        self.sizer.Add(boc_sizer, 1, wx.ALIGN_RIGHT | wx.ALL, 10)
+        panel.SetSizer(self.sizer)
 
         #----------------------------------------------------
 

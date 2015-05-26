@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 14/5/2015
 
@@ -7,10 +8,10 @@ Created on 14/5/2015
 import os
 import wx
 import wx.dataview as dv
-import wx.lib.scrolledpanel as scrolled
-from py.una.pol.tava.presenter.presult import AddFileDialogPresenter
+from py.una.pol.tava.presenter.pmetricfile import AddMetricFileDialogPresenter
 from py.una.pol.tava.base.tavac import correct, nid_error, fos_error, fva_Error
 from py.una.pol.tava.base.tavac import fio_error, fuk_error, nip_error
+from py.una.pol.tava.base.tavac import content_error
 from py.una.pol.tava.base.tavac import style_list as styleNameList
 from py.una.pol.tava.base.tavac import wildcard
 import py.una.pol.tava.view.vimages as I
@@ -21,116 +22,97 @@ import py.una.pol.tava.view.vi18n as C
 
 class AddMetricFileDialog(wx.Dialog):
     def __init__(self, parent, project):
-        super(AddMetricFileDialog, self).__init__(parent,
-                                title=_(C.AFD_T), size=(600, 590))
+        wx.Dialog.__init__(self, parent, title=_(C.AFD_T), size=(600, 590))
 
-        #------ Definiciones iniciales ----------------------------------------
         self.project = project
-        self.presenter = AddFileDialogPresenter(self)
+        self.presenter = AddMetricFileDialogPresenter(self, project)
 
         self.InitUI()
         self.Centre()
         self.ShowModal()
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
     def InitUI(self):
         panel = wx.Panel(self, -1, size=(400, 300))
-        self.g_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        #------ header title description --------------------------------------
-        ht_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.f_bmp = wx.StaticBitmap(panel)
-        #f_bmp = wx.StaticBitmap(panel, bitmap=I.add_file_png)
-
+        # ------ header title description -------------------------------------
+        h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
         font.SetPointSize(9)
-        self.header = wx.StaticText(panel)
-        #header = wx.StaticText(panel, label=_(C.AFD_STLH))
-        self.header.SetFont(font)
-
+        self.f_bmp = wx.StaticBitmap(panel)
+        self.text_header = wx.StaticText(panel)
+        self.text_header.SetFont(font)
         bmp = wx.StaticBitmap(panel, bitmap=I.exec_png)
 
-        ht_sizer.Add(self.f_bmp, flag=wx.ALIGN_LEFT | wx.RIGHT, border=5)
-        ht_sizer.Add(self.header, flag=wx.ALIGN_LEFT)
-        ht_sizer.Add(bmp, flag=wx.LEFT, border=353)
-        #----------------------------------------------------
+        h_sizer.Add(self.f_bmp, flag=wx.ALIGN_LEFT | wx.RIGHT, border=5)
+        h_sizer.Add(self.text_header, flag=wx.ALIGN_LEFT)
+        h_sizer.Add(bmp, flag=wx.LEFT, border=353)
 
-        #------ button open file ----------------------------------------------
+        # ------ button open file ---------------------------------------------
         b_sizer = wx.BoxSizer()
         browse = wx.Button(panel, -1, _(C.AFD_BB))
         b_sizer.Add(browse, flag=wx.ALIGN_BOTTOM | wx.ALIGN_LEFT)
-        self.Bind(wx.EVT_BUTTON, self.OnButtonBrowse, browse)
-        #----------------------------------------------------
+        browse.Bind(wx.EVT_BUTTON, self.OnButtonBrowse)
 
-        #------ list DataViewListCtrl file in ScrolledPanel -------------------
-        scrolled_panel = scrolled.ScrolledPanel(panel, -1, size=(800, 300),
-                    style=wx.TAB_TRAVERSAL | wx.SUNKEN_BORDER)
-
+        # ------ list DataViewListCtrl file in ScrolledPanel ------------------
         l_sizer = wx.BoxSizer()
-        self.dvlc = dv.DataViewListCtrl(scrolled_panel)
+        self.dvlc = dv.DataViewListCtrl(panel)
         self.dvlc.AppendBitmapColumn(_(C.AFD_TCC), 0, width=60)
         self.dvlc.AppendTextColumn(_(C.AFD_TCN), width=250)
         self.dvlc.AppendTextColumn(_(C.AFD_TCD), width=150)
         self.dvlc.AppendTextColumn(_(C.AFD_TCE), width=400)
         l_sizer.Add(self.dvlc, 1, wx.EXPAND)
 
-        scrolled_panel.SetSizer(l_sizer)
-        scrolled_panel.SetAutoLayout(1)
-        scrolled_panel.SetupScrolling()
-        #------------------------------------------------------------------
-
-        #------------ list radio button styles ----------------------------
+        # ------------ list radio button styles ----------------------------
         s_sizer = wx.BoxSizer()
         dimension = len(styleNameList)
-        self.rb = wx.RadioBox(
-                panel, -1, _(C.AFD_RBT), wx.DefaultPosition,
-                (580, 50), styleNameList, dimension, wx.RA_SPECIFY_COLS)
+        self.rb = wx.RadioBox(panel, -1, _(C.AFD_RBT), wx.DefaultPosition,
+                              (580, 50), styleNameList, dimension,
+                              wx.RA_SPECIFY_COLS)
         self.rb.Bind(wx.EVT_RADIOBOX, self.OnSelectStyle)
         s_sizer.Add(self.rb, 1, wx.EXPAND)
 
-        #------------------------------------------------------------------
-
-        #------ button add and cancel add file --------------------------------
+        # ----- button add and cancel add file --------------------------------
         boc_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.o_button = wx.Button(panel, label=_(C.AFD_BO))
         self.c_button = wx.Button(panel, label=_(C.AFD_BC))
         boc_sizer.Add(self.c_button, flag=wx.RIGHT | wx.LEFT, border=10)
         boc_sizer.Add(self.o_button, flag=wx.RIGHT | wx.LEFT, border=10)
 
-        #----------------------------------------------------
+        # ------ add sizer global ---------------------------------------------
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer.Add(h_sizer, 0.7, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM |
+                       wx.LEFT | wx.TOP, border=10)
+        self.sizer.Add(b_sizer, 0.5, wx.ALIGN_LEFT | wx.BOTTOM | wx.LEFT, 10)
+        self.sizer.Add(l_sizer, 6, wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
+        self.sizer.Add(s_sizer, 1, wx.ALIGN_RIGHT | wx.RIGHT |
+                       wx.LEFT | wx.TOP, 10)
+        self.sizer.Add(boc_sizer, 1, wx.ALIGN_RIGHT | wx.ALL, 10)
+        panel.SetSizer(self.sizer)
 
-        #------ add sizer global ----------------------------------------------
-        self.g_sizer.Add(ht_sizer, 0.7, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM |
-                         wx.LEFT | wx.TOP, border=10)
-        self.g_sizer.Add(b_sizer, 0.5,
-                         wx.ALIGN_LEFT | wx.BOTTOM | wx.LEFT, 10)
-        self.g_sizer.Add(scrolled_panel, 6,
-                        wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
-        self.g_sizer.Add(s_sizer, 1, wx.ALIGN_RIGHT | wx.RIGHT |
-                         wx.LEFT | wx.TOP, 10)
-        self.g_sizer.Add(boc_sizer, 1, wx.ALIGN_RIGHT | wx.ALL, 10)
-        panel.SetSizer(self.g_sizer)
-
-        #----------------------------------------------------
-
-        #------ add event -----------------------------------------------------
+        # ------ add event ----------------------------------------------------
         self.o_button.Bind(wx.EVT_BUTTON, self.OnAddFile)
         self.c_button.Bind(wx.EVT_BUTTON, self.OnCancel)
         self.dvlc.Bind(dv.EVT_DATAVIEW_ITEM_CONTEXT_MENU, self.OnRightClick)
-        #----------------------------------------------------
+        # ----------------------------------------------------
 
-        #------ start config --------------------------------------------------
-        self.o_button.Enable(False)
-        self.UpDateHiderLabel(0)
-        self.rb.EnableItem(vonlucken, False)
-        #----------------------------------------------------
+        # ------ start config -------------------------------------------------
+        self.setInitValues()
+        # ----------------------------------------------------
 
         self.Centre()
         self.Show(True)
 
+    def setInitValues(self):
+        self.o_button.Disable()
+        self.UpDateHiderLabel(0)
+        self.rb.EnableItem(vonlucken, False)
+
     def UpDateHiderLabel(self, key):
         if key == 0:
-            self.header.SetLabel(label=_(C.AFD_STLH))
+            # self.text_header.SetLabel(label=_(C.AFD_STLH))
+            text = 'Agregar Archivos con Resultados de Métricas'
+            self.text_header.SetLabel(label=text)
             self.f_bmp.SetBitmap(I.add_file_png)
             return None
 
@@ -147,13 +129,12 @@ class AddMetricFileDialog(wx.Dialog):
     def OnButtonBrowse(self, evt):
 
         self.dlg = wx.FileDialog(self, message=_(C.AFD_FDM),
-            defaultDir=os.path.expanduser("~"), defaultFile="", wildcard=wildcard,
-            style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
-
+                                 defaultDir=os.path.expanduser("~"),
+                                 defaultFile="", wildcard=wildcard,
+                                 style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
         if self.dlg.ShowModal() == wx.ID_OK:
-            self.presenter.udDateGridFile(self.dlg.GetPaths())
-            #self.presenter.addListPath()
-
+            self.presenter.updateGridFile(self.dlg.GetFilenames(),
+                                          self.dlg.GetPaths())
         self.dlg.Destroy()
 
     def getLabelError(self, error):
@@ -171,6 +152,8 @@ class AddMetricFileDialog(wx.Dialog):
             return _(C.AFD_EOF)
         elif error == fuk_error:
             return _(C.AFD_EUE)
+        elif error == content_error:
+            return 'Error de Contenido'
 
     def OnRightClick(self, event):
         if self.presenter.isAnyRowSelected():
@@ -194,6 +177,7 @@ class AddMetricFileDialog(wx.Dialog):
 
     def OnDeletedAllFile(self, event):
         self.presenter.deletedAllFile()
+        self.setInitValues()
 
     def OnSelectStyle(self, event):
         self.presenter.checkStyle()

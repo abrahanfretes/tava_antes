@@ -17,6 +17,7 @@ fos_error = 3    # file OSError
 fva_Error = 4    # file ValueError
 fio_error = 5    # file IOError
 fuk_error = 6    # file unknown Error
+content_error = 7  # format error
 # ----------------------------------------------------
 
 # -------------------------- list style existing ------------------------------
@@ -48,6 +49,10 @@ def fileDelete(filename):
     filepath = os.path.join(getTavaDirectory(), filename)
     if os.path.isfile(filepath):
         os.remove(filepath)
+
+
+def getBaseName(path):
+    return os.path.basename(path)
 
 
 def createfileForParallel(list_graphic, list_objectives, list_variables,
@@ -168,6 +173,37 @@ def getMinMax(filename):
 
 def getDataBaseInHome(db_name):
     return os.path.join(os.environ['HOME'], db_name)
+
+
+def createTmpFileForMetric(path):
+    print 'iniciando parser'
+
+    origin_file = open(path)
+    path_tmp = os.path.join(getTavaDirectory(), 'parser_filemetric_tem')
+    parser_tem_file = open(path_tmp, 'w')
+
+    line = origin_file.readline()
+    while line != '':
+        l = line.split(',')
+        if l[0] == '*':
+            while l[0] == '*':
+                l[1] = l[1].split('p')[1]
+                l[4] = l[4].split('-')[0]
+                l[6] = l[6].split('H')[0]
+                line_aux = [l[3], l[4], l[5], l[6], l[7], l[9], l[1],
+                            l[2], l[10]]
+                parser_tem_file.write(','.join(line_aux))
+                line = origin_file.readline()
+                l = line.split(',')
+        else:
+            line = origin_file.readline()
+    origin_file.close()
+    parser_tem_file.close()
+    print 'termino parser'
+    print('archivos "parser_filemetric_tem" creado')
+
+    return path_tmp, os.path.basename(path)
+
 
 # ---------------------------------------------------------------------------
 # ------------------- Modos para Graficos   ---------------------------------

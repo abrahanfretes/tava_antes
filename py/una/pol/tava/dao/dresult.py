@@ -42,7 +42,7 @@ def upDate(result):
     '''
     return abm.add(result)
 
-#Querys para Result
+# Querys para Result
 
 
 def getAllResult():
@@ -62,9 +62,8 @@ def getResultByName(name_result):
 
 
 def getResultWithIterations(result):
-    return session.query(Result).options(
-            subqueryload(Result.iterations)).\
-            filter_by(id=result.id).first()
+    return session.query(Result).options(subqueryload(Result.iterations)).\
+        filter_by(id=result.id).first()
 
 
 def getNamesResultForProject(project):

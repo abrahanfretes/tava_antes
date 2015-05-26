@@ -379,6 +379,149 @@ class SomConfig(Base):
         return "<SomConfig()>"
 
 
+class MoeaProblem(Base):
+    ''''''
+
+    __tablename__ = 'moea_problem'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name_file = Column(String(100))
+    name = Column(String(100))
+    project_id = Column(Integer, ForeignKey('project.id'))
+    number_objectives = relationship('NumberObjective',
+                                     cascade="save-update, merge, delete",
+                                     order_by='NumberObjective.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<MoeaProblem()>"
+
+
+class NumberObjective(Base):
+    ''''''
+
+    __tablename__ = 'number_objective'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    value = Column(SmallInteger)
+    moea_problem = Column(Integer, ForeignKey('moea_problem.id'))
+    evolutionary_methods = relationship('EvolutionaryMethod',
+                                        cascade="save-update, merge, delete",
+                                        order_by='EvolutionaryMethod.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<NumberObjective()>"
+
+
+class EvolutionaryMethod(Base):
+    ''''''
+
+    __tablename__ = 'evolutionary_method'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name = Column(String(100))
+    number_objective = Column(Integer, ForeignKey('number_objective.id'))
+    number_threadss = relationship('NumberThreads',
+                                   cascade="save-update, merge, delete",
+                                   order_by='NumberThreads.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<EvolutionaryMethod()>"
+
+
+class NumberThreads(Base):
+    ''''''
+
+    __tablename__ = 'number_threads'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    value = Column(SmallInteger)
+    evolutionary_method = Column(Integer, ForeignKey('evolutionary_method.id'))
+    parallelization_methods = relationship('ParallelizationMethod',
+                                           cascade="save-update, merge, delete",
+                                           order_by='ParallelizationMethod.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<NumberThreads()>"
+
+
+class ParallelizationMethod(Base):
+    ''''''
+
+    __tablename__ = 'parallelization_method'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name = Column(String(100))
+    number_threads = Column(Integer, ForeignKey('number_threads.id'))
+    metrics = relationship('Metric', cascade="save-update, merge, delete",
+                           order_by='Metric.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<ParallelizationMethod()>"
+
+
+class Metric(Base):
+    ''''''
+
+    __tablename__ = 'metric'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name = Column(String(100))
+    parallelization_method = Column(Integer,
+                                    ForeignKey('parallelization_method.id'))
+    populations = relationship('Population',
+                               cascade="save-update, merge, delete",
+                               order_by='Population.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<Metric()>"
+
+
+class Population(Base):
+    ''''''
+
+    __tablename__ = 'population'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    value = Column(Integer)
+    metric = Column(Integer, ForeignKey('metric.id'))
+    value_metrics = relationship('ValueMetric',
+                                 cascade="save-update, merge, delete",
+                                 order_by='ValueMetric.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<Population()>"
+
+
+class ValueMetric(Base):
+    ''''''
+
+    __tablename__ = 'value_metric'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    iteration = Column(Integer)
+    value = Column(Float)
+    population = Column(Integer, ForeignKey('population.id'))
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<ValueMetric()>"
+
+
 def createDB():
 
     base.createDb()

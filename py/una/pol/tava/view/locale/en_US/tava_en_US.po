@@ -212,10 +212,10 @@ msgid "ADD_FILE_DIALOG_FILE_DIALOG_MESSAGE"
 msgstr "Select files"
 
 msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE"
-msgstr "Remove selected file"
+msgstr "Discard selected file"
 
 msgid "ADD_FILE_DIALOG_FILE_DIALOG_MENU_DELETE_ALL"
-msgstr "Remove all files"
+msgstr "Discard all files"
 
 msgid "ADD_FILE_DIALOG_TEXT_COLUMN_CHECK"
 msgstr "State"
