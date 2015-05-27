@@ -264,48 +264,44 @@ def processMetricsFile(paths, project):
             lv = line.split(',')
 
             if problem != lv[0]:
-                #===============================================================
-                # if ob_problem is not None:
-                #     ob_problem.number_objectives = list_number_obj
-                #     dmetric.add(ob_number_obj)
-                #===============================================================
+                if ob_problem is not None:
+                    ob_problem.number_objectives = list_number_obj
+                    dmetric.add(ob_number_obj)
                 ob_problem = MoeaProblem()
                 ob_problem.name = lv[0]
                 ob_problem.name_file = filename
                 ob_problem.project_id = project.id
-                ob_problem = dmetric.add(ob_problem)
-                # list_number_obj = []
+                # ob_problem = dmetric.add(ob_problem)
+                list_number_obj = []
                 problem = lv[0]
 
             if number_obj != lv[1]:
-                #===============================================================
-                # if ob_number_obj is not None:
-                #     ob_number_obj.evolutionary_methods = list_method_evo
-                #     # dmetric.add(ob_number_obj)
-                #===============================================================
+                if ob_number_obj is not None:
+                    ob_number_obj.evolutionary_methods = list_method_evo
+                    # dmetric.add(ob_number_obj)
 
                 ob_number_obj = NumberObjective()
                 ob_number_obj.value = lv[1]
-                ob_number_obj.moea_problem = ob_problem.id
+                # ob_number_obj.moea_problem = ob_problem.id
                 number_obj = lv[1]
-                #ob_number_obj.evolutionary_methods = list_method_evo
+                ob_number_obj.evolutionary_methods = list_method_evo
                 ob_number_obj = dmetric.add(ob_number_obj)
-                # list_number_obj.append(ob_number_obj)
-                # list_method_evo = []
+                list_number_obj.append(ob_number_obj)
+                list_method_evo = []
 
             if method_evo != lv[2]:
                 # actualizo anterior
                 if ob_method_evo is not None:
                     ob_method_evo.number_threadss = list_number_thread
                     print 'add: ' + problem + ' -> ' + number_obj + ' -> ' + method_evo
-                    dmetric.add(ob_method_evo)
-                    print'terminate: ' + str(count) + ' de 851765'
+                    print str(count) + ' de 851765'
+                    # dmetric.add(ob_method_evo)
 
                 ob_method_evo = EvolutionaryMethod()
                 ob_method_evo.name = lv[2]
                 method_evo = lv[2]
-                ob_method_evo.number_objective = ob_number_obj.id
-                # list_method_evo.append(ob_method_evo)
+                # ob_method_evo.number_objective = ob_number_obj.id
+                list_method_evo.append(ob_method_evo)
                 list_number_thread = []
 
             if number_thread != lv[3]:
@@ -353,24 +349,13 @@ def processMetricsFile(paths, project):
             list_value.append(ob_value)
 
             count += 1
-            #print str(count) + ' de 851765'
             line = parser_tem_file.readline()
 
-        if ob_method_evo is not None:
-            print str(count) + ' de 851765'
-            print problem + ' -> ' + number_obj + ' -> ' + method_evo + ' -> ' + number_thread
-
-            ob_method_evo.number_threadss = list_number_thread
-            dmetric.add(ob_method_evo)
+        if ob_problem is not None:
+            # ob_problem.ob_problem = list_number_obj
+            print' init update datas'
+            dmetric.add(ob_problem)
             print' terminate update datas'
-
-        #=======================================================================
-        # if ob_problem is not None:
-        #     # ob_problem.ob_problem = list_number_obj
-        #     print' init update datas'
-        #     # dmetric.add(ob_problem)
-        #     print' terminate update datas'
-        #=======================================================================
 
         parser_tem_file.close()
         print 'finalizacion de insercion de informacion a base de datos'
