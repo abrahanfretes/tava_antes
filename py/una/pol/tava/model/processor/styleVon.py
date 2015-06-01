@@ -264,84 +264,98 @@ def processMetricsFile(paths, project):
             lv = line.split(',')
 
             if problem != lv[0]:
-                if ob_problem is not None:
-                    ob_problem.number_objectives = list_number_obj
-                    dmetric.add(ob_number_obj)
+                #===============================================================
+                # if ob_problem is not None:
+                #     # ob_problem.number_objectives = list_number_obj
+                #     dmetric.add(ob_number_obj)
+                #===============================================================
                 ob_problem = MoeaProblem()
                 ob_problem.name = lv[0]
                 ob_problem.name_file = filename
                 ob_problem.project_id = project.id
                 # ob_problem = dmetric.add(ob_problem)
-                list_number_obj = []
+                list_number_obj = ob_problem.number_objectives
                 problem = lv[0]
 
             if number_obj != lv[1]:
-                if ob_number_obj is not None:
-                    ob_number_obj.evolutionary_methods = list_method_evo
-                    # dmetric.add(ob_number_obj)
+                #===============================================================
+                # if ob_number_obj is not None:
+                #     ob_number_obj.evolutionary_methods = list_method_evo
+                #     # dmetric.add(ob_number_obj)
+                #===============================================================
 
                 ob_number_obj = NumberObjective()
                 ob_number_obj.value = lv[1]
                 # ob_number_obj.moea_problem = ob_problem.id
                 number_obj = lv[1]
-                ob_number_obj.evolutionary_methods = list_method_evo
+                # ob_number_obj.evolutionary_methods = list_method_evo
                 ob_number_obj = dmetric.add(ob_number_obj)
                 list_number_obj.append(ob_number_obj)
-                list_method_evo = []
+                list_method_evo = ob_number_obj.evolutionary_methods
 
             if method_evo != lv[2]:
                 # actualizo anterior
-                if ob_method_evo is not None:
-                    ob_method_evo.number_threadss = list_number_thread
-                    print 'add: ' + problem + ' -> ' + number_obj + ' -> ' + method_evo
-                    print str(count) + ' de 851765'
-                    # dmetric.add(ob_method_evo)
+                #===============================================================
+                # if ob_method_evo is not None:
+                #     ob_method_evo.number_threadss = list_number_thread
+                #     print 'add: ' + problem + ' -> ' + number_obj + ' -> ' + method_evo
+                #     print str(count) + ' de 851765'
+                #     # dmetric.add(ob_method_evo)
+                #===============================================================
 
                 ob_method_evo = EvolutionaryMethod()
                 ob_method_evo.name = lv[2]
                 method_evo = lv[2]
                 # ob_method_evo.number_objective = ob_number_obj.id
                 list_method_evo.append(ob_method_evo)
-                list_number_thread = []
+                list_number_thread = ob_method_evo.number_threadss
 
             if number_thread != lv[3]:
-                if ob_number_thread is not None:
-                    ob_number_thread.parallelization_methods = list_method_parallel
+                #===============================================================
+                # if ob_number_thread is not None:
+                #     ob_number_thread.parallelization_methods = list_method_parallel
+                #===============================================================
 
                 ob_number_thread = NumberThreads()
                 ob_number_thread.value = lv[3]
                 number_thread = lv[3]
                 list_number_thread.append(ob_number_thread)
-                list_method_parallel = []
+                list_method_parallel = ob_number_thread.parallelization_methods
 
             if method_parallel != lv[4]:
-                if ob_method_parallel is not None:
-                    ob_method_parallel.metrics = list_metric
+                #===============================================================
+                # if ob_method_parallel is not None:
+                #     ob_method_parallel.metrics = list_metric
+                #===============================================================
 
                 ob_method_parallel = ParallelizationMethod()
                 ob_method_parallel.name = lv[4]
                 list_method_parallel.append(ob_method_parallel)
                 method_parallel = lv[4]
-                list_metric = []
+                list_metric = ob_method_parallel.metrics
 
             if metric != lv[5]:
-                if ob_metric is not None:
-                    ob_metric.populations = list_population
+                #===============================================================
+                # if ob_metric is not None:
+                #     ob_metric.populations = list_population
+                #===============================================================
                 ob_metric = Metric()
                 ob_metric.name = lv[5]
                 list_metric.append(ob_metric)
                 metric = lv[5]
-                list_population = []
+                list_population = ob_metric.populations
 
             if population != lv[6]:
-                if ob_population is not None:
-                    ob_population.value_metrics = list_value
+                #===============================================================
+                # if ob_population is not None:
+                #     ob_population.value_metrics = list_value
+                #===============================================================
 
                 ob_population = Population()
                 ob_population.value = lv[6]
                 list_population.append(ob_population)
                 population = lv[6]
-                list_value = []
+                list_value = ob_population.value_metrics
 
             ob_value = ValueMetric()
             ob_value.iteration = lv[7]
@@ -352,7 +366,7 @@ def processMetricsFile(paths, project):
             line = parser_tem_file.readline()
 
         if ob_problem is not None:
-            # ob_problem.ob_problem = list_number_obj
+            ob_problem.number_objectives = list_number_obj
             print' init update datas'
             dmetric.add(ob_problem)
             print' terminate update datas'
