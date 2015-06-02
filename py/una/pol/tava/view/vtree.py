@@ -129,6 +129,11 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = MetricsViewsPackageMenu(self, project)
         self.PopupMenu(menu)
 
+    def AddResultMetricToProject(self, package_item, moea_result):
+        result_item = self.AppendItem(package_item, moea_result.name_file)
+        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(result_item, moea_result)
+
     def AddResultToProject(self, package_item, result):
         result_item = self.AppendItem(package_item, result.name)
         self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)

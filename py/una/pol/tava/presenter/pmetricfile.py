@@ -152,5 +152,5 @@ class AddMetricFileDialogPresenter():
 
         self.project = mm().add(paths, self.project, style)
 
-        # enviar
+        pub.sendMessage(T.PROJECT_UPDATE, self.project)
         self.Close()

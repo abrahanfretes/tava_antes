@@ -39,3 +39,6 @@ class MetricModel(object):
             listNames.append(list(name).pop())
 
         return listNames
+
+    def getMoeaProblemByProjectId(self, project_id):
+        return dmetric.getMoeaProblemByProjectId(project_id)

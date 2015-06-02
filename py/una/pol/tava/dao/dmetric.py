@@ -23,3 +23,7 @@ def upDate(data):
 
 def getFilesNamesMoeaProblemByProject(p):
     return session.query(mp.name_file).filter_by(project_id=p.id).all()
+
+
+def getMoeaProblemByProjectId(project_id):
+    return session.query(mp).filter_by(project_id=project_id).all()

@@ -373,4 +373,5 @@ def processMetricsFile(paths, project):
 
         parser_tem_file.close()
         print 'finalizacion de insercion de informacion a base de datos'
-    pass
+
+    return project

@@ -416,7 +416,7 @@ msgid "PACKAGE_METRICS_NAME"
 msgstr "Metrics"
 
 msgid "PACKAGE_METRICS_FILES_NAME"
-msgstr "Files"
+msgstr "Files Metric"
 
 msgid "PACKAGE_METRICS_TESTS_NAME"
-msgstr "Test"
+msgstr "Test Metric"

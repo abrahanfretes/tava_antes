@@ -7,8 +7,9 @@ Created on 28/07/2014
 from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.model.mresult import ResultModel
+from py.una.pol.tava.model.mmetric import MetricModel
 from py.una.pol.tava.model.mtestconfig import TestConfigModel
-from py.una.pol.tava.base.entity import OPEN, CLOSED, Project
+from py.una.pol.tava.base.entity import OPEN, CLOSED, Project, MoeaProblem
 from py.una.pol.tava.base.entity import Result, TestConfig
 import topic as T
 
@@ -69,6 +70,8 @@ class ProjectTreeCtrlPresenter:
             tm_item = self.AddTestMetricsNodeItem(pitem)
             tm_mr_item = self.AddNodeItemMetricResults(tm_item)
             tm_mv_item = self.AddNodePackageMetricViews(tm_item)
+            self.AddItemsFileMetricResult(tm_mr_item, project)
+            self.AddItemsTestMetric(tm_mv_item, project)
 
         elif project.state == CLOSED:
             self.AddProjectCloseNodeItem(project)
@@ -105,6 +108,13 @@ class ProjectTreeCtrlPresenter:
 
     def AddNodePackageMetricViews(self, tm_item):
         return self.iview.AddPackageMetricViews(tm_item)
+
+    def AddItemsFileMetricResult(self, package_item, project):
+        for moea_result in MetricModel().getMoeaProblemByProjectId(project.id):
+            self.iview.AddResultMetricToProject(package_item, moea_result)
+
+    def AddItemsTestMetric(self, package_test, project):
+        pass
 
     def sortTree(self, item):
         self.iview.SortChildren(item)
@@ -154,27 +164,71 @@ class ProjectTreeCtrlPresenter:
         '''
         item, data = self.getItemEndDataSelected()
 
+        # proyecto
         if isinstance(data, Project):
             return item
 
-        if isinstance(data, Result):
+        # paquetes de primer nivel
+        if(self.IsPackageGraphic(item)):
+            return self.iview.GetItemParent(item)
+
+        if(self.IsPackageMetric(item)):
+            return self.iview.GetItemParent(item)
+
+        # paquetes de segundo nivel
+        if(self.IsPackageGraphicFiles(item)):
             return self.GetGrandFather(item)
+
+        if(self.IsPackageGraphicTest(item)):
+            return self.GetGrandFather(item)
+
+        if(self.IsPackageMetricFile(item)):
+            return self.GetGrandFather(item)
+
+        if(self.IsPackageMetricTest(item)):
+            return self.GetGrandFather(item)
+
+        # archivos
+        if isinstance(data, Result):
+            item_aux = self.iview.GetItemParent(item)
+            return self.GetGrandFather(item_aux)
 
         if isinstance(data, TestConfig):
-            return self.GetGrandFather(item)
+            item_aux = self.iview.GetItemParent(item)
+            return self.GetGrandFather(item_aux)
 
-        if(self.IsPackageResult(item)):
-            return self.iview.GetItemParent(item)
+        if isinstance(data, MoeaProblem):
+            item_aux = self.iview.GetItemParent(item)
+            return self.GetGrandFather(item_aux)
 
-        if(self.IsPackageAnalyzer(item)):
-            return self.iview.GetItemParent(item)
-
-    def IsPackageResult(self, item):
-        toRet = (self.iview.GetItemText(item) == 'Resultados')
+    def IsPackageGraphic(self, item):
+        package_graphic = self.iview.getPackageGraphicsName()
+        toRet = (self.iview.GetItemText(item) == package_graphic)
         return toRet
 
-    def IsPackageAnalyzer(self, item):
-        toRet = (self.iview.GetItemText(item) == 'Pruebas')
+    def IsPackageMetric(self, item):
+        package_metric = self.iview.getPackageMetricsName()
+        toRet = (self.iview.GetItemText(item) == package_metric)
+        return toRet
+
+    def IsPackageGraphicFiles(self, item):
+        package_file = self.iview.getPackageGraphicsFileName()
+        toRet = (self.iview.GetItemText(item) == package_file)
+        return toRet
+
+    def IsPackageGraphicTest(self, item):
+        package_test = self.iview.getPackageGraphicsTestName()
+        toRet = (self.iview.GetItemText(item) == package_test)
+        return toRet
+
+    def IsPackageMetricFile(self, item):
+        package_file = self.iview.getPackageMetricsFileName()
+        toRet = (self.iview.GetItemText(item) == package_file)
+        return toRet
+
+    def IsPackageMetricTest(self, item):
+        package_test = self.iview.getPackageMetricsTestName()
+        toRet = (self.iview.GetItemText(item) == package_test)
         return toRet
 
     def GetGrandFather(self, item):
