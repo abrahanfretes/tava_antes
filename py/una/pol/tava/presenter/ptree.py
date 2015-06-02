@@ -286,15 +286,18 @@ class ProjectTreeCtrlPresenter:
                 project = self.iview.GetItemPyData(project_item)
                 self.iview.InitializeResultPackageMenu(project)
 
-            # seleccion de un File
-            elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsFileName():
-                self.iview.InitializeResultMenu(item)
-
             # seleccion de un paquete Graphics Tests
             elif self.iview.GetItemText(item) == self.iview.getPackageGraphicsTestName():
                 project_item = self.iview.GetItemParent(parent_item)
                 project = self.iview.GetItemPyData(project_item)
                 self.iview.InitializeAnalysisPackageMenu(project)
+
+        # seleccion de un paquete Graphics  - Files o Test
+        elif self.iview.GetItemText(self.iview.GetItemParent(parent_item)) == self.iview.getPackageGraphicsName():
+
+            # seleccion de un File
+            if self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsFileName():
+                self.iview.InitializeResultMenu(item)
 
             # seleccion de un Test
             elif self.iview.GetItemText(parent_item) == self.iview.getPackageGraphicsTestName():
@@ -318,7 +321,21 @@ class ProjectTreeCtrlPresenter:
             elif self.iview.GetItemText(item) == self.iview.getPackageMetricsTestName():
                 project_item = self.iview.GetItemParent(parent_item)
                 project = self.iview.GetItemPyData(project_item)
-                self.iview.InitializeAnalysisPackageMenu(project)
+                print ' menu Metric Package File'
+                # self.iview.InitializeAnalysisPackageMenu(project)
+
+        # seleccion de un paquete Metrics  - Files o Test
+        elif self.iview.GetItemText(self.iview.GetItemParent(parent_item)) == self.iview.getPackageMetricsName():
+
+            # seleccion de un File
+            if self.iview.GetItemText(parent_item) == self.iview.getPackageMetricsFileName():
+                print ' menu Metric File'
+                # self.iview.InitializeResultMenu(item)
+
+            # seleccion de un Test
+            elif self.iview.GetItemText(parent_item) == self.iview.getPackageMetricsTestName():
+                print ' menu Metric Test'
+                #self.iview.InitializeAnalysisMenu(data)
 
     def getItemSelected(self):
         return self.iview.GetSelection()
