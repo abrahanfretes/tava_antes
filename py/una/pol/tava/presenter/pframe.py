@@ -23,6 +23,7 @@ class FramePresenter:
         pub.subscribe(self.UnHideProjectPub, T.PROJECT_UNHIDE)
         pub.subscribe(self.AddFileInProjectPub, T.PROJECT_ADDFILE)
         pub.subscribe(self.ShowGraphicWizard, T.GRAPHIC_WIZARD)
+        pub.subscribe(self.ShowMetricWizard, T.METRIC_WIZARD)
         pub.subscribe(self.AddMetricFileInProjectPub, T.PROJECT_ADDMETRICFILE)
 
     def ShowNewProjectDialogPub(self, message):
@@ -61,3 +62,7 @@ class FramePresenter:
     def ShowGraphicWizard(self, message):
         if self.project_selected is not None:
             self.iview.ShowGraphicWizard(self.project_selected)
+
+    def ShowMetricWizard(self, message):
+        if self.project_selected is not None:
+            self.iview.ShowMetricWizardView(self.project_selected)

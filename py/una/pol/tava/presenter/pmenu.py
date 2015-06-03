@@ -45,3 +45,11 @@ class AnalysisMenuPresenter:
     def OnShowGraphsAndData(self, type_g):
         test = self.iview.test
         pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, type_g))
+
+
+class MetricTestPackageMenuPresenter:
+    def __init__(self, iview):
+        self.iview = iview
+
+    def ShowGraphicWizard(self):
+        pub.sendMessage(T.METRIC_WIZARD)

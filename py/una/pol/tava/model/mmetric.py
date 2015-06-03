@@ -34,11 +34,11 @@ class MetricModel(object):
 
     def getFilesNames(self, project):
         listNames = []
-        print dmetric.getFilesNamesMoeaProblemByProject(project)
-        for name in dmetric.getFilesNamesMoeaProblemByProject(project):
+        print dmetric.getFilesNamesResultMetricByProject(project)
+        for name in dmetric.getFilesNamesResultMetricByProject(project):
             listNames.append(list(name).pop())
 
         return listNames
 
-    def getMoeaProblemByProjectId(self, project_id):
-        return dmetric.getMoeaProblemByProjectId(project_id)
+    def getResultMetricByProjectId(self, project_id):
+        return dmetric.getResultMetricByProjectId(project_id)

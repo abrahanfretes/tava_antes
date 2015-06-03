@@ -12,6 +12,7 @@ from py.una.pol.tava.view.vmenu import AnalysisPackageMenu, ResultMenu
 from py.una.pol.tava.view.vmenu import MetricsFilesPackageMenu
 from py.una.pol.tava.view.vmenu import MetricsViewsPackageMenu
 from py.una.pol.tava.view.vmenu import AnalysisMenu
+from py.una.pol.tava.view.vmenu import MetricTestPackageMenu
 from py.una.pol.tava.base.entity import CLOSED, Project
 import wx.lib.agw.customtreectrl as CT
 import py.una.pol.tava.view.vimages as I
@@ -129,10 +130,14 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = MetricsViewsPackageMenu(self, project)
         self.PopupMenu(menu)
 
-    def AddResultMetricToProject(self, package_item, moea_result):
-        result_item = self.AppendItem(package_item, moea_result.name_file)
+    def InitializeMetricTestPackageMenu(self, project):
+        menu = MetricTestPackageMenu(self, project)
+        self.PopupMenu(menu)
+
+    def AddResultMetricToProject(self, package_item, result_metric):
+        result_item = self.AppendItem(package_item, result_metric.filename)
         self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
-        self.SetItemPyData(result_item, moea_result)
+        self.SetItemPyData(result_item, result_metric)
 
     def AddResultToProject(self, package_item, result):
         result_item = self.AppendItem(package_item, result.name)

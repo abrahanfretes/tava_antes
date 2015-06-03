@@ -11,6 +11,7 @@ from py.una.pol.tava.view.vabout import AboutDialog
 import py.una.pol.tava.view.vi18n as C
 from py.una.pol.tava.presenter.pmenu import MainMenuBarPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
+from py.una.pol.tava.presenter.pmenu import MetricTestPackageMenuPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
@@ -434,3 +435,31 @@ class MetricsViewsPackageMenu(wx.Menu):
 
     def OnAddFileInProject(self, event):
         self.presentermenu.AddFileInProject(self.project)
+
+
+# ----- menu para el paquete de analisis --------------------------------------
+class MetricTestPackageMenu(wx.Menu):
+    def __init__(self, parent, project):
+        super(MetricTestPackageMenu, self).__init__()
+
+        self.presenter = MetricTestPackageMenuPresenter(self)
+
+        # ------ definiciones iniciales ---------------------------------------
+
+        self.project = project
+        self.InitUI()
+        # ----------------------------------------------------
+
+    def InitUI(self):
+
+        # ------ items del menu ----------------------------------------
+
+        # menu agregar analisis a proyecto
+        new_test = wx.MenuItem(self, wx.ID_ANY, 'Nuevo Test')
+        self.AppendItem(new_test)
+        self.Bind(wx.EVT_MENU, self.OnShowGraphicWizard, new_test)
+
+    def OnShowGraphicWizard(self, event):
+        self.presenter.ShowGraphicWizard()
+        # ----------------------------------------------------
+# ----------------------------------------------------

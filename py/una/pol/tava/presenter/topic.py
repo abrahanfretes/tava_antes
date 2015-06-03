@@ -87,6 +87,10 @@ PROJECT_ADDMETRICFILE = 'PROJECT.ADDMETRICFILE'
 # Subscribe = pframe
 GRAPHIC_WIZARD = 'GRAPHIC.WIZARD'
 
+# Send = pmenu
+# Subscribe = pframe
+METRIC_WIZARD = 'METRIC.WIZARD'
+
 # Send = pmenu, ptest
 # Subscribe = pbody
 TESTCONFIG_ADD_PAGE = 'TESTCONFIG.ADDPAGE'

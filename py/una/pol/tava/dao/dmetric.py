@@ -4,7 +4,7 @@ Created on 14/5/2015
 @author: abrahan
 '''
 from py.una.pol.tava.base import base, abm
-from py.una.pol.tava.base.entity import MoeaProblem as mp
+from py.una.pol.tava.base.entity import ResultMetric as rmp
 
 session = base.getSession()
 
@@ -21,9 +21,9 @@ def upDate(data):
     return abm.add(data)
 
 
-def getFilesNamesMoeaProblemByProject(p):
-    return session.query(mp.name_file).filter_by(project_id=p.id).all()
+def getFilesNamesResultMetricByProject(p):
+    return session.query(rmp.filename).filter_by(project_id=p.id).all()
 
 
-def getMoeaProblemByProjectId(project_id):
-    return session.query(mp).filter_by(project_id=project_id).all()
+def getResultMetricByProjectId(project_id):
+    return session.query(rmp).filter_by(project_id=project_id).all()

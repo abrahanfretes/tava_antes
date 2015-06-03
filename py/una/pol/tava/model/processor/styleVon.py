@@ -216,6 +216,7 @@ def procesarArchivo(listFile, proyecto):
         fOpen.close()
     return proyecto
 
+from py.una.pol.tava.base.entity import ResultMetric
 from py.una.pol.tava.base.entity import MoeaProblem
 from py.una.pol.tava.base.entity import NumberObjective
 from py.una.pol.tava.base.entity import EvolutionaryMethod
@@ -234,6 +235,9 @@ def processMetricsFile(paths, project):
         # Creamos archivos con valores
         parser_tem_file = open(path_tmp)
         line = parser_tem_file.readline()
+        result_metric = ResultMetric()
+        result_metric.filename = filename
+        result_metric.project_id = project.id
 
         ob_problem = None
         ob_number_obj = None
@@ -243,6 +247,7 @@ def processMetricsFile(paths, project):
         ob_metric = None
         ob_population = None
 
+        list_problem = []
         list_number_obj = []
         list_method_evo = []
         list_number_thread = []
@@ -260,6 +265,7 @@ def processMetricsFile(paths, project):
         population = ''
         count = 0
 
+        list_problem = result_metric.moea_problems
         while line != '':
             lv = line.split(',')
 
@@ -271,9 +277,10 @@ def processMetricsFile(paths, project):
                 #===============================================================
                 ob_problem = MoeaProblem()
                 ob_problem.name = lv[0]
-                ob_problem.name_file = filename
-                ob_problem.project_id = project.id
+                # ob_problem.name_file = filename
+                # ob_problem.project_id = project.id
                 # ob_problem = dmetric.add(ob_problem)
+                list_problem.append(ob_problem)
                 list_number_obj = ob_problem.number_objectives
                 problem = lv[0]
 
@@ -366,9 +373,10 @@ def processMetricsFile(paths, project):
             line = parser_tem_file.readline()
 
         if ob_problem is not None:
-            ob_problem.number_objectives = list_number_obj
+            # ob_problem.number_objectives = list_number_obj
             print' init update datas'
-            dmetric.add(ob_problem)
+            # dmetric.add(ob_problem)
+            dmetric.add(result_metric)
             print' terminate update datas'
 
         parser_tem_file.close()

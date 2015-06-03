@@ -110,8 +110,8 @@ class ProjectTreeCtrlPresenter:
         return self.iview.AddPackageMetricViews(tm_item)
 
     def AddItemsFileMetricResult(self, package_item, project):
-        for moea_result in MetricModel().getMoeaProblemByProjectId(project.id):
-            self.iview.AddResultMetricToProject(package_item, moea_result)
+        for result_metric in MetricModel().getResultMetricByProjectId(project.id):
+            self.iview.AddResultMetricToProject(package_item, result_metric)
 
     def AddItemsTestMetric(self, package_test, project):
         pass
@@ -322,7 +322,7 @@ class ProjectTreeCtrlPresenter:
                 project_item = self.iview.GetItemParent(parent_item)
                 project = self.iview.GetItemPyData(project_item)
                 print ' menu Metric Package File'
-                # self.iview.InitializeAnalysisPackageMenu(project)
+                self.iview.InitializeMetricTestPackageMenu(project)
 
         # seleccion de un paquete Metrics  - Files o Test
         elif self.iview.GetItemText(self.iview.GetItemParent(parent_item)) == self.iview.getPackageMetricsName():

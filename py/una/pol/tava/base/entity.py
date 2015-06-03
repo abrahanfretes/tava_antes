@@ -379,14 +379,31 @@ class SomConfig(Base):
         return "<SomConfig()>"
 
 
+class ResultMetric(Base):
+    ''''''
+
+    __tablename__ = 'result_metric'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    filename = Column(String(100))
+    project_id = Column(Integer, ForeignKey('project.id'))
+    moea_problems = relationship('MoeaProblem',
+                                 cascade="save-update, merge, delete",
+                                 order_by='MoeaProblem.id')
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<ResultMetric()>"
+
+
 class MoeaProblem(Base):
     ''''''
 
     __tablename__ = 'moea_problem'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
-    name_file = Column(String(100))
     name = Column(String(100))
-    project_id = Column(Integer, ForeignKey('project.id'))
+    result_metric = Column(Integer, ForeignKey('result_metric.id'))
     number_objectives = relationship('NumberObjective',
                                      cascade="save-update, merge, delete",
                                      order_by='NumberObjective.id')
@@ -522,6 +539,19 @@ class ValueMetric(Base):
         return "<ValueMetric()>"
 
 
+class TestMetric(Base):
+    ''''''
+
+    __tablename__ = 'test_metric'
+    id = Column(Integer, primary_key=True, nullable=False, unique=True)
+    name = Column(String(100))
+    result_metric_id = Column(Integer, ForeignKey('result_metric.id'))
+
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return "<ResultMetric()>"
 def createDB():
 
     base.createDb()
