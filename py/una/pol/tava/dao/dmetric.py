@@ -5,6 +5,7 @@ Created on 14/5/2015
 '''
 from py.una.pol.tava.base import base, abm
 from py.una.pol.tava.base.entity import ResultMetric as rmp
+from py.una.pol.tava.base.entity import TestMetric as tm
 
 session = base.getSession()
 
@@ -27,3 +28,9 @@ def getFilesNamesResultMetricByProject(p):
 
 def getResultMetricByProjectId(project_id):
     return session.query(rmp).filter_by(project_id=project_id).all()
+
+    # Funciones Para TestMetric
+
+
+def getTestMetrics(project_id):
+    return session.query(tm).filter_by(project_id=project_id).all()

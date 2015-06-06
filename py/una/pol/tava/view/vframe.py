@@ -19,7 +19,7 @@ from py.una.pol.tava.view.vproject import UnHideProjectDialog
 from py.una.pol.tava.view.vresult import AddFileDialog
 from py.una.pol.tava.view.vmetricfile import AddMetricFileDialog
 from py.una.pol.tava.view.vtest import GraphicWizard
-from py.una.pol.tava.view.metric.vtestmetric import TestMetricAdd
+from py.una.pol.tava.view.metric.vtestmetric import TestMetricDialog
 
 from py.una.pol.tava.presenter.pframe import FramePresenter
 from wx import GetTranslation as _
@@ -114,7 +114,7 @@ class MainFrame(wx.Frame):
 
     def ShowMetricWizardView(self, project):
         print 'wizar metric'
-        TestMetricAdd(project)
+        TestMetricDialog(self, project)
 
     def OnApplicationExit(self, e):
 

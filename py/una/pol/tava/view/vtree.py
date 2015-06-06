@@ -67,6 +67,7 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
     def OnSelectedItemTree(self, event):
         self.presenter.GetTypeSelectedItem()
 
+    # project
     def AddProjectOpenNode(self, project):
         project_item = self.AppendItem(self.root, project.name)
         self.SetItemPyData(project_item, project)
@@ -134,21 +135,6 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = MetricTestPackageMenu(self, project)
         self.PopupMenu(menu)
 
-    def AddResultMetricToProject(self, package_item, result_metric):
-        result_item = self.AppendItem(package_item, result_metric.filename)
-        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
-        self.SetItemPyData(result_item, result_metric)
-
-    def AddResultToProject(self, package_item, result):
-        result_item = self.AppendItem(package_item, result.name)
-        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
-        self.SetItemPyData(result_item, result)
-
-    def AddTestToProject(self, package_item, test):
-        test_item = self.AppendItem(package_item, test.name)
-        self.SetItemImage(test_item, 3, wx.TreeItemIcon_Normal)
-        self.SetItemPyData(test_item, test)
-
     # -- Parte del árbol para la parte gáfica
     def AddItemTestGraphic(self, project_item):
         item = self.AppendItem(project_item, self.getPackageGraphicsName())
@@ -162,11 +148,21 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
         return item
 
+    def AddResultToProject(self, package_item, result):
+        result_item = self.AppendItem(package_item, result.name)
+        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(result_item, result)
+
     def AddPackageAnalyzer(self, project_item):
         item = self.AppendItem(project_item, self.getPackageGraphicsTestName())
         self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
         self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
         return item
+
+    def AddTestToProject(self, package_item, test):
+        test_item = self.AppendItem(package_item, test.name)
+        self.SetItemImage(test_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(test_item, test)
 
     # -- Parte del árbol para la parte gáfica
     def AddItemTestMetrics(self, project_item):
@@ -181,11 +177,21 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
         return item
 
+    def AddResultMetricToProject(self, package_item, result_metric):
+        result_item = self.AppendItem(package_item, result_metric.filename)
+        self.SetItemImage(result_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(result_item, result_metric)
+
     def AddPackageMetricViews(self, tm_item):
         item = self.AppendItem(tm_item, self.getPackageMetricsTestName())
         self.SetItemImage(item, 5, wx.TreeItemIcon_Normal)
         self.SetItemImage(item, 4, wx.TreeItemIcon_Expanded)
         return item
+
+    def AddTestMetricToProject(self, metric_test, test):
+        test_item = self.AppendItem(metric_test, test.name)
+        self.SetItemImage(test_item, 3, wx.TreeItemIcon_Normal)
+        self.SetItemPyData(test_item, test)
 
     def OnItemTreeExpanded(self, event):
         item = self.GetSelection()

@@ -56,71 +56,69 @@ class ProjectTreeCtrlPresenter:
         :project: Project, representa el proyecto a ser agregado al arbol.
         '''
         if project.state == OPEN:
-            pitem = self.AddProjectOpenNodeItem(project)
-            # parte gráfica
-            tg_item = self.AddTestGraphicNodeItem(pitem)
-            tg_pr_item = self.AddItemPackageResult(tg_item)
-            tg_pt_item = self.AddPackageAnalyzerItem(tg_item)
+
+            # project
+            pitem = self.iview.AddProjectOpenNode(project)
+
+            # project -> graphic
+            tg_item = self.iview.AddItemTestGraphic(pitem)
+            # project -> graphic -> graphic-files
+            tg_pr_item = self.iview.AddPackageResult(tg_item)
+            # project -> graphic -> graphic-files - files
             self.AddItemsFileResult(tg_pr_item, project)
-            self.AddItemsTestConfig(tg_pt_item, project)
             self.sortTree(tg_pr_item)
+            # project -> graphic -> graphic-test
+            tg_pt_item = self.iview.AddPackageAnalyzer(tg_item)
+            # project -> graphic -> graphic-test - tests
+            self.AddItemsTestConfig(tg_pt_item, project)
             self.sortTree(tg_pt_item)
 
-            # parte métrica
-            tm_item = self.AddTestMetricsNodeItem(pitem)
-            tm_mr_item = self.AddNodeItemMetricResults(tm_item)
-            tm_mv_item = self.AddNodePackageMetricViews(tm_item)
+            # project -> metric
+            tm_item = self.iview.AddItemTestMetrics(pitem)
+            # project -> metric -> metric-files
+            tm_mr_item = self.iview.AddMetricResults(tm_item)
+            # project -> metric -> metric-files -> files
             self.AddItemsFileMetricResult(tm_mr_item, project)
+            # project -> metric -> metric-test
+            tm_mv_item = self.iview.AddPackageMetricViews(tm_item)
+            # project -> metric -> metric-test -> tests
             self.AddItemsTestMetric(tm_mv_item, project)
 
         elif project.state == CLOSED:
-            self.AddProjectCloseNodeItem(project)
+            self.iview.AddProjectCloseNode(project)
 
         self.sortTree(self.iview.root)
 
-    def AddProjectOpenNodeItem(self, project):
-        return self.iview.AddProjectOpenNode(project)
-
-    # agregación de graficas
-    def AddTestGraphicNodeItem(self, project_item):
-        return self.iview.AddItemTestGraphic(project_item)
-
-    def AddItemPackageResult(self, project_item):
-        return self.iview.AddPackageResult(project_item)
+    ################
+    # ### Graphics
+    ################
 
     def AddItemsFileResult(self, package_item, project):
         for result in ResultModel().getResultsByProject(project):
             self.iview.AddResultToProject(package_item, result)
 
-    def AddPackageAnalyzerItem(self, project_item):
-        return self.iview.AddPackageAnalyzer(project_item)
-
     def AddItemsTestConfig(self, package_test, project):
         for test in TestConfigModel().getTestConfigByProject(project):
             self.iview.AddTestToProject(package_test, test)
 
-    # agregación de metricas
-    def AddTestMetricsNodeItem(self, project_item):
-        return self.iview.AddItemTestMetrics(project_item)
-
-    def AddNodeItemMetricResults(self, tm_item):
-        return self.iview.AddMetricResults(tm_item)
-
-    def AddNodePackageMetricViews(self, tm_item):
-        return self.iview.AddPackageMetricViews(tm_item)
+    ################
+    # ### Metrics
+    ################
 
     def AddItemsFileMetricResult(self, package_item, project):
-        for result_metric in MetricModel().getResultMetricByProjectId(project.id):
+        results = MetricModel().getResultMetricByProjectId(project.id)
+        for result_metric in results:
             self.iview.AddResultMetricToProject(package_item, result_metric)
 
-    def AddItemsTestMetric(self, package_test, project):
+    def AddItemsTestMetric(self, metric_test, project):
+        metrics = MetricModel().getTestMetricByProjectId(project.id)
+        for metric in metrics:
+            self.iview.AddTestMetricToProject(metric_test, metric)
         pass
 
     def sortTree(self, item):
         self.iview.SortChildren(item)
 
-    def AddProjectCloseNodeItem(self, project):
-        return self.iview.AddProjectCloseNode(project)
     # ---------------------------------------------------
 
     # ----------  DeleteProjectItem  -------------------------------------

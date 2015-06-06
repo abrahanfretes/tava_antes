@@ -459,7 +459,8 @@ class NumberThreads(Base):
     value = Column(SmallInteger)
     evolutionary_method = Column(Integer, ForeignKey('evolutionary_method.id'))
     parallelization_methods = relationship('ParallelizationMethod',
-                                           cascade="save-update, merge, delete",
+                                           cascade="save-update, merge, \
+                                           delete",
                                            order_by='ParallelizationMethod.id')
 
     def __init__(self):
@@ -545,13 +546,15 @@ class TestMetric(Base):
     __tablename__ = 'test_metric'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
+    project_id = Column(Integer, ForeignKey('project.id'))
     result_metric_id = Column(Integer, ForeignKey('result_metric.id'))
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<ResultMetric()>"
-def createDB():
+        return "<TestMetric()>"
 
+
+def createDB():
     base.createDb()
