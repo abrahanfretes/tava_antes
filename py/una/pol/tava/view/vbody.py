@@ -133,6 +133,9 @@ class TreePanel(wx.Panel):
         self.SetSizer(project_tree_vsizer)
 
 
+from py.una.pol.tava.view.metric.vwrappermetric import WrapperMetric
+
+
 class AUINotebook(aui.AuiNotebook):
     '''
     AUI Notebook class
@@ -176,4 +179,8 @@ class AUINotebook(aui.AuiNotebook):
             self.AddPage(working_space, test.name + "- Scatter Matrix", True)
         elif mode == tvc.MODE_BOX_PLOT:
             page_bp = BoxPlot(self, test)
-            self.AddPage(page_bp, test.name + "Box Plot", True)
+            self.AddPage(page_bp, test.name + " - Box Plot", True)
+        elif mode == 50:
+            print 'llegue 50'
+            page_mt = WrapperMetric(self, test)
+            self.AddPage(page_mt, test.name + " - Metric", True)

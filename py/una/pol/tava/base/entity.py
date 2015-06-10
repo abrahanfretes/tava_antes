@@ -412,7 +412,8 @@ class MoeaProblem(Base):
         pass
 
     def __repr__(self):
-        return "<MoeaProblem()>"
+        return "<MoeaProblem(id='%i', name='%s, result_id='%i)>"\
+            % (self.id, self.name, self.result_metric)
 
 
 class NumberObjective(Base):
@@ -430,7 +431,8 @@ class NumberObjective(Base):
         pass
 
     def __repr__(self):
-        return "<NumberObjective()>"
+        return "<NumberObjective(id='%i', value='%i, moea_problem_id='%i)>"\
+            % (self.id, self.value, self.moea_problem)
 
 
 class EvolutionaryMethod(Base):
@@ -448,7 +450,8 @@ class EvolutionaryMethod(Base):
         pass
 
     def __repr__(self):
-        return "<EvolutionaryMethod()>"
+        return "<EvolutionaryMethod(id='%i', name='%s, number_objective_id='%i)>"\
+            % (self.id, self.name, self.number_objective)
 
 
 class NumberThreads(Base):
@@ -467,7 +470,8 @@ class NumberThreads(Base):
         pass
 
     def __repr__(self):
-        return "<NumberThreads()>"
+        return "<NumberThreads(id='%i', value='%i, evolutionary_method_id='%i)>"\
+            % (self.id, self.value, self.evolutionary_method)
 
 
 class ParallelizationMethod(Base):
@@ -476,7 +480,7 @@ class ParallelizationMethod(Base):
     __tablename__ = 'parallelization_method'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
-    number_threads = Column(Integer, ForeignKey('number_threads.id'))
+    number_thread = Column(Integer, ForeignKey('number_threads.id'))
     metrics = relationship('Metric', cascade="save-update, merge, delete",
                            order_by='Metric.id')
 
@@ -484,7 +488,8 @@ class ParallelizationMethod(Base):
         pass
 
     def __repr__(self):
-        return "<ParallelizationMethod()>"
+        return "<ParallelizationMethod(id='%i', name='%s, number_thread_id='%i)>"\
+            % (self.id, self.name, self.number_thread)
 
 
 class Metric(Base):
@@ -503,7 +508,8 @@ class Metric(Base):
         pass
 
     def __repr__(self):
-        return "<Metric()>"
+        return "<Metric(id='%i', name='%s, parallelization_method_id='%i)>"\
+            % (self.id, self.name, self.parallelization_method)
 
 
 class Population(Base):
@@ -521,7 +527,8 @@ class Population(Base):
         pass
 
     def __repr__(self):
-        return "<Population()>"
+        return "<Population(id='%i', value='%i, metric_id='%i)>"\
+            % (self.id, self.value, self.metric)
 
 
 class ValueMetric(Base):
@@ -537,7 +544,8 @@ class ValueMetric(Base):
         pass
 
     def __repr__(self):
-        return "<ValueMetric()>"
+        return "<ValueMetric(id='%i', iteration='%i, value='%f, population_id='%i)>"\
+            % (self.id, self.iteration, self.value, self.population)
 
 
 class TestMetric(Base):
@@ -553,7 +561,8 @@ class TestMetric(Base):
         pass
 
     def __repr__(self):
-        return "<TestMetric()>"
+        return "<TestMetric(id='%i', name='%s', project_id='%i, result_id='%i)>"\
+            % (self.id, self.name, self.project_id, self.result_metric_id)
 
 
 def createDB():

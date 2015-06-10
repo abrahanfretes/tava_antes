@@ -50,6 +50,34 @@ class MetricModel():
             to_ret.append(mr.filename)
         return to_ret
 
+    # Funciones Para NumberObjective
+    def getNumberObjectives(self, problem_id):
+        return dmetric.getNumberObjectiveByProblemId(problem_id)
+
+        # Funciones Para EvolutionaryMethod
+    def getEvolutionaryMethods(self, n_objevtive_id):
+        return dmetric.getEvolutionaryMethodByNObjectiveId(n_objevtive_id)
+
+        # Funciones Para NumberThreads
+    def getThreads(self, e_method_id):
+        return dmetric.getNumberThreadsByEMethodId(e_method_id)
+
+        # Funciones Para ParallelizationMethod
+    def getParallelizationMethods(self, n_thread_id):
+        return dmetric.getParallelizationMethodByNThreadId(n_thread_id)
+
+        # Funciones Para Metric
+    def getMetrics(self, p_method_id):
+        return dmetric.getMetricByPMethodId(p_method_id)
+
+        # Funciones Para Population
+    def getPopulations(self, metric_id):
+        return dmetric.getPopulationByMetricId(metric_id)
+
+        # Funciones Para ValueMetric
+    def getValueMetrics(self, population_id):
+        return dmetric.getValueMetricByPopulationId(population_id)
+
         # Funciones Para TestMetric
     def getTestMetricByProjectId(self, project_id):
         return dmetric.getTestMetrics(project_id)
@@ -63,3 +91,8 @@ class MetricModel():
 
     def addTestMetric(self, test_metric):
         dmetric.add(test_metric)
+
+        # MoeaProblem
+
+    def getProblems(self, result_id):
+        return dmetric.getProblemByResultId(result_id)

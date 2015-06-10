@@ -12,7 +12,7 @@ from py.una.pol.tava.view.vmenu import AnalysisPackageMenu, ResultMenu
 from py.una.pol.tava.view.vmenu import MetricsFilesPackageMenu
 from py.una.pol.tava.view.vmenu import MetricsViewsPackageMenu
 from py.una.pol.tava.view.vmenu import AnalysisMenu
-from py.una.pol.tava.view.vmenu import MetricTestPackageMenu
+from py.una.pol.tava.view.vmenu import MetricTestPackageMenu, TestMetricMenu
 from py.una.pol.tava.base.entity import CLOSED, Project
 import wx.lib.agw.customtreectrl as CT
 import py.una.pol.tava.view.vimages as I
@@ -133,6 +133,13 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
 
     def InitializeMetricTestPackageMenu(self, project):
         menu = MetricTestPackageMenu(self, project)
+        self.PopupMenu(menu)
+
+
+
+
+    def InitializeTestMetricMenu(self, date_item):
+        menu = TestMetricMenu(self, date_item)
         self.PopupMenu(menu)
 
     # -- Parte del árbol para la parte gáfica

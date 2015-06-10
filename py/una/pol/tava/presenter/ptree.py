@@ -333,7 +333,7 @@ class ProjectTreeCtrlPresenter:
             # seleccion de un Test
             elif self.iview.GetItemText(parent_item) == self.iview.getPackageMetricsTestName():
                 print ' menu Metric Test'
-                #self.iview.InitializeAnalysisMenu(data)
+                self.iview.InitializeTestMetricMenu(data)
 
     def getItemSelected(self):
         return self.iview.GetSelection()

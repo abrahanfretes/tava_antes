@@ -13,6 +13,7 @@ from py.una.pol.tava.presenter.pmenu import MainMenuBarPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisPackageMenuPresenter
 from py.una.pol.tava.presenter.pmenu import MetricTestPackageMenuPresenter
 from py.una.pol.tava.presenter.pmenu import AnalysisMenuPresenter
+from py.una.pol.tava.presenter.pmenu import TestMetricMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ProjectMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import ResultPackageMenuPresenter
 from py.una.pol.tava.presenter.pprojectmenu import\
@@ -462,4 +463,24 @@ class MetricTestPackageMenu(wx.Menu):
     def OnShowGraphicWizard(self, event):
         self.presenter.ShowGraphicWizard()
         # ----------------------------------------------------
+
+
+# ----- menu para analisis ----------------------------------------------------
+class TestMetricMenu(wx.Menu):
+    def __init__(self, parent, test):
+        super(TestMetricMenu, self).__init__()
+
+        # ------ definiciones iniciales ---------------------------------------
+        self.test = test
+        self.presenter = TestMetricMenuPresenter(self)
+
+        # ------ items del menu ----------------------------------------
+        ver_ = wx.MenuItem(self, wx.ID_ANY, 'Ver')
+        self.AppendItem(ver_)
+        ver_.Enable(True)
+        self.Bind(wx.EVT_MENU, self.OnShowVer, ver_)
+
+    def OnShowVer(self, event):
+        self.presenter.Show(50)
+
 # ----------------------------------------------------
