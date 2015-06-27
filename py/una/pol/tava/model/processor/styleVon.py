@@ -315,7 +315,7 @@ def processMetricsFile(paths, project):
                 method_evo = lv[2]
                 # ob_method_evo.number_objective = ob_number_obj.id
                 list_method_evo.append(ob_method_evo)
-                list_number_thread = ob_method_evo.number_threadss
+                list_number_thread = ob_method_evo.number_threads
 
             if number_thread != lv[3]:
                 #===============================================================

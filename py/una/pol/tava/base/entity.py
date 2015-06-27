@@ -404,7 +404,7 @@ class MoeaProblem(Base):
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
     result_metric = Column(Integer, ForeignKey('result_metric.id'))
-    number_objectives = relationship('NumberObjective',
+    number_objectives = relationship('NumberObjective', backref="moea_problem",
                                      cascade="save-update, merge, delete",
                                      order_by='NumberObjective.id')
 
@@ -422,8 +422,8 @@ class NumberObjective(Base):
     __tablename__ = 'number_objective'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(SmallInteger)
-    moea_problem = Column(Integer, ForeignKey('moea_problem.id'))
-    evolutionary_methods = relationship('EvolutionaryMethod',
+    moea_problem_id = Column(Integer, ForeignKey('moea_problem.id'))
+    evolutionary_methods = relationship('EvolutionaryMethod', backref="number_objective",
                                         cascade="save-update, merge, delete",
                                         order_by='EvolutionaryMethod.id')
 
@@ -441,8 +441,8 @@ class EvolutionaryMethod(Base):
     __tablename__ = 'evolutionary_method'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
-    number_objective = Column(Integer, ForeignKey('number_objective.id'))
-    number_threadss = relationship('NumberThreads',
+    number_objective_id = Column(Integer, ForeignKey('number_objective.id'))
+    number_threads = relationship('NumberThreads', backref="evolutionary_method",
                                    cascade="save-update, merge, delete",
                                    order_by='NumberThreads.id')
 
@@ -460,10 +460,9 @@ class NumberThreads(Base):
     __tablename__ = 'number_threads'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(SmallInteger)
-    evolutionary_method = Column(Integer, ForeignKey('evolutionary_method.id'))
-    parallelization_methods = relationship('ParallelizationMethod',
-                                           cascade="save-update, merge, \
-                                           delete",
+    evolutionary_method_id = Column(Integer, ForeignKey('evolutionary_method.id'))
+    parallelization_methods = relationship('ParallelizationMethod', backref="number_threads",
+                                           cascade="save-update, merge, delete",
                                            order_by='ParallelizationMethod.id')
 
     def __init__(self):
@@ -480,8 +479,9 @@ class ParallelizationMethod(Base):
     __tablename__ = 'parallelization_method'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
-    number_thread = Column(Integer, ForeignKey('number_threads.id'))
-    metrics = relationship('Metric', cascade="save-update, merge, delete",
+    number_threads_id = Column(Integer, ForeignKey('number_threads.id'))
+    metrics = relationship('Metric', backref="parallelization_method",
+                           cascade="save-update, merge, delete",
                            order_by='Metric.id')
 
     def __init__(self):
@@ -498,9 +498,9 @@ class Metric(Base):
     __tablename__ = 'metric'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
-    parallelization_method = Column(Integer,
+    parallelization_method_id = Column(Integer,
                                     ForeignKey('parallelization_method.id'))
-    populations = relationship('Population',
+    populations = relationship('Population', backref="metric",
                                cascade="save-update, merge, delete",
                                order_by='Population.id')
 
@@ -518,8 +518,8 @@ class Population(Base):
     __tablename__ = 'population'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(Integer)
-    metric = Column(Integer, ForeignKey('metric.id'))
-    value_metrics = relationship('ValueMetric',
+    metric_id = Column(Integer, ForeignKey('metric.id'))
+    value_metrics = relationship('ValueMetric', lazy=None,  backref="population",
                                  cascade="save-update, merge, delete",
                                  order_by='ValueMetric.id')
 
@@ -538,7 +538,7 @@ class ValueMetric(Base):
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     iteration = Column(Integer)
     value = Column(Float)
-    population = Column(Integer, ForeignKey('population.id'))
+    population_id = Column(Integer, ForeignKey('population.id'))
 
     def __init__(self):
         pass
