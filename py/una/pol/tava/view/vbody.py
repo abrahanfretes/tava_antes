@@ -134,6 +134,8 @@ class TreePanel(wx.Panel):
 
 
 from py.una.pol.tava.view.metric.vwrappermetric import WrapperMetric
+from py.una.pol.tava.view.metric.sing.vwrappermetricsing import\
+    WrapperMetricSing
 
 
 class AUINotebook(aui.AuiNotebook):
@@ -184,3 +186,7 @@ class AUINotebook(aui.AuiNotebook):
             print 'llegue 50'
             page_mt = WrapperMetric(self, test)
             self.AddPage(page_mt, test.name + " - Metric", True)
+        elif mode == 51:
+            print 'llegue 51'
+            page_mts = WrapperMetricSing(self, test)
+            self.AddPage(page_mts, test.name + " - Metric Sing", True)

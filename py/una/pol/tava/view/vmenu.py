@@ -480,7 +480,13 @@ class TestMetricMenu(wx.Menu):
         ver_.Enable(True)
         self.Bind(wx.EVT_MENU, self.OnShowVer, ver_)
 
+        metric_sing = wx.MenuItem(self, wx.ID_ANY, 'Sing')
+        self.AppendItem(metric_sing)
+        self.Bind(wx.EVT_MENU, self.OnShowSing, metric_sing)
+
     def OnShowVer(self, event):
         self.presenter.Show(50)
 
+    def OnShowSing(self, event):
+        self.presenter.ShowSing(51)
 # ----------------------------------------------------
