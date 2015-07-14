@@ -32,7 +32,7 @@ class ConfigMetricPresenter:
         self.population = None
         self.iteration = None
 
-        self.__setInitVar()
+        self.resetVariables()
         self.setOptionProblems()
 
     def setOptionProblems(self):
@@ -42,7 +42,7 @@ class ConfigMetricPresenter:
 
     def setSelectedProblems(self, index):
         self.problem = self.problems[index]
-        self.__setInitVar(1)
+        self.resetVariables(1)
         self.setOptionObjectives()
 
 
@@ -53,7 +53,7 @@ class ConfigMetricPresenter:
 
     def setSelectedObjectives(self, index):
         self.objective = self.objectives[index]
-        self.__setInitVar(2)
+        self.resetVariables(2)
         self.setOptionEvolutionarys()
 
 
@@ -64,7 +64,7 @@ class ConfigMetricPresenter:
 
     def setSelectedEvolutionary(self, index):
         self.evolutionary = self.evolutionarys[index]
-        self.__setInitVar(3)
+        self.resetVariables(3)
         self.setOptionThreads()
 
 
@@ -75,7 +75,7 @@ class ConfigMetricPresenter:
 
     def setSelectedThreads(self, index):
         self.thread = self.threads[index]
-        self.__setInitVar(4)
+        self.resetVariables(4)
         self.setOptionParallel()
 
 
@@ -86,7 +86,7 @@ class ConfigMetricPresenter:
 
     def setSelectedParallel(self, index):
         self.parallel = self.parallels[index]
-        self.__setInitVar(5)
+        self.resetVariables(5)
         self.setOptionMetric()
 
 
@@ -97,7 +97,7 @@ class ConfigMetricPresenter:
 
     def setSelectedMetric(self, index):
         self.metric = self.metrics[index]
-        self.__setInitVar(6)
+        self.resetVariables(6)
         self.setOptionPopulation()
 
 
@@ -108,7 +108,7 @@ class ConfigMetricPresenter:
 
     def setSelectedPopulation(self, index):
         self.population = self.populations[index]
-        self.__setInitVar(7)
+        self.resetVariables(7)
         self.setOptionIteration()
 
 
@@ -121,7 +121,7 @@ class ConfigMetricPresenter:
         self.iteration = self.iterations[index]
 
 
-    def __setInitVar(self, option=0):
+    def resetVariables(self, option=0):
         if option < 1:
             self.problems = []
         if option < 2:

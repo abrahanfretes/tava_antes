@@ -62,3 +62,7 @@ class TestMetricMenuPresenter:
     def Show(self, type_g):
         test = self.iview.test
         pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, type_g))
+
+    def ShowSing(self, type_g):
+        test = self.iview.test
+        pub.sendMessage(T.TESTCONFIG_ADD_PAGE, (test, type_g))
