@@ -79,11 +79,22 @@ def getEvolutionaryMethodByNObjectiveId(n_objevtive_id):
 def getNumberThreadsByEMethodId(e_method_id):
     return session.query(NumberThreads).filter_by(evolutionary_method_id=e_method_id).all()
 
+
+def getNumberThreadsByValue(e_method_id, v_thread):
+    return session.query(NumberThreads)\
+        .filter(NumberThreads.evolutionary_method == e_method_id,
+                NumberThreads.value == v_thread).first()
     # Funciones Para ParallelizationMethod
 
 
 def getParallelizationMethodByNThreadId(n_thread_id):
     return session.query(ParallelizationMethod).filter_by(number_threads_id=n_thread_id).all()
+
+
+def getParallelizationMethodByValue(n_thread_id, v_method):
+    return session.query(ParallelizationMethod)\
+        .filter(ParallelizationMethod.number_thread == n_thread_id,
+                ParallelizationMethod.name == v_method).first()
 
     # Funciones Para Metric
 
@@ -91,12 +102,22 @@ def getParallelizationMethodByNThreadId(n_thread_id):
 def getMetricByPMethodId(p_method_id):
     return session.query(Metric).filter_by(parallelization_method_id=p_method_id).all()
 
+
+def getMetricByValue(p_method_id, v_value):
+    return session.query(Metric)\
+        .filter(Metric.parallelization_method == p_method_id,
+                Metric.name == v_value).first()
     # Funciones Para Population
 
 
 def getPopulationByMetricId(metric_id):
     return session.query(Population).filter_by(metric_id=metric_id).all()
 
+
+def getPopulationByValue(metric_id, v_value):
+    return session.query(Population).filter(Population.metric == metric_id,
+                                            Population.value == v_value)\
+                                            .first()
     # Funciones Para ValueMetric
 
 def getValueMetricByPopulationId(population_id):
@@ -210,4 +231,5 @@ def getDistinctMetrics():
     return metrics
 
 def getDistinctParallelMethodsByResultMetric():
-    pass
+    return session.query(ValueMetric).filter_by(population=population_id).\
+        order_by(ValueMetric.iteration).all()

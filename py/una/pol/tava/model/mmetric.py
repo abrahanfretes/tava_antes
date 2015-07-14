@@ -58,25 +58,56 @@ class MetricModel():
     def getEvolutionaryMethods(self, n_objevtive_id):
         return dmetric.getEvolutionaryMethodByNObjectiveId(n_objevtive_id)
 
+    def getEvolutionaryMethodsDistinct(self, evolutionary_method):
+        mms = self.getEvolutionaryMethods(evolutionary_method.number_objective)
+        ret = []
+        for m in mms:
+            if m.id != evolutionary_method.id:
+                ret.append(m)
+        return ret
+
         # Funciones Para NumberThreads
     def getThreads(self, e_method_id):
         return dmetric.getNumberThreadsByEMethodId(e_method_id)
+
+    def getThreadsByValue(self, e_method_id, v_thread):
+        return dmetric.getNumberThreadsByValue(e_method_id, v_thread)
 
         # Funciones Para ParallelizationMethod
     def getParallelizationMethods(self, n_thread_id):
         return dmetric.getParallelizationMethodByNThreadId(n_thread_id)
 
+    def getParallelizationMethodByValue(self, n_thread_id, v_method):
+        return dmetric.getParallelizationMethodByValue(n_thread_id, v_method)
+
         # Funciones Para Metric
     def getMetrics(self, p_method_id):
         return dmetric.getMetricByPMethodId(p_method_id)
+
+    def getMetricsByValue(self, p_method_id, v_value):
+        return dmetric.getMetricByValue(p_method_id, v_value)
 
         # Funciones Para Population
     def getPopulations(self, metric_id):
         return dmetric.getPopulationByMetricId(metric_id)
 
+    def getPopulationsByValue(self, metric_id, v_value):
+        return dmetric.getPopulationByValue(metric_id, v_value)
+
         # Funciones Para ValueMetric
     def getValueMetrics(self, population_id):
         return dmetric.getValueMetricByPopulationId(population_id)
+
+    def getValueMetricsByEvolutionaryMethod(self, e_method, v_thread,
+                                            v_parallel, v_metric,
+                                            v_population):
+
+        thread = self.getThreadsByValue(e_method.id, v_thread)
+        parallel = self.getParallelizationMethodByValue(thread.id, v_parallel)
+        metric = self.getMetricsByValue(parallel.id, v_metric)
+        population = self.getPopulationsByValue(metric.id, v_population)
+
+        return self.getValueMetrics(population.id)
 
         # Funciones Para TestMetric
     def getTestMetricByProjectId(self, project_id):
