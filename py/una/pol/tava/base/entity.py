@@ -432,7 +432,7 @@ class NumberObjective(Base):
 
     def __repr__(self):
         return "<NumberObjective(id='%i', value='%i, moea_problem_id='%i)>"\
-            % (self.id, self.value, self.moea_problem)
+            % (self.id, self.value, self.moea_problem_id)
 
 
 class EvolutionaryMethod(Base):
@@ -470,7 +470,7 @@ class NumberThreads(Base):
 
     def __repr__(self):
         return "<NumberThreads(id='%i', value='%i, evolutionary_method_id='%i)>"\
-            % (self.id, self.value, self.evolutionary_method)
+            % (self.id, self.value, self.evolutionary_method_id)
 
 
 class ParallelizationMethod(Base):
@@ -489,7 +489,7 @@ class ParallelizationMethod(Base):
 
     def __repr__(self):
         return "<ParallelizationMethod(id='%i', name='%s, number_thread_id='%i)>"\
-            % (self.id, self.name, self.number_thread)
+            % (self.id, self.name, self.number_threads_id)
 
 
 class Metric(Base):
@@ -509,7 +509,7 @@ class Metric(Base):
 
     def __repr__(self):
         return "<Metric(id='%i', name='%s, parallelization_method_id='%i)>"\
-            % (self.id, self.name, self.parallelization_method)
+            % (self.id, self.name, self.parallelization_method_id)
 
 
 class Population(Base):
@@ -528,7 +528,7 @@ class Population(Base):
 
     def __repr__(self):
         return "<Population(id='%i', value='%i, metric_id='%i)>"\
-            % (self.id, self.value, self.metric)
+            % (self.id, self.value, self.metric_id)
 
 
 class ValueMetric(Base):
@@ -545,7 +545,7 @@ class ValueMetric(Base):
 
     def __repr__(self):
         return "<ValueMetric(id='%i', iteration='%i, value='%f, population_id='%i)>"\
-            % (self.id, self.iteration, self.value, self.population)
+            % (self.id, self.iteration, self.value, self.population_id)
 
 
 class TestMetric(Base):
