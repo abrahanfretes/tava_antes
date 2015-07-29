@@ -451,7 +451,7 @@ class EvolutionaryMethod(Base):
 
     def __repr__(self):
         return "<EvolutionaryMethod(id='%i', name='%s, number_objective_id='%i)>"\
-            % (self.id, self.name, self.number_objective)
+            % (self.id, self.name, self.number_objective_id)
 
 
 class NumberThreads(Base):

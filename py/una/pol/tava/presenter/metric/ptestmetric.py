@@ -4,7 +4,7 @@ Created on 2/6/2015
 
 @author: abrahan
 '''
-from wx.lib.pubsub import pub
+from wx.lib.pubsub import Publisher as pub
 from py.una.pol.tava.presenter import topic as T
 
 from py.una.pol.tava.model.mmetric import MetricModel as mm

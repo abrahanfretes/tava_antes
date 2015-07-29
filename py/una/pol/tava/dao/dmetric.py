@@ -82,7 +82,7 @@ def getNumberThreadsByEMethodId(e_method_id):
 
 def getNumberThreadsByValue(e_method_id, v_thread):
     return session.query(NumberThreads)\
-        .filter(NumberThreads.evolutionary_method == e_method_id,
+        .filter(NumberThreads.evolutionary_method_id == e_method_id,
                 NumberThreads.value == v_thread).first()
     # Funciones Para ParallelizationMethod
 
@@ -93,7 +93,7 @@ def getParallelizationMethodByNThreadId(n_thread_id):
 
 def getParallelizationMethodByValue(n_thread_id, v_method):
     return session.query(ParallelizationMethod)\
-        .filter(ParallelizationMethod.number_thread == n_thread_id,
+        .filter(ParallelizationMethod.number_threads_id == n_thread_id,
                 ParallelizationMethod.name == v_method).first()
 
     # Funciones Para Metric
@@ -105,7 +105,7 @@ def getMetricByPMethodId(p_method_id):
 
 def getMetricByValue(p_method_id, v_value):
     return session.query(Metric)\
-        .filter(Metric.parallelization_method == p_method_id,
+        .filter(Metric.parallelization_method_id == p_method_id,
                 Metric.name == v_value).first()
     # Funciones Para Population
 
@@ -115,7 +115,7 @@ def getPopulationByMetricId(metric_id):
 
 
 def getPopulationByValue(metric_id, v_value):
-    return session.query(Population).filter(Population.metric == metric_id,
+    return session.query(Population).filter(Population.metric_id == metric_id,
                                             Population.value == v_value)\
                                             .first()
     # Funciones Para ValueMetric
@@ -230,6 +230,8 @@ def getDistinctMetrics():
     metrics = session.query(distinct(mtr.name)).all()
     return metrics
 
-def getDistinctParallelMethodsByResultMetric():
-    return session.query(ValueMetric).filter_by(population=population_id).\
-        order_by(ValueMetric.iteration).all()
+#===============================================================================
+# def getDistinctParallelMethodsByResultMetric():
+#     return session.query(ValueMetric).filter_by(population=population_id).\
+#         order_by(ValueMetric.iteration).all()
+#===============================================================================

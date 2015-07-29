@@ -4,7 +4,7 @@ Created on 28/07/2014
 
 @author: afretes
 '''
-from wx.lib.pubsub import Publisher as pub
+from wx.lib.pubsub.pub import Publisher as pub
 from py.una.pol.tava.model.mproject import ProjectModel
 from py.una.pol.tava.model.mresult import ResultModel
 from py.una.pol.tava.model.mmetric import MetricModel
