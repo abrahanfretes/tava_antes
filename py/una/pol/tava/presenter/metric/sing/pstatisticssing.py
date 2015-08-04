@@ -7,9 +7,7 @@ Created on 24/6/2015
 
 import numpy as np
 import scipy.stats as st
-
-from matplotlib.table import table
-from matplotlib.font_manager import FontProperties
+from pandas import DataFrame
 
 from py.una.pol.tava.model.mmetric import MetricModel as mm
 
@@ -31,12 +29,11 @@ class StatisticSingPresenter:
         tie = 0
         p_ = []
 
+        valores_reales = []
         values_pivot = mm().getValueMetrics(population.id)
+        cabeceras_reales = [str(i) for i in range(len(values_pivot))]
 
-        print evolutionary
         for e_method in evo_selected:
-
-            print e_method.name
             values_other = mm().\
                 getValueMetricsByEvolutionaryMethod(e_method,
                                                     thread.value,
@@ -44,16 +41,21 @@ class StatisticSingPresenter:
                                                     metric.name,
                                                     population.value)
 
+            valores_reales_aux = []
             for i in range(len(values_pivot)):
                 pivot = values_pivot[i]
                 other = values_other[i]
-                print str(pivot.iteration) + ' - ' + str(pivot.value) + '--' + str(other.iteration) + ' - ' + str(other.value)
                 if pivot > other:
                     win += 1
                 elif pivot < other:
                     loss += 1
                 else:
                     tie += 1
+
+                valores_reales_aux.append(other.value)
+
+            valores_reales.append(valores_reales_aux)
+
             if tie > 1:
                 win += int(tie/2)
                 loss += int(tie/2)
@@ -64,8 +66,6 @@ class StatisticSingPresenter:
             win = 0
             loss = 0
             tie = 0
-
-            print result
 
         labelc = [evolutionary.name]
         char_w = ['Wins (+)']
@@ -78,39 +78,15 @@ class StatisticSingPresenter:
             char_l.append(var_t[1])
             char_t.append(var_t[2])
 
-        chars = [char_w, char_l, char_t]
+        for name in labelc:
+            self.iview.t_table.AppendTextColumn(name)
 
-        colors = [[(0.95, 0.95, 0.95) for c in range(len(result.keys()) + 1)] for r in range(3)]
-        colors[0][0] = '#FFE4C4'
-        colors[1][0] = '#FFE4C4'
-        colors[2][0] = '#FFE4C4'
-        lightgrn = (0.5, 0.8, 0.5)
-        lightgrns = [lightgrn]*16
-        lightgrns[0] = (0.95, 0.95, 0.95)
-        lightgrns[0] = '#DEB887'
+        self.iview.t_table.AppendItem(char_w)
+        self.iview.t_table.AppendItem(char_l)
+        self.iview.t_table.AppendItem(char_t)
 
         axe = self.iview.figure.gca()
-
-        tab = axe.table(cellText=chars,
-                        colLabels=labelc,
-                        colColours=lightgrns,
-                        cellColours=colors,
-                        cellLoc='center',
-                        loc='upper left')
-
-        font_use = FontProperties(family='serif',
-                                  style='normal',
-                                  variant='normal',
-                                  weight='medium',
-                                  stretch='ultra-expanded',
-                                  size='xx-large',
-                                  fname=None)
-        for key, cell in tab.get_celld().items():
-            row, col = key
-            if row > 0 and col > 0:
-                cell.set_text_props(fontproperties=font_use)
-                cell.set_fontsize(50)
-
-        axe.axison = False
+        df = DataFrame(valores_reales, columns=cabeceras_reales)
+        df.plot(kind='box', ax=axe, table=False)
         self.iview.canvas.draw()
         return axe
