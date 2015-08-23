@@ -135,9 +135,6 @@ class ProjectTreeCtrl(CT.CustomTreeCtrl):
         menu = MetricTestPackageMenu(self, project)
         self.PopupMenu(menu)
 
-
-
-
     def InitializeTestMetricMenu(self, date_item):
         menu = TestMetricMenu(self, date_item)
         self.PopupMenu(menu)

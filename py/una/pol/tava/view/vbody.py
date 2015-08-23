@@ -22,6 +22,7 @@ from py.una.pol.tava.view.curves.vwrappercurves import AndrewsCurves
 from py.una.pol.tava.view.parallel.wrapperparallel import ParrallelCoordenates
 from py.una.pol.tava.view.vscatter_matrix import PanelScatterMatrixCongif
 from py.una.pol.tava.view.boxplot.wrapperboxplot import BoxPlot
+from py.una.pol.tava.view.vensemble import PanelEnsembleConfig
 
 
 class MainPanel(wx.Panel):
@@ -190,3 +191,6 @@ class AUINotebook(aui.AuiNotebook):
             print 'llegue 51'
             page_mts = WrapperMetricSing(self, test)
             self.AddPage(page_mts, test.name + " - Metric Sing", True)
+        elif mode == 52:
+            page_ensemble = PanelEnsembleConfig(self, test)
+            self.AddPage(page_ensemble, test.name + " - Ensemble Method", True)

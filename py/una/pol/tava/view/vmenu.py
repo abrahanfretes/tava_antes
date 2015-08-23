@@ -484,9 +484,17 @@ class TestMetricMenu(wx.Menu):
         self.AppendItem(metric_sing)
         self.Bind(wx.EVT_MENU, self.OnShowSing, metric_sing)
 
+        ensemble_method = wx.MenuItem(self, wx.ID_ANY, 'Ensemble method')
+        self.AppendItem(ensemble_method)
+        self.Bind(wx.EVT_MENU, self.OnShowEnsembleMethod, ensemble_method)
+
     def OnShowVer(self, event):
         self.presenter.Show(50)
 
     def OnShowSing(self, event):
         self.presenter.ShowSing(51)
+
+    def OnShowEnsembleMethod(self, event):
+        self.presenter.ShowEnsembleMethod(52)
+
 # ----------------------------------------------------

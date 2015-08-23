@@ -423,7 +423,8 @@ class NumberObjective(Base):
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(SmallInteger)
     moea_problem_id = Column(Integer, ForeignKey('moea_problem.id'))
-    evolutionary_methods = relationship('EvolutionaryMethod', backref="number_objective",
+    evolutionary_methods = relationship('EvolutionaryMethod',
+                                        backref="number_objective",
                                         cascade="save-update, merge, delete",
                                         order_by='EvolutionaryMethod.id')
 
@@ -442,15 +443,16 @@ class EvolutionaryMethod(Base):
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     name = Column(String(100))
     number_objective_id = Column(Integer, ForeignKey('number_objective.id'))
-    number_threads = relationship('NumberThreads', backref="evolutionary_method",
-                                   cascade="save-update, merge, delete",
-                                   order_by='NumberThreads.id')
+    number_threads = relationship('NumberThreads',
+                                  backref="evolutionary_method",
+                                  cascade="save-update, merge, delete",
+                                  order_by='NumberThreads.id')
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<EvolutionaryMethod(id='%i', name='%s, number_objective_id='%i)>"\
+        return "<EvolutionaryMethod(id='%i',name='%s,num_objective_id='%i)>"\
             % (self.id, self.name, self.number_objective_id)
 
 
@@ -460,16 +462,18 @@ class NumberThreads(Base):
     __tablename__ = 'number_threads'
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(SmallInteger)
-    evolutionary_method_id = Column(Integer, ForeignKey('evolutionary_method.id'))
-    parallelization_methods = relationship('ParallelizationMethod', backref="number_threads",
-                                           cascade="save-update, merge, delete",
+    evolutionary_method_id = Column(Integer,
+                                    ForeignKey('evolutionary_method.id'))
+    parallelization_methods = relationship('ParallelizationMethod',
+                                           backref="number_threads",
+                                           cascade="save-update,merge,delete",
                                            order_by='ParallelizationMethod.id')
 
     def __init__(self):
         pass
 
     def __repr__(self):
-        return "<NumberThreads(id='%i', value='%i, evolutionary_method_id='%i)>"\
+        return "<NumberThreads(id='%i',value='%i,evolutionary_method_id='%i)>"\
             % (self.id, self.value, self.evolutionary_method_id)
 
 
@@ -488,7 +492,7 @@ class ParallelizationMethod(Base):
         pass
 
     def __repr__(self):
-        return "<ParallelizationMethod(id='%i', name='%s, number_thread_id='%i)>"\
+        return "<ParallelizationMethod(id='%i',name='%s,nb_thread_id='%i)>"\
             % (self.id, self.name, self.number_threads_id)
 
 
@@ -519,7 +523,8 @@ class Population(Base):
     id = Column(Integer, primary_key=True, nullable=False, unique=True)
     value = Column(Integer)
     metric_id = Column(Integer, ForeignKey('metric.id'))
-    value_metrics = relationship('ValueMetric', lazy=None,  backref="population",
+    value_metrics = relationship('ValueMetric', lazy=None,
+                                 backref="population",
                                  cascade="save-update, merge, delete",
                                  order_by='ValueMetric.id')
 
@@ -544,7 +549,7 @@ class ValueMetric(Base):
         pass
 
     def __repr__(self):
-        return "<ValueMetric(id='%i', iteration='%i, value='%f, population_id='%i)>"\
+        return "<ValueMetric(id='%i',iteration='%i,value='%f,populat_id='%i)>"\
             % (self.id, self.iteration, self.value, self.population_id)
 
 
@@ -561,7 +566,7 @@ class TestMetric(Base):
         pass
 
     def __repr__(self):
-        return "<TestMetric(id='%i', name='%s', project_id='%i, result_id='%i)>"\
+        return "<TestMetric(id='%i',name='%s',project_id='%i,result_id='%i)>"\
             % (self.id, self.name, self.project_id, self.result_metric_id)
 
 
