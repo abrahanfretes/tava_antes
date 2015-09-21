@@ -13,7 +13,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import NavigationToolbar2Wx as Toolbar
 from py.una.pol.tava.presenter.metric.sing.pstatisticssing import\
     StatisticSingPresenter
-from docutils.parsers.rst.directives import flag
 
 
 # ------------------- Arbol de Archvivos e Iteraciones ------------------------
